@@ -34,22 +34,22 @@ keywords = {
 
 # literals
 float = ["−" | "+"] digit+ "." digit+
-integer = ["−" | "+"] digit+
+integer = Word(digit)
 number = float | integer
 
 Boolean = "0" | "1"
 
 string = "\"" (char) * "\""
 
-def EBNF():
 
-    # Operators
-    "+" "−" " * " "/" "in" "contains" "!" "&&" "||"
-    ">" "<" "==" ">=" "<=" "!="
-    plus, minus, mult, div = map(Literal, "+-*/")
-    in = Literal("in")
-    contains = Literal("contains")
-    # etc
+
+# Operators
+"+" "−" " * " "/" "in" "contains" "!" "&&" "||"
+">" "<" "==" ">=" "<=" "!="
+plus, minus, mult, div = map(Literal, "+-*/")
+in = Literal("in")
+contains = Literal("contains")
+# etc
 
 # Delimiters
 "{" "}" "[" "]" "(" ")" "<" ">"
@@ -67,3 +67,9 @@ selectorSeq = [topoSelector] [attrSelector | groupSelector] *
 topoSelector = funcCall
 attrSelector = "[" boolExpr "]"
 groupSelector = "[" "::" funcCall "]"
+
+for greeting_str in [
+    "123",
+    "abracadabra"
+    ]:
+    greeting = greet.parse_string(greeting_str)
