@@ -1,75 +1,32 @@
-from typing import Literal
 import pyparsing as pp
-from pp import (
-    Literal,
-    Word,
-    Group,
-    Forward,
-    alphas,
-    alphanums,
-    Regex,
-    ParseException,
-    CaselessKeyword,
-    Suppress,
-    delimitedList,
-)
-import math
-import operator
 
-comment = "#" (char) *
-char = ?any ASCII character?
-letter = ?alphabetic characters a−z and A−Z?
+comment = pp.Regex(r"#.*")#.suppress() # don't include comments
+char = pp.Char(pp.pyparsing_unicode.printables)
+letter = pp.Char(pp.alphas)
+number = pp.pyparsing_common.number
+identifier = pp.Word(pp.alphanums + "_")
 
-identifier = letter (letter | digit | "_") *
-digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+plusorminus = pp.Literal('+') | pp.Literal('-')
+integer = pp.Combine(pp.Optional(plusorminus) + number)
+digit = pp.Char(pp.nums)
+boolean = pp.Literal("0") | pp.Literal('1')
+#string = pp.QuotedString(pp.alphanums)
+
 
 # Keywords
-keywords = {
-    k: CaselessKeyword(k)
-    for k in """\
-    child descendant parent root self neighbor label type rowIdx colIdx rowLabel 
-    colLabel last rowLast colLast groupRows groupCols groupRegions if randomSelect eval
-    """.split()
-}
-
+#keywords = {
+#    k: pp.CaselessKeyword(k)
+#    for k in """\
+#    child descendant parent root self neighbor label type rowIdx colIdx rowLabel 
+#    colLabel last rowLast colLast groupRows groupCols groupRegions if randomSelect eval
+#    """.split()
+#}
+###
 # literals
-float = ["−" | "+"] digit+ "." digit+
-integer = Word(digit)
-number = float | integer
 
-Boolean = "0" | "1"
-
-string = "\"" (char) * "\""
-
-
-
-# Operators
-"+" "−" " * " "/" "in" "contains" "!" "&&" "||"
-">" "<" "==" ">=" "<=" "!="
-plus, minus, mult, div = map(Literal, "+-*/")
-in = Literal("in")
-contains = Literal("contains")
-# etc
-
-# Delimiters
-"{" "}" "[" "]" "(" ")" "<" ">"
-"=" "," ":" ";" "−>"
-
-# Whitespace
-whitespace = "\n" | " " | "\t"
-
-# list
-list = "(" expression ("," expression)* ")"
-
-# selection expressions
-selectionExpression = "<" [selectorSeq ("/" selectorSeq) * ] ">"
-selectorSeq = [topoSelector] [attrSelector | groupSelector] *
-topoSelector = funcCall
-attrSelector = "[" boolExpr "]"
-groupSelector = "[" "::" funcCall "]"
-
-for greeting_str in [
-    "123",
-    "abracadabra"
-    ]:
-    greeting = greet.parse_string(greeting_str)
+# test area
+print(comment.parseString("# this is a comment"))
+print(letter.parseString("hey"))
+print(identifier.parseString("a123_john"))
+print(integer.parseString("-99"))
+print(string.parseString("heyo this is a string, I think. 123 123"))
