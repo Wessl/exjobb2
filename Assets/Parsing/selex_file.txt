@@ -1,0 +1,56 @@
+#C1: setup the facade size
+facW = 17.6;
+facH = 12.8;
+#C2: add the facade shape
+{ <> −> addShape("facade",0, 0, facW, facH); }
+#C3: split facade into cells with the grid name;
+{ <descendant() [ label == "facade" ] > −>
+ createGrid("main",
+ rows( lineElem((3.5, 3.0, 4.0), (1, 1), label("gnd_floor")),
+ lineElem((3.0, 3.0, 3.5), (1, 10), label("top_floor"))
+ ),
+ cols( lineElem((2.8, 2.5, 3.0), (1, 10), label("left_col")),
+ lineElem((3.6, 3.0, 4.0), (1, 1), label("mid_col")),
+ lineElem((2.8, 2.5, 3.0), (2, 2), label("right_col"))
+ )); }
+
+
+#C4: add a door touching the ground;
+ { <descendant() [ label == "facade" ] / [ label == "main" ] /
+cell() [ colLabel == "mid_col" ][ rowLabel == "gnd_floor" ] >
+> addShape("door", toGlobalX(0.5), toGlobalY(0.45), 1.76, 2.64,
+constrain(dist2region( dist2bottom(0.0, 0.0) ))); }
+
+#C5: add the glass windows above the door
+ {<descendant() [ label == "facade" ] / [ label == "main" ] /
+ cell() [ colLabel == "mid_col" ][ rowLabel == "top_floor" ][ ::groupCols() ] >
+ −> addShape("glass", toGlobalX(0.5), toGlobalY(0.5), 1.28, 7.72); }
+
+#C6: add ledges at the left side of the top floor.
+ { <descendant() [ label == "facade" ] / [ label == "main" ] /
+ cell() [ colLabel == "left_col" ][ rowIdx == rowLast(−1) ][ ::groupPairs() ] >
+ −> addShape("ledge", toGlobalX(0.5), toGlobalY(0.5), 0.32, 2.08); }
+
+#C7: add the two−cell window at the right side of the top floor.
+ { <descendant() [ label == "facade" ] / [ label == "main" ] /
+ cell() [ colLabel == "right_col" ][ rowIdx == rowLast(−1) ][ ::groupRows() ] >
+ −> addShape("win4", toGlobalX(0.5), toGlobalY(0.5), 1.44, 3.92); }
+
+#C8: add windows on the ground floor.
+ { <descendant() [ label == "facade" ] / [ label == "main" ] /
+ cell() [ colLabel in ("left_col", "right_col") ][ rowIdx == 1 ] >
+ −> addShape("win1", toGlobalX(0.5), toGlobalY(0.5), 1.44, 2.00); }
+
+#C9: add windows on the second and third floor.
+ { <descendant() [ label == "facade" ] / [ label == "main" ] /
+ cell() [ colLabel in ("left_col", "right_col") ][ rowIdx in
+rowRange(2,−2) ] >
+ −> addShape("win2", toGlobalX(0.5), toGlobalY(0.5), 1.44, 1.6); }
+
+#C10: add windows in the left side of the top floor.
+ { <descendant() [ label == "facade" ] / [ label == "main" ] /
+ cell() [ colLabel == "left_col" ][ rowIdx == rowLast(−1) ] >
+ −> addShape("win3", toGlobalX(0.5), toGlobalY(0.5), 1.44, 1.28); }
+
+#C11: generate walls to fill the space.
+ { <descendant() [ label == "facade" ] > −> coverShape(); }
