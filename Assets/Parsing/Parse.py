@@ -51,7 +51,7 @@ arithExpr = pp.Forward().setName("Arith Expression")
 arithOperand = pp.Group(lparen + arithExpr + rparen) | identifier | number
 multiplyExpr = arithOperand + pp.Optional((mult ^ div) + arithOperand)
 arithExpr <<= (multiplyExpr + pp.Optional((plus ^ minus) + multiplyExpr))
-list_ = pp.Literal("(") + expression + pp.ZeroOrMore(pp.Literal(",") + expression) + ")"
+list_ = pp.Literal("(") + expression + pp.ZeroOrMore(pp.Literal(",").suppress() + expression) + ")"
 
 
 cmpOp = (eq ^ ne ^ ge ^ le ^ gt ^ lt)
@@ -63,7 +63,7 @@ notExpr = pp.Group(not_ + boolOperand) | boolOperand
 andExpr = notExpr + pp.Optional(and_ + notExpr)
 boolExpr = andExpr + pp.Optional(or_ + andExpr).setName("Boolean Expression")
 
-expression <<= (number | funcCall | identifier | boolExpr)
+expression <<= (number | funcCall | identifier | boolExpr | list_)
 
 # selection expressions
 
@@ -106,7 +106,7 @@ def enableDebug(enabled):
         boolOperand.setName("Bool Operand").setDebug()
         expression.setName("Expression").setDebug()
         setExpr.setName("Set Expression").setDebug()
-        argList.setName("argument list").setDebug()
+        
         assignment.setName("Assignment").setDebug()
         lparen.setDebug()
         rparen.setDebug()
@@ -114,7 +114,7 @@ def enableDebug(enabled):
         attrSelector.setDebug()
         groupSelector.setDebug()
         selectorSeq.setDebug()
-enableDebug(True)
+enableDebug(False)
 # Keywords
 
 ###
@@ -142,6 +142,19 @@ print(command.parseString("{ <descendant() [ label == 'facade' ] / [ label == 'm
 cell() [ colLabel == 'mid_col' ][ rowLabel == 'gnd_floor' ] > \
 −> addShape('door', toGlobalX(0.5), toGlobalY(0.45), 1.76, 2.64, \
 constrain(dist2region( dist2bottom(0.0, 0.0) ))); }"))
+# function call with list
+print(funcCall.parseString("rows( lineElem((3.5, 3.0, 4.0), (1, 1), label('gnd_floor')))"))
+
+argList.setName("argument list").setDebug()
+print(command.parseString("{ <descendant() [ label == 'facade' ] > −>   \
+createGrid('main',                                                   \
+rows( lineElem((3.5, 3.0, 4.0), (1, 1), label('gnd_floor')),         \
+lineElem((3.0, 3.0, 3.5), (1, 10), label('top_floor'))               \
+),                                                                   \
+cols( lineElem((2.8, 2.5, 3.0), (1, 10), label('left_col')),         \
+lineElem((3.6, 3.0, 4.0), (1, 1), label('mid_col')),                 \
+lineElem((2.8, 2.5, 3.0), (2, 2), label('right_col'))                \
+)); }"))
 
 #print(command.parseString("{ <> −> addShape('facade', 0, 0, facW, facH); }"))
 #print(pp.alphanums)
