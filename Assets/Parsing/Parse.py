@@ -24,9 +24,12 @@ plusorminus = pp.Literal('+') ^ pp.Literal('-')
 integer = pp.Combine(pp.Optional(plusorminus) + number)
 digit = pp.Char(pp.nums)
 boolean = pp.Literal("0") ^ pp.Literal('1')
-string = pp.QuotedString(quoteChar="'")
+string = pp.QuotedString(quoteChar="\"")
 lparen = pp.Literal("(").suppress().setName("left parenthesis")
 rparen = pp.Literal(")").suppress().setName("right parenthesis")
+lbracket = pp.Literal("[").setName("left bracket")
+rbracket = pp.Literal("]").setName("right bracket")
+semicolon = pp.Literal(";").setName("Semicolon")
 
 # operators
 operators = ('+','-','*','/',\
@@ -54,26 +57,26 @@ arithExpr <<= (multiplyExpr + pp.Optional((plus ^ minus) + multiplyExpr))
 list_ = pp.Literal("(") + expression + pp.ZeroOrMore(pp.Literal(",").suppress() + expression) + ")"
 
 
-cmpOp = (eq ^ ne ^ ge ^ le ^ gt ^ lt)
+cmpOp = (eq ^ ne ^ ge ^ le ^ gt ^ lt).setName("Comparison Operator")
 cmpExpr = arithExpr + pp.Optional(cmpOp + arithExpr)
 
-setExpr = pp.Group(list_ + contains_ + identifier) | pp.Group(identifier + in_ + list_)
-boolOperand = pp.Group(lparen + setExpr + rparen) | cmpExpr | setExpr
-notExpr = pp.Group(not_ + boolOperand) | boolOperand
+setExpr = pp.Group(list_ + contains_ + identifier) ^ pp.Group(identifier + in_ + list_)
+boolOperand = pp.Group(lparen + setExpr + rparen) ^ cmpExpr ^ setExpr
+notExpr = pp.Group(not_ + boolOperand) ^ boolOperand
 andExpr = notExpr + pp.Optional(and_ + notExpr)
 boolExpr = andExpr + pp.Optional(or_ + andExpr).setName("Boolean Expression")
 
-expression <<= (number | funcCall | identifier | boolExpr | list_)
+expression <<= (number ^ string ^ funcCall ^ identifier ^ boolExpr ^ list_)
 
 # selection expressions
 
 topoSelector = funcCall
-attrSelector = pp.Literal("[") + boolExpr + pp.Literal("]")
-groupSelector = pp.Literal("[") + pp.Keyword("::") + funcCall + pp.Literal("]")
+attrSelector = lbracket + boolExpr + rbracket
+groupSelector = lbracket + pp.Keyword("::") + funcCall + rbracket
 selectorSeq = pp.Optional(topoSelector) + pp.ZeroOrMore(attrSelector ^ groupSelector)
 
 # variable and function
-assignment = identifier + pp.Literal("=") + expression
+assignment = identifier + pp.Literal("=") + expression + semicolon.suppress()
 
 selectionExpression = pp.Group(pp.Literal("<") + pp.Optional(selectorSeq + pp.ZeroOrMore(pp.Keyword("/") + selectorSeq)) + pp.Literal(">"))
 
@@ -81,18 +84,18 @@ selectionExpression = pp.Group(pp.Literal("<") + pp.Optional(selectorSeq + pp.Ze
 # EXECUTION MODEL
 #
 
-actions = pp.OneOrMore(funcCall + pp.Literal(";"))
+actions = pp.OneOrMore(funcCall + semicolon)
 rule = pp.Literal("{") + selectionExpression + pp.Keyword("−>") + actions + pp.Literal("}")
 exit_ = pp.Keyword("exit;")
-command = rule ^ assignment ^ exit_
+command = comment ^ rule ^ assignment ^ exit_
 program = pp.ZeroOrMore(command)
 
-##print(program.parse_file("selex_file.txt", parseAll=True))
 
 
-def enableDebug(enabled):
+
+def enableDebug(enabled, testEnabled):
     if (enabled):
-        cmpOp.setName("Comparison Operator")
+        cmpOp
         number.setDebug()
         identifier.setDebug()
         funcCall.setDebug().setName("Function Call")
@@ -106,7 +109,6 @@ def enableDebug(enabled):
         boolOperand.setName("Bool Operand").setDebug()
         expression.setName("Expression").setDebug()
         setExpr.setName("Set Expression").setDebug()
-        
         assignment.setName("Assignment").setDebug()
         lparen.setDebug()
         rparen.setDebug()
@@ -114,48 +116,31 @@ def enableDebug(enabled):
         attrSelector.setDebug()
         groupSelector.setDebug()
         selectorSeq.setDebug()
-enableDebug(False)
-# Keywords
+    if (testEnabled):
+        # assignment
+        print(assignment.parseString("facW = 17.6;"))
+        #C4: add a door touching the ground;
+        print(command.parseString("{ <descendant() [ label == 'facade' ] / [ label == 'main' ] / \
+        cell() [ colLabel == 'mid_col' ][ rowLabel == 'gnd_floor' ] > \
+        −> addShape('door', toGlobalX(0.5), toGlobalY(0.45), 1.76, 2.64, \
+        constrain(dist2region( dist2bottom(0.0, 0.0) ))); }"))
 
-###
-# literals
+        # function call with list
+        print(funcCall.parseString("rows( lineElem((3.5, 3.0, 4.0), (1, 1), label('gnd_floor')))"))
 
-# test area
-#print(comment.parseString("# this is a comment"))
-#print(identifier.parseString("'a123_john'"))
-#print(integer.parseString("-99"))
-#print(string.parseString("'heyo this is a string, I think. 123 123'"))
-#print(plus.parseString('+'))
-#print(cmpOp.parseString(">"))
-#print(assignment.parseString("a=5"))
-#print(comment.parseString("#C1: setup the facade size"))
-#funcCall.parseString("descendant()").pprint()
-#print(identifier.parseString("123"))
-#print(funcCall.parseString("descendant(123)"))
-#print(number.parseString("17.6"))
-#print(number.parseString("15"))
-#print(assignment.parseString("facW = 17.6;"))
-#print(assignment.parseString("facH = 12.8;"))
-
-#C4: add a door touching the ground;
-print(command.parseString("{ <descendant() [ label == 'facade' ] / [ label == 'main' ] / \
-cell() [ colLabel == 'mid_col' ][ rowLabel == 'gnd_floor' ] > \
-−> addShape('door', toGlobalX(0.5), toGlobalY(0.45), 1.76, 2.64, \
-constrain(dist2region( dist2bottom(0.0, 0.0) ))); }"))
-# function call with list
-print(funcCall.parseString("rows( lineElem((3.5, 3.0, 4.0), (1, 1), label('gnd_floor')))"))
-
-argList.setName("argument list").setDebug()
-print(command.parseString("{ <descendant() [ label == 'facade' ] > −>   \
-createGrid('main',                                                   \
-rows( lineElem((3.5, 3.0, 4.0), (1, 1), label('gnd_floor')),         \
-lineElem((3.0, 3.0, 3.5), (1, 10), label('top_floor'))               \
-),                                                                   \
-cols( lineElem((2.8, 2.5, 3.0), (1, 10), label('left_col')),         \
-lineElem((3.6, 3.0, 4.0), (1, 1), label('mid_col')),                 \
-lineElem((2.8, 2.5, 3.0), (2, 2), label('right_col'))                \
+        # nested functions & lists
+        print(command.parseString("{ <descendant() [ label == 'facade' ] > −>   \
+        createGrid('main',                                                   \
+        rows( lineElem((3.5, 3.0, 4.0), (1, 1), label('gnd_floor')),         \
+        lineElem((3.0, 3.0, 3.5), (1, 10), label('top_floor'))               \
+        ),                                                                   \
+        cols( lineElem((2.8, 2.5, 3.0), (1, 10), label('left_col')),         \
+        lineElem((3.6, 3.0, 4.0), (1, 1), label('mid_col')),                 \
+        lineElem((2.8, 2.5, 3.0), (2, 2), label('right_col'))                \
 )); }"))
+enableDebug(True,False)
 
-#print(command.parseString("{ <> −> addShape('facade', 0, 0, facW, facH); }"))
-#print(pp.alphanums)
-#print(command.parseString("{ <descendant() [ label == 'facade' ] > −> coverShape(); }"))
+print(command.parseString("{ <descendant() [ label == 'facade' ] / [ label == 'main' ] / \
+ cell() [ colLabel in ('left_col', 'right_col') ][ rowIdx == 1 ] >                          \
+ −> addShape('win1', toGlobalX(0.5), toGlobalY(0.5), 1.44, 2.00); }", parseAll=True))
+#print(program.parse_file("selex_file.txt", parseAll=True))
