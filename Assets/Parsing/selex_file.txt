@@ -18,7 +18,7 @@ facH = 12.8;
 #C4: add a door touching the ground;
  { <descendant() [ label == "facade" ] / [ label == "main" ] /
 cell() [ colLabel == "mid_col" ][ rowLabel == "gnd_floor" ] >
-> addShape("door", toGlobalX(0.5), toGlobalY(0.45), 1.76, 2.64,
+−> addShape("door", toGlobalX(0.5), toGlobalY(0.45), 1.76, 2.64,
 constrain(dist2region( dist2bottom(0.0, 0.0) ))); }
 
 #C5: add the glass windows above the door
