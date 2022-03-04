@@ -17,7 +17,7 @@ colLast | groupRows | groupCols | groupRegions | if_ | randomSelect | eval_)
 
 comment = pp.Regex(r"#.*").setName("Comment")#.suppress() # don't include comments
 float_ = pp.pyparsing_common.real
-number = pp.Combine(pp.Opt(pp.oneOf("−-")) + (pp.pyparsing_common.number ^ float_)).setName("Number") # - is different to − ...
+number = pp.Combine(pp.Opt(pp.oneOf("− -")) + (pp.pyparsing_common.number ^ float_)).setName("Number") # - is different to − ...
 identifier = pp.Word(pp.alphas+"_", pp.alphanums+"_").setName("Identifier")
 
 plusorminus = pp.Literal('+') ^ pp.Literal('-')
@@ -60,7 +60,7 @@ list_ = pp.Literal("(") + expression + pp.ZeroOrMore(pp.Literal(",").suppress() 
 cmpOp = (eq ^ ne ^ ge ^ le ^ gt ^ lt).setName("Comparison Operator")
 cmpExpr = arithExpr + pp.Optional(cmpOp + arithExpr)
 
-setExpr = pp.Group(list_ + contains_ + identifier) ^ pp.Group(identifier + in_ + list_)
+setExpr = pp.Group(list_ + contains_ + identifier) ^ pp.Group(identifier + in_ + (list_ | funcCall))
 boolOperand = pp.Group(lparen + setExpr + rparen) ^ cmpExpr ^ setExpr
 notExpr = pp.Group(not_ + boolOperand) ^ boolOperand
 andExpr = notExpr + pp.Optional(and_ + notExpr)
@@ -72,7 +72,7 @@ expression <<= (number ^ string ^ funcCall ^ identifier ^ boolExpr ^ list_)
 
 topoSelector = funcCall
 attrSelector = lbracket + boolExpr + rbracket
-groupSelector = lbracket + pp.Keyword("::") + funcCall + rbracket
+groupSelector = lbracket + pp.Literal("::") + funcCall + rbracket
 selectorSeq = pp.Optional(topoSelector) + pp.ZeroOrMore(attrSelector ^ groupSelector)
 
 # variable and function
@@ -111,8 +111,8 @@ def enableDebug(enabled, testEnabled):
         setExpr.setName("Set Expression").setDebug()
         assignment.setName("Assignment").setDebug()
         selectionExpression.setName("Selection Expression").setDebug()
-        lparen.setDebug()
-        rparen.setDebug()
+        #lparen.setDebug()
+        #rparen.setDebug()
         topoSelector.setName("Topology Selector").setDebug()
         attrSelector.setName("Attribute Selector").setDebug()
         groupSelector.setName("Group Selector").setDebug()

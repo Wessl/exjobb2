@@ -43,8 +43,7 @@ constrain(dist2region( dist2bottom(0.0, 0.0) ))); }
 
 #C9: add windows on the second and third floor.
  { <descendant() [ label == "facade" ] / [ label == "main" ] /
- cell() [ colLabel in ("left_col", "right_col") ][ rowIdx in
-rowRange(2,−2) ] >
+ cell() [ colLabel in ("left_col", "right_col") ][ rowIdx in rowRange(2,−2) ] >
  −> addShape("win2", toGlobalX(0.5), toGlobalY(0.5), 1.44, 1.6); }
 
 #C10: add windows in the left side of the top floor.
