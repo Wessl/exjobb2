@@ -1,8 +1,16 @@
 import pyparsing as pp
+from itertools import groupby
 
 
 pp.enable_all_warnings()
 pp.ParserElement.enable_packrat()
+
+#
+# Parse Actions (Clean up parse results by hooking into parse logic return values)
+# 
+def commandParseAction(string, location, tokens):
+    tokens.append('\n')   
+    return tokens.asList()  # Not returning it as 'asList()' gives you literally parseResults(...) instead of pure list
 
 keywords = ("child", "descedant", "parent", "root", "self", "neighbor",\
 "label", "type", "rowIdx", "colIdx", "rowLabel", "colLabel",\
@@ -15,7 +23,7 @@ keywords2 = (child | descendant | parent | root | self_ | neightbour | label | \
 type_ | rowIdx | colIdx | rowLabel | colLabel | last | rowLast |   \
 colLast | groupRows | groupCols | groupRegions | if_ | randomSelect | eval_)
 
-comment = pp.Regex(r"#.*").setName("Comment")#.suppress() # don't include comments
+comment = pp.Regex(r"#.*").setName("Comment").suppress() # don't include comments
 float_ = pp.pyparsing_common.real
 number = pp.Combine(pp.Opt(pp.oneOf("− -")) + (pp.pyparsing_common.number ^ float_)).setName("Number") # - is different to − ...
 identifier = pp.Word(pp.alphas+"_", pp.alphanums+"_").setName("Identifier")
@@ -27,8 +35,8 @@ boolean = pp.Literal("0") ^ pp.Literal('1')
 string = pp.QuotedString(quoteChar="\"").setName("String")
 lparen = pp.Literal("(").suppress().setName("left parenthesis")
 rparen = pp.Literal(")").suppress().setName("right parenthesis")
-lbracket = pp.Literal("[").setName("left bracket")
-rbracket = pp.Literal("]").setName("right bracket")
+lbracket = pp.Literal("[").suppress().setName("left bracket")
+rbracket = pp.Literal("]").suppress().setName("right bracket")
 semicolon = pp.Literal(";").setName("Semicolon")
 
 # operators
@@ -47,8 +55,8 @@ expression = pp.Forward()
 
 # function and argument list
 argList = pp.Opt(pp.delimitedList(expression)).setName("ArgList")
-
 funcCall = (identifier + pp.Group(lparen + argList + rparen))
+
 
 arithExpr = pp.Forward().setName("Arith Expression")
 arithOperand = pp.Group(lparen + arithExpr + rparen) ^ funcCall ^ identifier ^ number ^ string
@@ -88,11 +96,14 @@ actions = pp.OneOrMore(funcCall + semicolon)
 rule = pp.Literal("{") + selectionExpression + pp.Keyword("−>") + actions + pp.Literal("}")
 exit_ = pp.Keyword("exit;")
 command = comment ^ rule ^ assignment ^ exit_
+command.setParseAction(commandParseAction)
 program = pp.ZeroOrMore(command)
 
 
 
-
+#
+#   Test & Debug
+#
 def enableDebug(enabled, testEnabled):
     if (enabled):
         cmpOp
@@ -151,7 +162,10 @@ def enableDebug(enabled, testEnabled):
         cell() [ colLabel == "mid_col" ][ rowLabel == "gnd_floor" ] > −>
         addShape("door", toGlobalX(0.5), toGlobalY(0.45), 1.76, 2.64,
         constrain(dist2region( dist2bottom(0.0, 0.0) ))); } """))
-enableDebug(True,False)
+enableDebug(False,False)
+pp.Group.setParseAction(commandParseAction)
 
-
-print(program.parse_file("selex_file.txt", parseAll=True))
+res = program.parse_file("selex_file.txt", parseAll=True)
+res1 = [list(group) for k, group in groupby(res, lambda x: x == '\n') if not k]
+for r in res1:
+    print(r)
