@@ -1,4 +1,8 @@
+from unittest import result
 import pyparsing as pp
+import inspect
+import os
+#import UnityEngine
 from itertools import groupby
 
 
@@ -163,9 +167,16 @@ def enableDebug(enabled, testEnabled):
         addShape("door", toGlobalX(0.5), toGlobalY(0.45), 1.76, 2.64,
         constrain(dist2region( dist2bottom(0.0, 0.0) ))); } """))
 enableDebug(False,False)
-pp.Group.setParseAction(commandParseAction)
 
-res = program.parse_file("selex_file.txt", parseAll=True)
+
+#src_file_path = inspect.getfile(lambda: None)
+# This really needs to be relative to the Unity project somehow
+filename = r"C:\Users\love\Documents\Github Desktop\exjobb2\Assets\Parsing\selex_file.txt"
+res = program.parse_file(filename, parseAll=True)
+
 res1 = [list(group) for k, group in groupby(res, lambda x: x == '\n') if not k]
 for r in res1:
     print(r)
+# Write to file
+#with open("ParseResult.txt", "w") as text_file:
+#    text_file.write(resultString)
