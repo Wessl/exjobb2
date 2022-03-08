@@ -171,12 +171,16 @@ enableDebug(False,False)
 
 #src_file_path = inspect.getfile(lambda: None)
 # This really needs to be relative to the Unity project somehow
-filename = r"C:\Users\love\Documents\Github Desktop\exjobb2\Assets\Parsing\selex_file.txt"
-res = program.parse_file(filename, parseAll=True)
+fileSource = r"C:\Users\love\Documents\GitHub\exjobb2\Assets\Parsing\selex_file.txt"
+fileResult = r"C:\Users\love\Documents\Github\exjobb2\Assets\Parsing\ParseResult.txt"
+res = program.parse_file(fileSource, parseAll=True)
 
 res1 = [list(group) for k, group in groupby(res, lambda x: x == '\n') if not k]
-for r in res1:
-    print(r)
+
 # Write to file
-#with open("ParseResult.txt", "w") as text_file:
+#with open("", "w") as text_file:
 #    text_file.write(resultString)
+with open(fileResult, 'w', encoding="utf-8") as f:
+    for r in res1:
+        print(r, file=f)
+print("Completed printing parse results to file ParseResult.txt")

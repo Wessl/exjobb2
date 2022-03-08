@@ -18,6 +18,10 @@ public class Parse : MonoBehaviour
 
     public void UseParsedFile()
     {
-        Debug.Log(Application.dataPath + "/" + parseResults);
+        string parsedFilePath = Application.dataPath + "/" + parseResults;
+        Debug.Log(parsedFilePath);
+        StreamReader reader = new StreamReader(parsedFilePath);
+        Debug.Log(reader.ReadToEnd());
+        reader.Close();
     }
 }
