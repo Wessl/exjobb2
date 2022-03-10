@@ -51,7 +51,7 @@ public class Parse : MonoBehaviour
                 
                 // Remove quotes
                 elem = RemoveChar("'", elem);
-                Debug.Log(elem);
+                //Debug.Log(elem);
                 if (elem[0] == '[')
                 {
                     // This is the beginning of a function call - handle it. 
@@ -71,7 +71,7 @@ public class Parse : MonoBehaviour
                 // Check if element is a function
                 if (functionList.Contains(elem))
                 {
-                    Debug.Log(elem + " is a function");
+                    //Debug.Log(elem + " is a function");
                     var nextElem = RemoveChar("'", splitLine[i + 1]);
                     if (nextElem[0] == '[')
                     {
@@ -81,7 +81,7 @@ public class Parse : MonoBehaviour
                         }
                         else
                         {
-                            HandleFuncCall(elem, i, splitLine);
+                            HandleFuncCall(elem, i, splitLine, line);
                         }
                     }
                 }
@@ -95,7 +95,7 @@ public class Parse : MonoBehaviour
                     HandleAssignment(splitLine, i);
                     foreach (var kvpair in assignedVariables)
                     {
-                        Debug.Log(kvpair.ToString());
+                        //Debug.Log(kvpair.ToString());
                     }
                 }
             }
@@ -103,22 +103,142 @@ public class Parse : MonoBehaviour
         reader.Close();
     }
 
-    private void HandleFuncCall(string funcName, int funcIndex, string[] splitLine)
+    private void HandleFuncCall(string funcName, int funcIndex, string[] splitLine, string unSplitLine)
     {
-        currFuncDepth++;
-
+        currFuncDepth=0;
+        // Start right after the function call
+        List<dynamic> topLevelArguments = new List<dynamic>();
+        // Combine tokens from start index
+        string asdf123 = "";
         for (int i = funcIndex; i < splitLine.Length; i++)
         {
-            var currLine = RemoveChar("'",(splitLine[i]));
-            for (int y = 0; y < currLine.Length; y++)
+            asdf123 += RemoveChar("'", splitLine[i]) + ",";
+        }
+    
+        Debug.Log("here is asdf: "+asdf123);
+        string functionContains = "";
+        for (int i = funcIndex; i < splitLine.Length; i++)
+        {
+            for (int y = 0; y < splitLine[i].Length; y++)
             {
-                Debug.Log(currLine[y]);
-                if (currLine[y] == '[')
+                var currElem = splitLine[i][y];
+                if (currElem == '[')
                 {
-                    Debug.Log("open the ports!");
+                    currFuncDepth++;
+                }
+                if (currFuncDepth >= 1)
+                {
+                    functionContains += currElem;
+                }
+                if (currElem == ']')
+                {
+                    currFuncDepth--;
                 }
             }
         }
+
+        if (currFuncDepth == 0)
+        {
+            Debug.Log("finished handling. currFundCepth is at " + currFuncDepth + " and the function contains" + functionContains);
+            // Now turn it into top level argument array
+            GetTopLevelList(functionContains);
+            //EvaluateFuncArgs(functionContains);
+        }
+    }
+
+    private void GetTopLevelList(string functionContains)
+    {
+        List<string> topLevelArguments = new List<string>();
+        functionContains = functionContains.Substring(1, functionContains.Length - 2); // remove first and last char
+        var funcSplitted = functionContains.Split(' ');
+        for (int i = 0; i < funcSplitted.Length; i++)
+        {
+            var currFuncArg = RemoveChar("'", funcSplitted[i]);
+            if (currFuncArg.Contains('['))
+            {
+                // Belongs to previous funcSplitted
+                var topLevelArg = RemoveChar("'", funcSplitted[i - 1]) + currFuncArg;
+                if (currFuncArg.Contains(']'))
+                {
+                    // It's also ending here
+                    topLevelArguments.Add(topLevelArg);
+                }
+                else
+                {
+                    // Find where it ends
+                    var topLevel = DetermineFunctionEncompassment(funcSplitted.Skip(i).ToArray());
+                    topLevelArguments.Add(topLevel);
+                    
+                }
+            }
+            else if ( ! functionList.Contains(currFuncArg))
+            {
+                // We can assume it's just a number or something
+                topLevelArguments.Add(currFuncArg);
+            }
+            else
+            {
+                // This should be a function call that we are going to use later...?
+                Debug.Log("this should be a function: " + currFuncArg);
+            }
+        }
+        
+        Debug.Log("Here cometh topLevelArguments");
+        foreach (var dynArg in topLevelArguments)
+        {
+            Debug.Log(dynArg);
+        }
+    }
+
+    private string DetermineFunctionEncompassment(string[] splitLine)
+    {
+        currFuncDepth = 0;
+        string funcContains = "";
+        for (int i = 0; i < splitLine.Length; i++)
+        {
+            for (int y = 0; y < splitLine[i].Length; y++)
+            {
+                var currElem = splitLine[i][y];
+                if (currElem == '[')
+                {
+                    currFuncDepth++;
+                }
+                if (currFuncDepth >= 1)
+                {
+                    funcContains += currElem;
+                }
+                if (currElem == ']')
+                {
+                    currFuncDepth--;
+                }
+            }
+        }
+
+        return funcContains;
+    }
+
+    private void EvaluateFuncArgs(string functionContains)
+    {
+        // Is this a function? If so, recursively call me again.
+        functionContains = functionContains.Substring(1, functionContains.Length - 2); // remove first and last char
+        var funcSplitted = functionContains.Split(' ');
+        
+        for (int i = 0; i < funcSplitted.Length; i++)
+        {
+            var element = RemoveChar("'", funcSplitted[i]);
+            if (functionList.Contains(element))
+            {
+                Debug.Log("internal function spotted");
+                // Start from next element, if we have toGlobalX next element is e.g. [0.5]
+                var nextElem = funcSplitted[i + 1];
+                // From that element, run it through an encompassment function to see what it contains. Could be just [ 0.5 ].
+                string contains = DetermineFunctionEncompassment(funcSplitted.Skip(i + 1).ToArray());
+                Debug.Log("contains: "+ contains);
+                // Or it could be dist2bottom[ dist2center [...]], in which case the recursive call should recognize it as a function, and run through the arguments again, etc...
+                EvaluateFuncArgs(contains);
+            }
+        }
+        // If not, return the value. 
         
     }
 
