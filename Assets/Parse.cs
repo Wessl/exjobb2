@@ -172,7 +172,10 @@ public class Parse : MonoBehaviour
                 {
                     // Find where it ends
                     var topLevel = DetermineFunctionEncompassment(funcSplitted.Skip(i).ToArray());
-                    topLevelArguments.Add(topLevel.Item1);
+                    // Debug.Log("here is the new top level argument: " + topLevelArguments[topLevelArguments.Count - 1] + topLevel.Item1);
+                    topLevelArguments.Add(topLevelArguments[topLevelArguments.Count - 1] + topLevel.Item1);
+                    // We've added the function along with it's arguments, so now, let's remove just the function name.
+                    topLevelArguments.RemoveAt(topLevelArguments.Count - 2);    
                     // Also use where the function encompassment ends so we continue from that point
                     i += topLevel.Item2;
                 }
@@ -185,7 +188,7 @@ public class Parse : MonoBehaviour
             else
             {
                 // This should be a function call that we are going to use later...?
-                //Debug.Log("this should be a function: " + currFuncArg);
+                topLevelArguments.Add(currFuncArg);
             }
         }
         
@@ -197,11 +200,13 @@ public class Parse : MonoBehaviour
             dynArg = RemoveChar(",", dynArg);
             Debug.Log(dynArg);
             // If at this point there are functions within the top level arguments, pass those to handleFuncCall..?
-            if (functionList.Contains(dynArg))
+            string potentialFuncName = getFunctionName(dynArg);
+            if (functionList.Contains(potentialFuncName))
             {
-                Debug.Log("Ah shit, " + dynArg +" is a function. Let's go deeper?");
+                // Debug.Log("Ah shit, " + dynArg +" is a function. Let's go deeper?");
                 // This is where the real shit starts. we have to recursively call HandleFuncCall
-                HandleFuncCall(dynArg, 0, topLevelArguments.Skip(i).ToArray());
+
+                // HandleFuncCall(dynArg, 0, topLevelArguments.Skip(i-1).ToArray());
             }
         }
     }
@@ -238,9 +243,22 @@ public class Parse : MonoBehaviour
                 charCount++;
             }
         }
-
-        Debug.Log("results of function encompassment:" + funcContains);
         return Tuple.Create(funcContains, charCount);
+    }
+
+    private string getFunctionName(string fullFunction)
+    {
+        string funcName = "";
+        for (int i = 0; i < fullFunction.Length; i++)
+        {
+            if (fullFunction[i] == '[')
+            {
+                // Function opening starts here, time to return
+                break;
+            }
+            funcName += fullFunction[i];
+        }
+        return funcName;
     }
 
     private void EvaluateFuncArgs(string functionContains)
