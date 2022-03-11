@@ -114,7 +114,7 @@ public class Parse : MonoBehaviour
             asdf123 += RemoveChar("'", splitLine[i]) + ",";
         }
     
-        Debug.Log("here is asdf: "+asdf123);
+        //Debug.Log("here is asdf: "+asdf123);
         string functionContains = "";
         for (int i = funcIndex; i < splitLine.Length; i++)
         {
@@ -139,7 +139,7 @@ public class Parse : MonoBehaviour
 
         if (currFuncDepth == 0)
         {
-            Debug.Log("finished handling. currFundCepth is at " + currFuncDepth + " and the function contains" + functionContains);
+            //Debug.Log("finished handling. currFundCepth is at " + currFuncDepth + " and the function contains" + functionContains);
             // Now turn it into top level argument array
             GetTopLevelList(functionContains);
             //EvaluateFuncArgs(functionContains);
@@ -150,7 +150,7 @@ public class Parse : MonoBehaviour
     {
         List<string> topLevelArguments = new List<string>();
         functionContains = functionContains.Substring(1, functionContains.Length - 2); // remove first and last char
-        Debug.Log("This is what i expect functionContains to look like:" + functionContains);
+        // Debug.Log("This is what i expect functionContains to look like:" + functionContains);
         var funcSplitted = functionContains.Split(',');
         for (int i = 0; i < funcSplitted.Length; i++)
         {
@@ -185,7 +185,7 @@ public class Parse : MonoBehaviour
             else
             {
                 // This should be a function call that we are going to use later...?
-                Debug.Log("this should be a function: " + currFuncArg);
+                //Debug.Log("this should be a function: " + currFuncArg);
             }
         }
         
@@ -214,9 +214,10 @@ public class Parse : MonoBehaviour
         int charCount = 0;
         for (int i = 0; i < splitLine.Length; i++)
         {
-            for (int y = 0; y < splitLine[i].Length; y++)
+            string currLineElem = RemoveChar(" ", splitLine[i]) +",";
+            for (int y = 0; y < currLineElem.Length; y++)
             {
-                var currElem = splitLine[i][y];
+                var currElem = currLineElem[y];
                 if (currElem == '\'')
                 {
                     continue;
