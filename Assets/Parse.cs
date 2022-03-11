@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 
 public class Parse : MonoBehaviour
 {
@@ -51,7 +52,6 @@ public class Parse : MonoBehaviour
                 
                 // Remove quotes
                 elem = RemoveChar("'", elem);
-                //Debug.Log(elem);
                 if (elem[0] == '[')
                 {
                     // This is the beginning of a function call - handle it. 
@@ -61,11 +61,10 @@ public class Parse : MonoBehaviour
                 // Check if element is a keyword
                 if (keywordList.Contains(elem))
                 {
-                    //Debug.Log(elem + "is a keyword");
+                   
                 }
                 else
                 {
-                    //Debug.Log(elem + " isn't a keyword");
                 }
                 
                 // Check if element is a function
@@ -81,7 +80,7 @@ public class Parse : MonoBehaviour
                         }
                         else
                         {
-                            HandleFuncCall(elem, i, splitLine, line);
+                            HandleFuncCall(elem, i, splitLine);
                         }
                     }
                 }
@@ -103,7 +102,7 @@ public class Parse : MonoBehaviour
         reader.Close();
     }
 
-    private void HandleFuncCall(string funcName, int funcIndex, string[] splitLine, string unSplitLine)
+    private void HandleFuncCall(string funcName, int funcIndex, string[] splitLine)
     {
         currFuncDepth=0;
         // Start right after the function call
@@ -119,6 +118,7 @@ public class Parse : MonoBehaviour
         string functionContains = "";
         for (int i = funcIndex; i < splitLine.Length; i++)
         {
+            splitLine[i] += ",";
             for (int y = 0; y < splitLine[i].Length; y++)
             {
                 var currElem = splitLine[i][y];
@@ -128,7 +128,7 @@ public class Parse : MonoBehaviour
                 }
                 if (currFuncDepth >= 1)
                 {
-                    functionContains += currElem;
+                    functionContains += (currElem);
                 }
                 if (currElem == ']')
                 {
@@ -150,10 +150,12 @@ public class Parse : MonoBehaviour
     {
         List<string> topLevelArguments = new List<string>();
         functionContains = functionContains.Substring(1, functionContains.Length - 2); // remove first and last char
-        var funcSplitted = functionContains.Split(' ');
+        Debug.Log("This is what i expect functionContains to look like:" + functionContains);
+        var funcSplitted = functionContains.Split(',');
         for (int i = 0; i < funcSplitted.Length; i++)
         {
             var currFuncArg = RemoveChar("'", funcSplitted[i]);
+            currFuncArg = RemoveChar(" ", currFuncArg);
             if (currFuncArg.Contains('['))
             {
                 // Belongs to previous funcSplitted
@@ -161,14 +163,18 @@ public class Parse : MonoBehaviour
                 if (currFuncArg.Contains(']'))
                 {
                     // It's also ending here
+                    // Remove previous token from list...?
+                    topLevelArguments.RemoveAt(topLevelArguments.Count - 1);
+                    // And then add current element
                     topLevelArguments.Add(topLevelArg);
                 }
                 else
                 {
                     // Find where it ends
                     var topLevel = DetermineFunctionEncompassment(funcSplitted.Skip(i).ToArray());
-                    topLevelArguments.Add(topLevel);
-                    
+                    topLevelArguments.Add(topLevel.Item1);
+                    // Also use where the function encompassment ends so we continue from that point
+                    i += topLevel.Item2;
                 }
             }
             else if ( ! functionList.Contains(currFuncArg))
@@ -184,21 +190,37 @@ public class Parse : MonoBehaviour
         }
         
         Debug.Log("Here cometh topLevelArguments");
-        foreach (var dynArg in topLevelArguments)
+        for (int i = 0; i < topLevelArguments.Count; i++)
         {
+            string dynArg = topLevelArguments[i];
+            
+            dynArg = RemoveChar(",", dynArg);
             Debug.Log(dynArg);
+            // If at this point there are functions within the top level arguments, pass those to handleFuncCall..?
+            if (functionList.Contains(dynArg))
+            {
+                Debug.Log("Ah shit, " + dynArg +" is a function. Let's go deeper?");
+                // This is where the real shit starts. we have to recursively call HandleFuncCall
+                HandleFuncCall(dynArg, 0, topLevelArguments.Skip(i).ToArray());
+            }
         }
     }
 
-    private string DetermineFunctionEncompassment(string[] splitLine)
+    // Find all arguments encompassed by function call as string, as well as char index of ending point
+    private Tuple<string,int> DetermineFunctionEncompassment(string[] splitLine)
     {
         currFuncDepth = 0;
         string funcContains = "";
+        int charCount = 0;
         for (int i = 0; i < splitLine.Length; i++)
         {
             for (int y = 0; y < splitLine[i].Length; y++)
             {
                 var currElem = splitLine[i][y];
+                if (currElem == '\'')
+                {
+                    continue;
+                }
                 if (currElem == '[')
                 {
                     currFuncDepth++;
@@ -211,10 +233,13 @@ public class Parse : MonoBehaviour
                 {
                     currFuncDepth--;
                 }
+                // if we reach this point, we've probably added a character somewhere. 
+                charCount++;
             }
         }
 
-        return funcContains;
+        Debug.Log("results of function encompassment:" + funcContains);
+        return Tuple.Create(funcContains, charCount);
     }
 
     private void EvaluateFuncArgs(string functionContains)
@@ -228,14 +253,13 @@ public class Parse : MonoBehaviour
             var element = RemoveChar("'", funcSplitted[i]);
             if (functionList.Contains(element))
             {
-                Debug.Log("internal function spotted");
+                
                 // Start from next element, if we have toGlobalX next element is e.g. [0.5]
                 var nextElem = funcSplitted[i + 1];
                 // From that element, run it through an encompassment function to see what it contains. Could be just [ 0.5 ].
-                string contains = DetermineFunctionEncompassment(funcSplitted.Skip(i + 1).ToArray());
-                Debug.Log("contains: "+ contains);
+                Tuple<String, int> containmentInfo = DetermineFunctionEncompassment(funcSplitted.Skip(i + 1).ToArray());
                 // Or it could be dist2bottom[ dist2center [...]], in which case the recursive call should recognize it as a function, and run through the arguments again, etc...
-                EvaluateFuncArgs(contains);
+                EvaluateFuncArgs(containmentInfo.Item1);
             }
         }
         // If not, return the value. 
