@@ -102,11 +102,14 @@ public class Parse : MonoBehaviour
         reader.Close();
     }
 
-    private void HandleFuncCall(string funcName, int funcIndex, string[] splitLine)
+    /*
+     * If HandleFuncCall gets a function and a list of arguments that is not another function,
+     * it should EXECUTE this function. Else, it should try to pass this along to GetTopLevelList. 
+     */
+    private List<string> HandleFuncCall(string funcName, int funcIndex, string[] splitLine)
     {
         currFuncDepth=0;
         // Start right after the function call
-        List<dynamic> topLevelArguments = new List<dynamic>();
         // Combine tokens from start index
         string asdf123 = "";
         for (int i = funcIndex; i < splitLine.Length; i++)
@@ -137,20 +140,43 @@ public class Parse : MonoBehaviour
             }
         }
 
+        List<string> topLevelList = new List<string>();
         if (currFuncDepth == 0)
         {
             //Debug.Log("finished handling. currFundCepth is at " + currFuncDepth + " and the function contains" + functionContains);
             // Now turn it into top level argument array
-            GetTopLevelList(functionContains);
+            topLevelList = GetTopLevelList(functionContains);
             //EvaluateFuncArgs(functionContains);
         }
+        
+        bool hasFunction = false;
+        foreach (var arg in topLevelList)
+        {
+            // If we never encounter a function call in the top level list, then we can execute the functionName with the arguments! 
+            Debug.Log("arg before funcName extraction: " + arg);
+            string argFuncName = GetFunctionName(arg);
+            Debug.Log("arg after funcName extraction: " + argFuncName);
+            if (functionList.Contains(argFuncName))
+            {
+                Debug.Log("argfunname:" + argFuncName);
+                hasFunction = true;
+            }
+        }
+
+        if (!hasFunction)
+        {
+            ExecuteFunctionFromName(funcName, topLevelList);
+        }
+        
+        return topLevelList;
+
+
     }
 
-    private void GetTopLevelList(string functionContains)
+    private List<string> GetTopLevelList(string functionContains)
     {
         List<string> topLevelArguments = new List<string>();
         functionContains = functionContains.Substring(1, functionContains.Length - 2); // remove first and last char
-        // Debug.Log("This is what i expect functionContains to look like:" + functionContains);
         var funcSplitted = functionContains.Split(',');
         for (int i = 0; i < funcSplitted.Length; i++)
         {
@@ -192,23 +218,21 @@ public class Parse : MonoBehaviour
             }
         }
         
-        Debug.Log("Here cometh topLevelArguments");
         for (int i = 0; i < topLevelArguments.Count; i++)
         {
             string dynArg = topLevelArguments[i];
             
-            dynArg = RemoveChar(",", dynArg);
-            Debug.Log(dynArg);
             // If at this point there are functions within the top level arguments, pass those to handleFuncCall..?
-            string potentialFuncName = getFunctionName(dynArg);
+            string potentialFuncName = GetFunctionName(dynArg);
             if (functionList.Contains(potentialFuncName))
             {
-                // Debug.Log("Ah shit, " + dynArg +" is a function. Let's go deeper?");
                 // This is where the real shit starts. we have to recursively call HandleFuncCall
 
-                // HandleFuncCall(dynArg, 0, topLevelArguments.Skip(i-1).ToArray());
+                HandleFuncCall(dynArg, 0, topLevelArguments.Skip(i-1).ToArray());
             }
         }
+
+        return topLevelArguments;
     }
 
     // Find all arguments encompassed by function call as string, as well as char index of ending point
@@ -234,19 +258,21 @@ public class Parse : MonoBehaviour
                 if (currFuncDepth >= 1)
                 {
                     funcContains += currElem;
+                    charCount++;
                 }
                 if (currElem == ']')
                 {
                     currFuncDepth--;
+                    funcContains += ',';    // I am assuming we should always add a comma to the end?
+                    charCount++;
                 }
-                // if we reach this point, we've probably added a character somewhere. 
-                charCount++;
+                
             }
         }
         return Tuple.Create(funcContains, charCount);
     }
 
-    private string getFunctionName(string fullFunction)
+    private string GetFunctionName(string fullFunction)
     {
         string funcName = "";
         for (int i = 0; i < fullFunction.Length; i++)
@@ -261,28 +287,13 @@ public class Parse : MonoBehaviour
         return funcName;
     }
 
-    private void EvaluateFuncArgs(string functionContains)
+    private void ExecuteFunctionFromName(string name, List<string> arguments)
     {
-        // Is this a function? If so, recursively call me again.
-        functionContains = functionContains.Substring(1, functionContains.Length - 2); // remove first and last char
-        var funcSplitted = functionContains.Split(' ');
-        
-        for (int i = 0; i < funcSplitted.Length; i++)
+        Debug.Log("Just got " + name + " with some arguments. Cool");
+        foreach (var arg in arguments)
         {
-            var element = RemoveChar("'", funcSplitted[i]);
-            if (functionList.Contains(element))
-            {
-                
-                // Start from next element, if we have toGlobalX next element is e.g. [0.5]
-                var nextElem = funcSplitted[i + 1];
-                // From that element, run it through an encompassment function to see what it contains. Could be just [ 0.5 ].
-                Tuple<String, int> containmentInfo = DetermineFunctionEncompassment(funcSplitted.Skip(i + 1).ToArray());
-                // Or it could be dist2bottom[ dist2center [...]], in which case the recursive call should recognize it as a function, and run through the arguments again, etc...
-                EvaluateFuncArgs(containmentInfo.Item1);
-            }
+            Debug.Log(arg);
         }
-        // If not, return the value. 
-        
     }
 
     private string RemoveChar(string c, string elem)
@@ -316,6 +327,7 @@ public class Parse : MonoBehaviour
             "addShape", "add2ProjectedLeafShape", "attachShape", "connectShape", "coverShape",      // Shape functions
             "copyShape", "polygon", "addVolume", "lineElem", "group", "createGrid", "rows",         // 
             "cols", "setAttrib", "exchange", "transform", "rotate", "translate", "scale",           // 
+            "toGlobalY", "toGlobalX",                                                                 // 
             "include", "shareCorner", "finalRoof",                                                  // 
             "toParentX", "toParentY", "toShapeX", "toShapeY", "toLocalX", "toLocalY", "queryCorner",// Other utility functions
             "count", "last", "indexRange", "index", "numRows", "numCols", "rowLast", "colLast",     // 
@@ -323,7 +335,8 @@ public class Parse : MonoBehaviour
             "constrain", "snap2", "sym2region", "dist2layout", "dist2region", "dist2left",          // Constraint functions
             "dist2right", "dist2bottom", "dist2top", "validIntersect",                              // 
             "randint", "rand", "randSelect",                                                        // Math functions
-            "if", "eval"                                                                            // Flow control and stochastic variations
+            "if", "eval",                                                                           // Flow control and stochastic variations
+            "list"                                                                                  // Not defined as functions by SELEX, but added by me (list is easier to parse when it's a function)
         };
         return functions.ToList();
     }

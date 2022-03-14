@@ -15,6 +15,9 @@ pp.ParserElement.enable_packrat()
 def commandParseAction(string, location, tokens):
     tokens.append('\n')   
     return tokens.asList()  # Not returning it as 'asList()' gives you literally parseResults(...) instead of pure list
+def listParseAction(string, location, tokens):
+    tokens.insert(0, "list")
+    return tokens.asList()
 
 keywords = ("child", "descedant", "parent", "root", "self", "neighbor",\
 "label", "type", "rowIdx", "colIdx", "rowLabel", "colLabel",\
@@ -66,7 +69,8 @@ arithExpr = pp.Forward().setName("Arith Expression")
 arithOperand = pp.Group(lparen + arithExpr + rparen) ^ funcCall ^ identifier ^ number ^ string
 multiplyExpr = arithOperand + pp.Optional((mult ^ div) + arithOperand)
 arithExpr <<= (multiplyExpr + pp.Optional((plus ^ minus) + multiplyExpr))
-list_ = pp.Literal("(") + expression + pp.ZeroOrMore(pp.Literal(",").suppress() + expression) + ")"
+list_ = pp.Group(lparen + expression + pp.ZeroOrMore(pp.Literal(",").suppress() + expression) + rparen)
+#list_.setDebug().setName("List")
 
 
 cmpOp = (eq ^ ne ^ ge ^ le ^ gt ^ lt).setName("Comparison Operator")
@@ -100,9 +104,13 @@ actions = pp.OneOrMore(funcCall + semicolon)
 rule = pp.Literal("{") + selectionExpression + pp.Keyword("−>") + actions + pp.Literal("}")
 exit_ = pp.Keyword("exit;")
 command = comment ^ rule ^ assignment ^ exit_
-command.setParseAction(commandParseAction)
 program = pp.ZeroOrMore(command)
 
+#
+# Set special parse actions
+#
+command.setParseAction(commandParseAction)
+list_.setParseAction(listParseAction)
 
 
 #
