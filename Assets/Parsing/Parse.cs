@@ -175,16 +175,20 @@ public class Parse : MonoBehaviour
 
     private List<string> GetTopLevelList(string functionContains)
     {
+        Debug.Log("function containment: " + functionContains);
         List<string> topLevelArguments = new List<string>();
         functionContains = functionContains.Substring(1, functionContains.Length - 2); // remove first and last char
         var funcSplitted = functionContains.Split(',');
         for (int i = 0; i < funcSplitted.Length; i++)
         {
             var currFuncArg = RemoveChar("'", funcSplitted[i]);
+            Debug.Log("curr func arg: "+ currFuncArg);
             currFuncArg = RemoveChar(" ", currFuncArg);
+            Debug.Log("curr func arg after space removal: "+ currFuncArg);
             if (currFuncArg.Contains('['))
             {
                 // Belongs to previous funcSplitted
+                Debug.Log("funcsplitted at i-1:" + funcSplitted[i - 1]);
                 var topLevelArg = RemoveChar("'", funcSplitted[i - 1]) + currFuncArg;
                 if (currFuncArg.Contains(']'))
                 {
