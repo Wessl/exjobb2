@@ -1060,6 +1060,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropdown: {fileID: 5159766833823843134}
+  groupSDropdown: {fileID: 1626309846813211119}
   addTopoSButton: {fileID: 5450357715759987020}
   addGroupSButton: {fileID: 6708398957645006539}
   addAttrSButton: {fileID: 7856757191902668794}
@@ -2234,7 +2235,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4233439899939206951
 RectTransform:
   m_ObjectHideFlags: 0

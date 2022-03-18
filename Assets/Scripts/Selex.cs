@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Selex : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown dropdown;
+    [SerializeField] private TMP_Dropdown groupSDropdown;
 
     [SerializeField] private Button addTopoSButton;
 
@@ -36,18 +37,25 @@ public class Selex : MonoBehaviour
 
     public void AddGroupSButton()
     {
+        // You should get no choice, just a dropdown of group selector options
+        var newDropdown = Instantiate(groupSDropdown, addGroupSButton.transform.position, Quaternion.identity);
+        newDropdown.transform.SetParent(this.transform, true);
+        newDropdown.GetComponent<RectTransform>().localScale = Vector3.one;
+        newDropdown.gameObject.SetActive(true);
         // Move down both buttons
         var height = addGroupSButton.GetComponent<RectTransform>().sizeDelta.y;
         addGroupSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
-        // You should get choice of two buttons, one to pick label attribute and one to pick list attribute thing
+        
+       
     }
 
     public void AddAttrSButton()
     {
+        // You should get choice of two buttons, one to pick label attribute and one to pick list attribute thing
+        // (do that here)
         // Move down both buttons
         var height = addAttrSButton.GetComponent<RectTransform>().sizeDelta.y;
         addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
-        // You should get no choice, just a dropdown of group selector options
-        Instantiate()
+        
     }
 }
