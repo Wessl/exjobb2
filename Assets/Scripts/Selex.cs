@@ -58,11 +58,15 @@ public class Selex : MonoBehaviour
 
     private void AddPanelHeight(float height)
     {
+        Debug.Log(height + ", height");
         usedPanelHeight += height;
-        if (usedPanelHeight > maxPanelHeight)
+        Debug.Log(usedPanelHeight + ", usedpanelheight");
+        if (usedPanelHeight > (maxPanelHeight))
         {
-            selexPanel.sizeDelta += new Vector2(0, 100);
+            selexPanel.sizeDelta += new Vector2(0, height*4);
             maxPanelHeight = selexPanel.sizeDelta.y;
+            addGroupSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, height*2);
+            Debug.Log(maxPanelHeight +  ", maxpanel height");
         }
     }
 
