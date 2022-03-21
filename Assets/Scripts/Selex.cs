@@ -19,19 +19,18 @@ public class Selex : MonoBehaviour
     private float usedPanelHeight;                              // Use this to scale the height dynamically
     private float maxPanelHeight;
     private RectTransform selexPanel;
+    private List<Selex> connectedChildren;
+    [SerializeField] private GameObject connectionImage; 
+    
     // Start is called before the first frame update
     void Start()
     {
         selexPanel = GetComponent<RectTransform>();
         usedPanelHeight = addGroupSButton.GetComponent<RectTransform>().sizeDelta.y;
         maxPanelHeight = selexPanel.sizeDelta.y;
+        connectedChildren = new List<Selex>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
     
     public void AddTopoSButton()
     {
@@ -93,6 +92,13 @@ public class Selex : MonoBehaviour
         newPanel.transform.SetParent(this.transform.parent, true);
         newPanel.GetComponent<RectTransform>().localScale = Vector3.one;
         newPanel.transform.SetSiblingIndex(this.transform.GetSiblingIndex()+1);                                // Put into correct hierarchy position
+        // Hook up
+        connectedChildren.Add(newPanel.GetComponent<Selex>());
+        newPanel.GetComponent<Selex>().EnableConnectionToChild();
+    }
 
+    public void EnableConnectionToChild()
+    {
+        connectionImage.SetActive(true);
     }
 }
