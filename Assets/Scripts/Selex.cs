@@ -20,7 +20,8 @@ public class Selex : MonoBehaviour
     private float maxPanelHeight;
     private RectTransform selexPanel;
     private List<Selex> connectedChildren;
-    [SerializeField] private GameObject connectionImage; 
+    [SerializeField] private GameObject connectionImage;
+    [SerializeField] private GameObject attrSelectorsParent;
     
     // Start is called before the first frame update
     void Start()
@@ -74,7 +75,7 @@ public class Selex : MonoBehaviour
     public void AddAttrSButton()
     {
         // You should get choice of two buttons, one to pick label attribute and one to pick list attribute thing
-        // (do that here)
+        EnableAttrSelectionOptions();
         // Move down both buttons
         var height = addAttrSButton.GetComponent<RectTransform>().sizeDelta.y;
         addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
@@ -95,6 +96,14 @@ public class Selex : MonoBehaviour
         // Hook up
         connectedChildren.Add(newPanel.GetComponent<Selex>());
         newPanel.GetComponent<Selex>().EnableConnectionToChild();
+    }
+
+    public void EnableAttrSelectionOptions()
+    {
+        var newAttrSelectorParent = Instantiate(attrSelectorsParent, addGroupSButton.transform.position, Quaternion.identity);
+        newAttrSelectorParent.transform.SetParent(this.transform, true);
+        newAttrSelectorParent.GetComponent<RectTransform>().localScale = Vector3.one;
+        newAttrSelectorParent.gameObject.SetActive(true);
     }
 
     public void EnableConnectionToChild()
