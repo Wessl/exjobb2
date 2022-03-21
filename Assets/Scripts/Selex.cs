@@ -13,10 +13,16 @@ public class Selex : MonoBehaviour
 
     [SerializeField] private Button addGroupSButton;
     [SerializeField] private Button addAttrSButton;
+    
+    private float usedPanelHeight;                              // Use this to scale the height dynamically
+    private float maxPanelHeight;
+    private RectTransform selexPanel;
     // Start is called before the first frame update
     void Start()
     {
-        
+        selexPanel = GetComponent<RectTransform>();
+        usedPanelHeight = addGroupSButton.GetComponent<RectTransform>().sizeDelta.y;
+        maxPanelHeight = selexPanel.sizeDelta.y;
     }
 
     // Update is called once per frame
@@ -31,6 +37,7 @@ public class Selex : MonoBehaviour
         newDropdown.transform.SetParent(this.transform, true);
         newDropdown.GetComponent<RectTransform>().localScale = Vector3.one;
         newDropdown.gameObject.SetActive(true);
+        AddPanelHeight(addTopoSButton.GetComponent<RectTransform>().sizeDelta.y);
         // Move down addTopoSButton parent to allow for more buttons...
         Destroy(addTopoSButton);
     }
@@ -42,11 +49,21 @@ public class Selex : MonoBehaviour
         newDropdown.transform.SetParent(this.transform, true);
         newDropdown.GetComponent<RectTransform>().localScale = Vector3.one;
         newDropdown.gameObject.SetActive(true);
+       
         // Move down both buttons
         var height = addGroupSButton.GetComponent<RectTransform>().sizeDelta.y;
         addGroupSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
-        
-       
+        AddPanelHeight(height);
+    }
+
+    private void AddPanelHeight(float height)
+    {
+        usedPanelHeight += height;
+        if (usedPanelHeight > maxPanelHeight)
+        {
+            selexPanel.sizeDelta += new Vector2(0, 100);
+            maxPanelHeight = selexPanel.sizeDelta.y;
+        }
     }
 
     public void AddAttrSButton()
@@ -56,6 +73,6 @@ public class Selex : MonoBehaviour
         // Move down both buttons
         var height = addAttrSButton.GetComponent<RectTransform>().sizeDelta.y;
         addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
-        
+        AddPanelHeight(height);
     }
 }
