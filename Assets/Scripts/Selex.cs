@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Selex : MonoBehaviour
 {
+    [SerializeField] private GameObject masterPrefab;
+    
     [SerializeField] private TMP_Dropdown dropdown;
     [SerializeField] private TMP_Dropdown groupSDropdown;
 
@@ -65,7 +67,7 @@ public class Selex : MonoBehaviour
         {
             selexPanel.sizeDelta += new Vector2(0, height*4);
             maxPanelHeight = selexPanel.sizeDelta.y;
-            addGroupSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, height*2);
+            addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, height*2);
             Debug.Log(maxPanelHeight +  ", maxpanel height");
         }
     }
@@ -78,5 +80,19 @@ public class Selex : MonoBehaviour
         var height = addAttrSButton.GetComponent<RectTransform>().sizeDelta.y;
         addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
         AddPanelHeight(height);
+    }
+
+    /*
+     * Since it's possible to chain multiple selection expressions at a time, enable ability to add brand new selex panel,
+     * connected to this one 
+     */
+    public void AddNewLineOfSelex()
+    {
+        var masterPrefab = Instantiate(this.masterPrefab).GetComponent<MasterPrefab>();
+        var newPanel = Instantiate(masterPrefab.GetSelexCellPrefab(), selexPanel.transform.position, Quaternion.identity);
+        newPanel.transform.SetParent(this.transform.parent, true);
+        newPanel.GetComponent<RectTransform>().localScale = Vector3.one;
+        newPanel.transform.SetSiblingIndex(this.transform.GetSiblingIndex()+1);                                // Put into correct hierarchy position
+
     }
 }
