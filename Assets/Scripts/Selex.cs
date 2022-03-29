@@ -51,24 +51,18 @@ public class Selex : MonoBehaviour
         newDropdown.transform.SetParent(this.transform, true);
         newDropdown.GetComponent<RectTransform>().localScale = Vector3.one;
         newDropdown.gameObject.SetActive(true);
-       
-        // Move down both buttons
-        var height = addGroupSButton.GetComponent<RectTransform>().sizeDelta.y;
-        addGroupSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
-        AddPanelHeight(height);
+        // This is to make space for the next possible selection
+        MoveDownAttrAndGroupSelectors();
     }
 
     private void AddPanelHeight(float height)
     {
-        Debug.Log(height + ", height");
         usedPanelHeight += height;
-        Debug.Log(usedPanelHeight + ", usedpanelheight");
         if (usedPanelHeight > (maxPanelHeight))
         {
             selexPanel.sizeDelta += new Vector2(0, height*4);
             maxPanelHeight = selexPanel.sizeDelta.y;
             addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, height*2);
-            Debug.Log(maxPanelHeight +  ", maxpanel height");
         }
     }
 
@@ -76,10 +70,16 @@ public class Selex : MonoBehaviour
     {
         // You should get choice of two buttons, one to pick label attribute and one to pick list attribute thing
         EnableAttrSelectionOptions();
-        // Move down both buttons
-        var height = addAttrSButton.GetComponent<RectTransform>().sizeDelta.y;
-        addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
-        AddPanelHeight(height);
+        MoveDownAttrAndGroupSelectors();
+    }
+    
+    private void EnableAttrSelectionOptions()
+    {
+        var newAttrSelectorParent = Instantiate(attrSelectorsParent, attrSelectorsParent.transform.position, Quaternion.identity);
+        newAttrSelectorParent.transform.SetParent(this.transform, true);
+        newAttrSelectorParent.GetComponent<RectTransform>().localScale = Vector3.one;
+        newAttrSelectorParent.gameObject.SetActive(true);
+        Debug.Log("we start out at " + newAttrSelectorParent.GetComponent<RectTransform>().anchoredPosition);
     }
 
     /*
@@ -89,7 +89,7 @@ public class Selex : MonoBehaviour
     public void AddNewLineOfSelex()
     {
         var masterPrefab = Instantiate(this.masterPrefab).GetComponent<MasterPrefab>();
-        var newPanel = Instantiate(masterPrefab.GetSelexCellPrefab(), selexPanel.transform.position, Quaternion.identity);
+        var newPanel = Instantiate(masterPrefab.GetSelexCellPrefab(), addAttrSButton.transform.position, Quaternion.identity);
         newPanel.transform.SetParent(this.transform.parent, true);
         newPanel.GetComponent<RectTransform>().localScale = Vector3.one;
         newPanel.transform.SetSiblingIndex(this.transform.GetSiblingIndex()+1);                                // Put into correct hierarchy position
@@ -98,16 +98,21 @@ public class Selex : MonoBehaviour
         newPanel.GetComponent<Selex>().EnableConnectionToChild();
     }
 
-    public void EnableAttrSelectionOptions()
+    private void MoveDownAttrAndGroupSelectors()
     {
-        var newAttrSelectorParent = Instantiate(attrSelectorsParent, addGroupSButton.transform.position, Quaternion.identity);
-        newAttrSelectorParent.transform.SetParent(this.transform, true);
-        newAttrSelectorParent.GetComponent<RectTransform>().localScale = Vector3.one;
-        newAttrSelectorParent.gameObject.SetActive(true);
+        // Move down both buttons
+        var height = addAttrSButton.GetComponent<RectTransform>().sizeDelta.y;
+        // Parent contains both addAttrSButton and addGroupSButton
+        addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
+        // AND move down the invisible "default" parent to the attribute selectors
+        attrSelectorsParent.transform.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -height);
+        AddPanelHeight(height);
     }
+
 
     public void EnableConnectionToChild()
     {
         connectionImage.SetActive(true);
+        
     }
 }
