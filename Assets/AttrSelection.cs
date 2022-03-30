@@ -4,32 +4,39 @@ using UnityEngine;
 
 public class AttrSelection : MonoBehaviour
 {
+    [SerializeField] private GameObject isEmptyPanel;
+    [SerializeField] private GameObject patternPanel;
+    [SerializeField] private GameObject operatorField;
+    [SerializeField] private GameObject valueField;
     public void functionCaller(int val)
     {
         switch (val)
         {
             case 0:
+                // This is just the default
+                break;  
+            case 1:
                 selectIsEmpty();
                 break;
-            case 1:
+            case 2:
                 selectPattern();
                 break;
-            case 2:
+            case 3:
                 selectIsOdd();
                 break;
-            case 3:
+            case 4:
                 selectIsEven();
                 break;
-            case 4:
+            case 5:
                 selectLabel();
                 break;
-            case 5:
+            case 6:
                 selectRowIdx();
                 break;
-            case 6:
+            case 7:
                 selectColIdx();
                 break;
-            case 7:
+            case 8:
                 selectIdx();
                 break;
             default:
@@ -39,11 +46,26 @@ public class AttrSelection : MonoBehaviour
     }
     public void selectIsEmpty()
     {
-        
+        // Whenever this gets called it should send up the selected information to 
+        // whatever state object it is that contains every selection
+        isEmptyPanel.SetActive(true);
+        operatorField.SetActive(false);
+        valueField.SetActive(false);
+    }
+
+    public void CloseIsEmpty()
+    {
+        isEmptyPanel.SetActive(false);
     }
 
     public void selectPattern()
     {
+        
+    }
+
+    public void ClosePattern()
+    {
+        patternPanel.SetActive(false);    
     }
 
     public void selectIsOdd()
@@ -75,5 +97,7 @@ public class AttrSelection : MonoBehaviour
     {
         
     }
+    
+    
 
 }
