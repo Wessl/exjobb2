@@ -23,7 +23,7 @@ public class AddShape : MonoBehaviour
     shape, parameters "cx, cy, w, h" specify the center point and size, parameter "offset" the relative depth with 
     respect to its parent, and parameter "visible" controls the visibility of the shape. The last two parameters are optional.
      */
-    public Mesh Execute()
+    public void Execute()
     {
         Mesh mesh = new Mesh();
         // First parse numbers from strings
@@ -34,7 +34,7 @@ public class AddShape : MonoBehaviour
         // Just create a quad
         Vector3[] vertices = new Vector3[4]
         {
-            new Vector3(-width / 2 - cx, height / 2 + cy, 0),
+            new Vector3(-width / 2 - cx, -height / 2 + cy, 0),
             new Vector3(width / 2 + cx, -height / 2 - cy, 0),
             new Vector3(-width / 2 - cx, height / 2 + cy, 0),
             new Vector3(width / 2 + cx, height / 2 + cy, 0)
@@ -65,8 +65,15 @@ public class AddShape : MonoBehaviour
             new Vector2(1, 1)
         };
         mesh.uv = uv;
-        _meshFilter.mesh = mesh;
-        return mesh;
+
+        // Since addShape creates a new object, let's put it underneath Root for now
+        var root = GameObject.FindWithTag("Root");
+        var newShape = new GameObject(label.text);
+        newShape.transform.parent = root.transform;
+        newShape.AddComponent<MeshFilter>();
+        newShape.AddComponent<MeshRenderer>();
+        newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
+        
     }
 
     public string Label => label.text;

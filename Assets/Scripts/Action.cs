@@ -10,6 +10,11 @@ public class Action : MonoBehaviour
     private GameObject lastSelection;   // used to hide the last selection easily
     private List<Action> functions = new List<Action>();
 
+    private void Start()
+    {
+        SelectAddShape();
+    }
+
     public void FunctionCaller(int val)
     {
         // This is tremendously ugly, but who cares.
@@ -17,6 +22,9 @@ public class Action : MonoBehaviour
         {
             case 0:
                 SelectAddShape();
+                break;
+            default:
+                lastSelection = null;
                 break;
         }
     }
@@ -28,9 +36,9 @@ public class Action : MonoBehaviour
         lastSelection = addShapePanel;
     }
 
-    private void ExecuteAddShape()
+    public void ExecuteAddShape()
     {
-        Mesh mesh = addShapePanel.GetComponent<AddShape>().Execute();
+        addShapePanel.GetComponent<AddShape>().Execute();
         
     }
 
