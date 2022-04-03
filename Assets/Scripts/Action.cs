@@ -28,8 +28,17 @@ public class Action : MonoBehaviour
         lastSelection = addShapePanel;
     }
 
+    private void ExecuteAddShape()
+    {
+        Mesh mesh = addShapePanel.GetComponent<AddShape>().Execute();
+        
+    }
+
     private void HideLastSelection()
     {
-        lastSelection.SetActive(false);
+        if (lastSelection != null)
+        {
+            lastSelection.SetActive(false);
+        }
     }
 }
