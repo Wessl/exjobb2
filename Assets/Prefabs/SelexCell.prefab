@@ -1744,7 +1744,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8669276268745865900}
         m_TargetAssemblyTypeName: Selex, Assembly-CSharp
-        m_MethodName: AddNewLineOfSelex
+        m_MethodName: AddActionCell
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3143,6 +3143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   masterPrefab: {fileID: 9117534497436144811, guid: b5d89efc43de02e4cae43db28c930bfa, type: 3}
+  actionCell: {fileID: 3580882096800703893, guid: cb47e9874cadbf149a268cdec80db549, type: 3}
   dropdown: {fileID: 5159766833823843134}
   groupSDropdown: {fileID: 1626309846813211119}
   addTopoSButton: {fileID: 5450357715759987020}

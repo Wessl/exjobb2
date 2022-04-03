@@ -379,15 +379,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e1d1ed9c78dc348a64c731f1e7d3c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rulesList:
-  - ruleList:
-    - {fileID: 0}
-    - {fileID: 0}
-  - ruleList:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-  - ruleList: []
 --- !u!4 &854077795
 Transform:
   m_ObjectHideFlags: 0
@@ -1344,5 +1335,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: RuleCell
       objectReference: {fileID: 0}
+    - target: {fileID: 7166877619936268753, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
+      propertyPath: possibleRules.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166877619936268753, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
+      propertyPath: possibleRules.Array.data[1]
+      value: 
+      objectReference: {fileID: 3580882096800703893, guid: 21a5684a13d5c4143863c3140c96c6ac, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}

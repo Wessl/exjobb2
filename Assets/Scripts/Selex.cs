@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Selex : MonoBehaviour
 {
     [SerializeField] private GameObject masterPrefab;
+    [SerializeField] private GameObject actionCell;
     
     [SerializeField] private TMP_Dropdown dropdown;
     [SerializeField] private TMP_Dropdown groupSDropdown;
@@ -30,6 +31,15 @@ public class Selex : MonoBehaviour
         usedPanelHeight = addGroupSButton.GetComponent<RectTransform>().sizeDelta.y;
         maxPanelHeight = selexPanel.sizeDelta.y;
         connectedChildren = new List<Selex>();
+    }
+
+    public void AddActionCell()
+    {
+        var newActionCell = Instantiate(actionCell);
+        newActionCell.transform.SetParent(this.transform.parent, true);
+        newActionCell.transform.SetSiblingIndex(this.transform.GetSiblingIndex() +
+                                                1);  // Put into correct hierarchy position ?
+
     }
     
     
