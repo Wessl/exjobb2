@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.UI;
+
 
 public class AddShape : MonoBehaviour
 {
@@ -14,9 +17,6 @@ public class AddShape : MonoBehaviour
     [SerializeField] private TMP_InputField inputHeight;
     [SerializeField] private TMP_InputField offset;
     [SerializeField] private Toggle visible;
-
-    [SerializeField] private MeshRenderer _meshRenderer;
-    [SerializeField] private MeshFilter _meshFilter;
 
     /*
      * adds a 2D construction shape to another 2D construction shape. Parameter "la" specifies the label of the new
@@ -73,7 +73,34 @@ public class AddShape : MonoBehaviour
         newShape.AddComponent<MeshFilter>();
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
+
+    }
+    
+    EventSystem _eventSystem;
+ 
+    void Start ()
+    {
+        _eventSystem = EventSystem.current;
+         
+    }
+    
+    public void Update()
+    {
         
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            Selectable next = _eventSystem.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown();
+
+            if (next!= null) {
+                       
+                var inputField = next.GetComponent<TMP_InputField>();
+                if (inputField !=null) inputField.OnPointerClick(new PointerEventData(_eventSystem));  //if it's an input field, also set the text caret
+                       
+                _eventSystem.SetSelectedGameObject(next.gameObject, new BaseEventData(_eventSystem));
+            }
+            //else Debug.Log("next nagivation element not found");
+   
+        }
     }
 
     public string Label => label.text;
