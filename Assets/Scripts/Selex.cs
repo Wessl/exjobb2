@@ -19,6 +19,12 @@ public class Selex : MonoBehaviour
 
     [SerializeField] private GameObject parentCell;
 
+    public GameObject ParentCell
+    {
+        get => parentCell;
+        set => parentCell = value;
+    }
+
     private float usedPanelHeight;                              // Use this to scale the height dynamically
     private float maxPanelHeight;
     private RectTransform selexPanel;
@@ -39,8 +45,8 @@ public class Selex : MonoBehaviour
     {
         var newActionCell = Instantiate(actionCell);
         newActionCell.transform.SetParent(this.transform.parent, true);
-        newActionCell.transform.SetSiblingIndex(this.transform.GetSiblingIndex() +
-                                                1);  // Put into correct hierarchy position ?
+        newActionCell.transform.SetSiblingIndex(this.transform.GetSiblingIndex() + 1);  // Put into correct hierarchy position ?
+        newActionCell.GetComponent<Action>().selectionParent = this.gameObject;
 
     }
     
@@ -107,7 +113,8 @@ public class Selex : MonoBehaviour
         newPanel.transform.SetSiblingIndex(this.transform.GetSiblingIndex()+1);                                // Put into correct hierarchy position
         // Hook up
         connectedChildren.Add(newPanel.GetComponent<Selex>());
-        newPanel.GetComponent<Selex>().EnableConnectionToChild();
+        newPanel.GetComponent<Selex>().EnableConnectionToChild(newPanel);
+        
     }
 
     private void MoveDownAttrAndGroupSelectors()
@@ -122,9 +129,11 @@ public class Selex : MonoBehaviour
     }
 
 
-    public void EnableConnectionToChild()
+    public void EnableConnectionToChild(GameObject thisSelexPanel)
     {
         connectionImage.SetActive(true);
-        
+        thisSelexPanel.GetComponent<Selex>().ParentCell = this.gameObject;
     }
+    
+    
 }

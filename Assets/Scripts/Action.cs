@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Action : MonoBehaviour
 {
+    public GameObject selectionParent;  // This is set by the Selex parent cell that creates it
     [SerializeField] private GameObject addShapePanel;
     [SerializeField] private GameObject createGridPanel;
 
@@ -48,8 +49,13 @@ public class Action : MonoBehaviour
 
     public void ExecuteAddShape()
     {
+        ObtainSelectionData();
         addShapePanel.GetComponent<AddShape>().Execute();
-        
+    }
+
+    public void ExecuteCreateGridLines()
+    {
+        createGridPanel.GetComponent<CreateGrid>().Execute();
     }
 
     private void HideLastSelection()
@@ -58,5 +64,23 @@ public class Action : MonoBehaviour
         {
             lastSelection.SetActive(false);
         }
+    }
+
+    /*
+     * Send down data from any/all selection panels in order to know what to operate on
+     */
+    public void ObtainSelectionData()
+    {
+        int counter = 1;
+        var selexObj = selectionParent.GetComponent<Selex>();
+        var selexObjParent = selexObj.ParentCell;
+        for (int i = 0; i < 10; i++)
+        {
+            selexObjParent = selexObjParent.GetComponent<Selex>().ParentCell;
+            Debug.Log("anme of parent: " + selexObjParent.name);
+            counter++;
+        }
+
+        Debug.Log("there are " + counter + " amount of selection cells above.");
     }
 }
