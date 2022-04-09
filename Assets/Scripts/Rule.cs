@@ -40,6 +40,7 @@ public class Rule : MonoBehaviour
         var newCell = Instantiate(possibleRules[val-1], transform.position, Quaternion.identity);// -1 cuz default option 
         newCell.transform.SetParent(gameObject.transform.parent, false);
         newCell.transform.SetSiblingIndex(this.transform.GetSiblingIndex());                                // Put into correct hierarchy position
+        
         Destroy(this.gameObject);
     }
 }

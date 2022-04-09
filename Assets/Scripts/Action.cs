@@ -6,9 +6,9 @@ using UnityEngine;
 public class Action : MonoBehaviour
 {
     [SerializeField] private GameObject addShapePanel;
+    [SerializeField] private GameObject createGridPanel;
 
     private GameObject lastSelection;   // used to hide the last selection easily
-    private List<Action> functions = new List<Action>();
 
     private void Start()
     {
@@ -23,6 +23,9 @@ public class Action : MonoBehaviour
             case 0:
                 SelectAddShape();
                 break;
+            case 1:
+                SelectCreateGrid();
+                break;
             default:
                 lastSelection = null;
                 break;
@@ -34,6 +37,13 @@ public class Action : MonoBehaviour
         addShapePanel.SetActive(true);
         HideLastSelection();
         lastSelection = addShapePanel;
+    }
+    
+    private void SelectCreateGrid()
+    {
+        createGridPanel.SetActive(true);
+        HideLastSelection();
+        lastSelection = createGridPanel;
     }
 
     public void ExecuteAddShape()

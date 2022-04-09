@@ -16,7 +16,9 @@ public class Selex : MonoBehaviour
 
     [SerializeField] private Button addGroupSButton;
     [SerializeField] private Button addAttrSButton;
-    
+
+    [SerializeField] private GameObject parentCell;
+
     private float usedPanelHeight;                              // Use this to scale the height dynamically
     private float maxPanelHeight;
     private RectTransform selexPanel;
