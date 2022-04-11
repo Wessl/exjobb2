@@ -71,16 +71,12 @@ public class Action : MonoBehaviour
      */
     public void ObtainSelectionData()
     {
-        int counter = 1;
-        var selexObj = selectionParent.GetComponent<Selex>();
-        var selexObjParent = selexObj.ParentCell;
-        for (int i = 0; i < 10; i++)
-        {
-            selexObjParent = selexObjParent.GetComponent<Selex>().ParentCell;
-            Debug.Log("anme of parent: " + selexObjParent.name);
-            counter++;
-        }
-
-        Debug.Log("there are " + counter + " amount of selection cells above.");
+        
+        var selexObjParent = selectionParent.GetComponent<Selex>();
+        // Now find all the things being selected by this...?
+        
+        //while(selexObjParent != null){
+            //selexObjParent = selexObjParent.GetComponent<Selex>().ParentCell;
+        //}
     }
 }

@@ -19,6 +19,10 @@ public class Selex : MonoBehaviour
 
     [SerializeField] private GameObject parentCell;
 
+    private List<GameObject> allTopologySelections;
+    private List<GameObject> allAttributeSelections;
+    private List<GameObject> allGroupsSelections;
+
     public GameObject ParentCell
     {
         get => parentCell;
@@ -47,7 +51,6 @@ public class Selex : MonoBehaviour
         newActionCell.transform.SetParent(this.transform.parent, true);
         newActionCell.transform.SetSiblingIndex(this.transform.GetSiblingIndex() + 1);  // Put into correct hierarchy position ?
         newActionCell.GetComponent<Action>().selectionParent = this.gameObject;
-
     }
     
     
@@ -60,6 +63,8 @@ public class Selex : MonoBehaviour
         AddPanelHeight(addTopoSButton.GetComponent<RectTransform>().sizeDelta.y);
         // Move down addTopoSButton parent to allow for more buttons...
         Destroy(addTopoSButton);
+        
+        allTopologySelections.Add(newDropdown.gameObject);
     }
 
     public void AddGroupSButton()
@@ -113,7 +118,7 @@ public class Selex : MonoBehaviour
         newPanel.transform.SetSiblingIndex(this.transform.GetSiblingIndex()+1);                                // Put into correct hierarchy position
         // Hook up
         connectedChildren.Add(newPanel.GetComponent<Selex>());
-        newPanel.GetComponent<Selex>().EnableConnectionToChild(newPanel);
+        this.gameObject.GetComponent<Selex>().EnableConnectionToChild(newPanel);
         
     }
 
@@ -129,10 +134,11 @@ public class Selex : MonoBehaviour
     }
 
 
-    public void EnableConnectionToChild(GameObject thisSelexPanel)
+    public void EnableConnectionToChild(GameObject childSelexPanel)
     {
         connectionImage.SetActive(true);
-        thisSelexPanel.GetComponent<Selex>().ParentCell = this.gameObject;
+        childSelexPanel.GetComponent<Selex>().ParentCell = this.gameObject;
+        Debug.Log("now hooking up selex panel with id " + childSelexPanel.GetInstanceID() + " as a child to the gameobject with id " + gameObject.GetInstanceID());
     }
     
     
