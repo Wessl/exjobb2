@@ -3149,6 +3149,7 @@ MonoBehaviour:
   addTopoSButton: {fileID: 5450357715759987020}
   addGroupSButton: {fileID: 6708398957645006539}
   addAttrSButton: {fileID: 7856757191902668794}
+  parentCell: {fileID: 0}
   connectionImage: {fileID: 7158020238218018551}
   attrSelectorsParent: {fileID: 3583015498881680388}
 --- !u!1 &3583015498881680388
@@ -3163,7 +3164,7 @@ GameObject:
   - component: {fileID: 1123408245387535081}
   m_Layer: 5
   m_Name: Attr Selection Options
-  m_TagString: Untagged
+  m_TagString: AttributeSelectorGO
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4290,7 +4291,7 @@ GameObject:
   - component: {fileID: 5159766833823843134}
   m_Layer: 5
   m_Name: Dropdown
-  m_TagString: Untagged
+  m_TagString: TolologySelectorGO
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5701,7 +5702,7 @@ GameObject:
   - component: {fileID: 1626309846813211119}
   m_Layer: 5
   m_Name: GroupS Dropdown
-  m_TagString: Untagged
+  m_TagString: GroupSelectorGO
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

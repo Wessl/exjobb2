@@ -74,9 +74,39 @@ public class Action : MonoBehaviour
         
         var selexObjParent = selectionParent.GetComponent<Selex>();
         // Now find all the things being selected by this...?
-        
+        var listOfGameObjects = new List<List<GameObject>>()
+        {
+            selexObjParent.AllAttributeSelections,
+            selexObjParent.AllGroupsSelections,
+            selexObjParent.AllTopologySelections
+        };
+        for (int i = 0; i < listOfGameObjects.Count; i++)
+        {
+            for (int y = 0; y < listOfGameObjects[i].Count; y++)
+            {
+                // What we have here is a single game object, containing some sort of selection data
+                ExtractSelectionResultsDependingOnSelector(listOfGameObjects[i][y]);
+            }
+        }
         //while(selexObjParent != null){
-            //selexObjParent = selexObjParent.GetComponent<Selex>().ParentCell;
+        //selexObjParent = selexObjParent.GetComponent<Selex>().ParentCell;
         //}
+    }
+    
+    // Tailor made extraction depending on 
+    private void ExtractSelectionResultsDependingOnSelector(GameObject selector)
+    {
+        switch (selector.tag)
+        {
+            case "GroupSelectorGO":
+                Debug.Log("group selector");
+                break;
+            case "TopologySelectorGO":
+                Debug.Log("topology selector");
+                break;
+            case "AttributeSelectorGO":
+                Debug.Log("attribute selector");
+                break;
+        }
     }
 }

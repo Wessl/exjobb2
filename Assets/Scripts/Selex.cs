@@ -19,9 +19,12 @@ public class Selex : MonoBehaviour
 
     [SerializeField] private GameObject parentCell;
 
-    private List<GameObject> allTopologySelections;
-    private List<GameObject> allAttributeSelections;
-    private List<GameObject> allGroupsSelections;
+    private List<GameObject> allTopologySelections = new List<GameObject>();
+    public List<GameObject> AllTopologySelections => allTopologySelections;
+    private List<GameObject> allAttributeSelections = new List<GameObject>();
+    public List<GameObject> AllAttributeSelections => allAttributeSelections;
+    private List<GameObject> allGroupsSelections = new List<GameObject>();
+    public List<GameObject> AllGroupsSelections => allGroupsSelections;
 
     public GameObject ParentCell
     {
@@ -67,6 +70,7 @@ public class Selex : MonoBehaviour
         allTopologySelections.Add(newDropdown.gameObject);
     }
 
+    // Execute this when clicking on the AddGroupS button
     public void AddGroupSButton()
     {
         // You should get no choice, just a dropdown of group selector options
@@ -76,6 +80,8 @@ public class Selex : MonoBehaviour
         newDropdown.gameObject.SetActive(true);
         // This is to make space for the next possible selection
         MoveDownAttrAndGroupSelectors();
+        
+        allGroupsSelections.Add(newDropdown.gameObject);
     }
 
     private void AddPanelHeight(float height)
@@ -102,7 +108,9 @@ public class Selex : MonoBehaviour
         newAttrSelectorParent.transform.SetParent(this.transform, true);
         newAttrSelectorParent.GetComponent<RectTransform>().localScale = Vector3.one;
         newAttrSelectorParent.gameObject.SetActive(true);
-        Debug.Log("we start out at " + newAttrSelectorParent.GetComponent<RectTransform>().anchoredPosition);
+        
+        allAttributeSelections.Add(newAttrSelectorParent.gameObject);
+
     }
 
     /*
