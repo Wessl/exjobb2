@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Action : MonoBehaviour
 {
@@ -10,6 +13,7 @@ public class Action : MonoBehaviour
     [SerializeField] private GameObject createGridPanel;
 
     private GameObject lastSelection;   // used to hide the last selection easily
+    private SelectionHandler _objectSelectionHandler;
 
     private void Start()
     {
@@ -50,6 +54,7 @@ public class Action : MonoBehaviour
     public void ExecuteAddShape()
     {
         ObtainSelectionData();
+        _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
         addShapePanel.GetComponent<AddShape>().Execute();
     }
 
@@ -71,7 +76,7 @@ public class Action : MonoBehaviour
      */
     public void ObtainSelectionData()
     {
-        
+        Debug.Log("trying to obtain selection data");   
         var selexObjParent = selectionParent.GetComponent<Selex>();
         // Now find all the things being selected by this...?
         var listOfGameObjects = new List<List<GameObject>>()
@@ -103,10 +108,55 @@ public class Action : MonoBehaviour
                 break;
             case "TopologySelectorGO":
                 Debug.Log("topology selector");
+                TopologySelection(selector);
                 break;
             case "AttributeSelectorGO":
                 Debug.Log("attribute selector");
                 break;
+        }
+    }
+    
+    
+    /*
+     * Topology Selection
+     */
+    private void TopologySelection(GameObject topologyObject)
+    {
+        
+        // This starts with a single shape as input... Wot. Just assume it starts wth the root for now...?
+        var startpointObject = GameObject.FindWithTag("Root");
+            
+        var activeDropdownSelection = topologyObject.GetComponent<TMP_Dropdown>();
+        if (!activeDropdownSelection) throw new InvalidOperationException("Topology object does not have a TMP Dropdown component attached!");
+        string selectionName = activeDropdownSelection.options[activeDropdownSelection.value].text;
+        
+        var startpointShape = startpointObject.GetComponent<Shape>();
+        switch (selectionName)
+        {
+            case "child()":
+                var children = startpointShape.children;
+                _objectSelectionHandler.currentSelection = children;
+                break;
+            case "parent()":
+                var parent = startpointShape.parent;
+                _objectSelectionHandler.currentSelection = new List<GameObject>(){ parent };
+                break;
+            case "descendant()":
+                // Recursively get all the children
+                break;
+            case "root()":
+                var root = startpointShape.gameObject;
+                _objectSelectionHandler.currentSelection = new List<GameObject>(){ root };
+                break;
+            case "neighbour()":
+                var neighbours = startpointShape.neighbours;
+                _objectSelectionHandler.currentSelection = neighbours;
+                break;
+            case "contained()":
+                // This will essentially have to check the borders of every gameObject under root
+                // And make sure they are within the input's size/borders
+                break;
+            
         }
     }
 }
