@@ -54,8 +54,8 @@ public class Action : MonoBehaviour
 
     public void ExecuteAddShape()
     {
-        ObtainSelectionData();
         _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
+        ObtainSelectionData();
         addShapePanel.GetComponent<AddShape>().Execute();
     }
 
@@ -105,19 +105,16 @@ public class Action : MonoBehaviour
         switch (selector.tag)
         {
             case "GroupSelectorGO":
-                Debug.Log("group selector");
+                GroupSelection();
                 break;
             case "TopologySelectorGO":
-                Debug.Log("topology selector");
                 TopologySelection(selector);
                 break;
             case "AttributeSelectorGO":
-                Debug.Log("attribute selector");
                 AttributeSelection(selector);
                 break;
         }
     }
-    
     
     /*
      * Topology Selection
@@ -187,10 +184,49 @@ public class Action : MonoBehaviour
         var attributeNameDropdown = attrSelection.AttributeNameDropdown.GetComponent<TMP_Dropdown>();
         var operatorDropdown = attrSelection.OperatorDropdown.GetComponent<TMP_Dropdown>();
         var valueField = attrSelection.ValueInputfield.GetComponent<TMP_InputField>();
-
-        Debug.Log(attributeNameDropdown.value);
-        Debug.Log(operatorDropdown.value);
-        Debug.Log(valueField.text);
         
+        var attributeName = attributeNameDropdown.options[attributeNameDropdown.value].text;
+        var operatorValue = operatorDropdown.options[operatorDropdown.value].text;
+        switch (attributeName)
+        {
+            case "isOdd()":
+                _objectSelectionHandler.Attr_IsOdd();
+                break;
+            case "isEven()":
+                _objectSelectionHandler.Attr_IsEven();
+                break;
+            case "isEmpty()":
+                _objectSelectionHandler.Attr_IsEmpty();
+                break;
+            case "label":
+                _objectSelectionHandler.Attr_Label(operatorValue, valueField.text);
+                break;
+            case "idx":
+                _objectSelectionHandler.Attr_Idx(operatorValue, valueField.text);
+                break;
+            case "pattern()":
+                var patternObj = attrSelection.PatternPanel;
+                _objectSelectionHandler.Attr_Pattern(patternObj);
+                break;
+            case "rowIdx":
+                _objectSelectionHandler.Attr_RowIdx();
+                break;
+            case "colIdx":
+                _objectSelectionHandler.Attr_ColIdx();
+                break;
+            default:
+                Debug.Log("This should not happen, probably");
+                break;
+        }
+        
+
+    }
+    
+    /*
+     * Group Selection
+     */
+    private void GroupSelection()
+    {
+        throw new NotImplementedException();
     }
 }

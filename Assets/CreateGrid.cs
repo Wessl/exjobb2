@@ -12,7 +12,6 @@ public class CreateGrid : MonoBehaviour
     {
         var rowsList = rows.text.Split(',');
         var colsList = rows.text.Split(',');
-        // You kind of need some sort of reference against which to make the grid? Like length and stuff
-        // So you need to find the input shape. This will depend on the selection from above. 
+        // Operate on the existing input shape from here...
     }
 }
