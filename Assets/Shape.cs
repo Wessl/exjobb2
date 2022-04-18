@@ -11,7 +11,7 @@ public class Shape : MonoBehaviour
 
     private void Start()
     {
-        children = new List<GameObject>();
-        neighbours = new List<GameObject>();
+        children ??= new List<GameObject>();
+        neighbours ??= new List<GameObject>();
     }
 }

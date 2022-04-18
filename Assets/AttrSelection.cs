@@ -5,9 +5,17 @@ using UnityEngine;
 public class AttrSelection : MonoBehaviour
 {
     [SerializeField] private GameObject isEmptyPanel;
+    [SerializeField] private GameObject attributeNameDropdown;
     [SerializeField] private GameObject patternPanel;
-    [SerializeField] private GameObject operatorField;
-    [SerializeField] private GameObject valueField;
+    [SerializeField] private GameObject operatorDropdown;
+    [SerializeField] private GameObject valueInputfield;
+    
+    public GameObject IsEmptyPanel => isEmptyPanel;
+    public GameObject PatternPanel => patternPanel;
+    public GameObject OperatorDropdown => operatorDropdown;
+    public GameObject ValueInputfield => valueInputfield;
+
+    public GameObject AttributeNameDropdown => attributeNameDropdown;
     public void functionCaller(int val)
     {
         switch (val)
@@ -49,8 +57,8 @@ public class AttrSelection : MonoBehaviour
         // Whenever this gets called it should send up the selected information to 
         // whatever state object it is that contains every selection
         isEmptyPanel.SetActive(true);
-        operatorField.SetActive(false);
-        valueField.SetActive(false);
+        operatorDropdown.SetActive(false);
+        valueInputfield.SetActive(false);
     }
 
     public void CloseIsEmpty()

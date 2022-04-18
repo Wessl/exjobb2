@@ -14,6 +14,7 @@ public class Action : MonoBehaviour
 
     private GameObject lastSelection;   // used to hide the last selection easily
     private SelectionHandler _objectSelectionHandler;
+    
 
     private void Start()
     {
@@ -112,6 +113,7 @@ public class Action : MonoBehaviour
                 break;
             case "AttributeSelectorGO":
                 Debug.Log("attribute selector");
+                AttributeSelection(selector);
                 break;
         }
     }
@@ -142,7 +144,8 @@ public class Action : MonoBehaviour
                 _objectSelectionHandler.currentSelection = new List<GameObject>(){ parent };
                 break;
             case "descendant()":
-                // Recursively get all the children
+                Debug.Log("descendant");
+                List<GameObject> descendants = RecursivelyGetDescendants(startpointShape);
                 break;
             case "root()":
                 var root = startpointShape.gameObject;
@@ -158,5 +161,36 @@ public class Action : MonoBehaviour
                 break;
             
         }
+    }
+
+    private List<GameObject> RecursivelyGetDescendants(Shape shape)
+    {
+        var children = shape.children;
+        var allObjs = new List<GameObject> {shape.gameObject};
+        foreach (var child in children)
+        {
+            Debug.Log("descendant: " + child);
+            allObjs.AddRange(RecursivelyGetDescendants(child.GetComponent<Shape>()));
+        }
+
+        return allObjs;
+    }
+    
+    /*
+     * Attribute Selection
+     */
+
+    private void AttributeSelection(GameObject selector)
+    {
+        // name based component getting - bad
+        var attrSelection = selector.GetComponent<AttrSelection>();
+        var attributeNameDropdown = attrSelection.AttributeNameDropdown.GetComponent<TMP_Dropdown>();
+        var operatorDropdown = attrSelection.OperatorDropdown.GetComponent<TMP_Dropdown>();
+        var valueField = attrSelection.ValueInputfield.GetComponent<TMP_InputField>();
+
+        Debug.Log(attributeNameDropdown.value);
+        Debug.Log(operatorDropdown.value);
+        Debug.Log(valueField.text);
+        
     }
 }

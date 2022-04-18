@@ -3204,9 +3204,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEmptyPanel: {fileID: 5207812875219589890}
+  attributeNameDropdown: {fileID: 8136389762709960540}
   patternPanel: {fileID: 8222702202532813880}
-  operatorField: {fileID: 4610735014990715334}
-  valueField: {fileID: 8462614612715471282}
+  operatorDropdown: {fileID: 4610735014990715334}
+  valueInputfield: {fileID: 8462614612715471282}
 --- !u!1 &3697692946576875818
 GameObject:
   m_ObjectHideFlags: 0
