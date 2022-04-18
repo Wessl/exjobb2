@@ -32,6 +32,10 @@ public class Action : MonoBehaviour
             case 1:
                 SelectCreateGrid();
                 break;
+            case 9:
+                Debug.Log("Create grid");
+                SelectCreateGrid();
+                break;
             default:
                 lastSelection = null;
                 break;
@@ -61,7 +65,9 @@ public class Action : MonoBehaviour
 
     public void ExecuteCreateGridLines()
     {
-        createGridPanel.GetComponent<CreateGrid>().Execute();
+        _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
+        ObtainSelectionData();
+        createGridPanel.GetComponent<CreateGrid>().Execute(_objectSelectionHandler);
     }
 
     private void HideLastSelection()
