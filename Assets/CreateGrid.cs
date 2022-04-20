@@ -10,11 +10,7 @@ public class CreateGrid : MonoBehaviour
     [SerializeField] private TMP_InputField rows;
     [SerializeField] private TMP_InputField columns;
 
-    private float[,] grid;
-
-    public float[,] Grid => grid;
-
-    private GameObject blankObject;
+    
 
     private void Start()
     {
@@ -23,30 +19,49 @@ public class CreateGrid : MonoBehaviour
 
     public void Execute(SelectionHandler objectSelectionHandler)
     {
-        blankObject = new GameObject(label.text);
         var currentlySelected = objectSelectionHandler.currentSelection;
         var rowsList = rows.text.Split(',');
         var colsList = columns.text.Split(',');
-
-        grid = new float[rowsList.Length, colsList.Length];
         
         // Operate on the existing input shape from here...
         for (int i = 0; i < currentlySelected.Count; i++)
         {
-            // instantiate?
-            var startLocation = currentlySelected[i].transform;
-            var newObj = Instantiate(blankObject, startLocation.position, Quaternion.identity);
-            newObj.name = label.text;
-            for (int y = 0; y < rowsList.Length; y++)
+            var newObj = InitializeNewShape(currentlySelected[i].transform);
+            var startPos = currentlySelected[i].transform.position;
+            var newObjShapeComponent = newObj.GetComponent<Shape>();
+            var extent = newObjShapeComponent.SizeExent;
+            Debug.Log("extent: " + extent);
+            for (int j = 0; j < rowsList.Length; j++)
             {
-                float currRow = float.Parse(rowsList[y]);
-                Debug.DrawLine(new Vector3(0,currRow,0), new Vector3(10,currRow,0), Color.cyan, 10);
+                float currRow = float.Parse(rowsList[j]);
+                float x = startPos.x;
+                float y = startPos.y + currRow;
+                newObjShapeComponent.GridRows.Add(currRow);
+                Debug.DrawLine(new Vector3(x,y,0), new Vector3(x + extent.x , y ,0), Color.cyan, 10);
             }
-            for (int y = 0; y < colsList.Length; y++)
+            for (int j = 0; j < colsList.Length; j++)
             {
-                float currCol = float.Parse(colsList[y]);
-                Debug.DrawLine(new Vector3(currCol,0,0), new Vector3(currCol,10,0), Color.yellow, 10);
+                float currCol = float.Parse(colsList[j]);
+                float x = startPos.x + currCol;
+                float y = startPos.y;
+                newObjShapeComponent.GridCols.Add(currCol);
+                Debug.DrawLine(new Vector3(x,y,0), new Vector3(x,y + extent.y,0), Color.yellow, 10);
             }
         }
+    }
+
+    private GameObject InitializeNewShape(Transform currentlySelectedsTransform)
+    {
+        GameObject newObj = new GameObject(label.text + " yo mama");
+        var startTransform = currentlySelectedsTransform;
+        newObj.AddComponent<Shape>();
+        var newObjShapeComponent = newObj.GetComponent<Shape>();
+        newObjShapeComponent.Start();                               //Initialize the component bro
+        newObjShapeComponent.parent = currentlySelectedsTransform.gameObject;
+        newObjShapeComponent.SetupSizeExtent();
+        newObj.transform.parent = startTransform;
+        newObj.name = label.text;
+        
+        return newObj;
     }
 }
