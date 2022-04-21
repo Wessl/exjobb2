@@ -10,11 +10,41 @@ public class CreateGrid : MonoBehaviour
     [SerializeField] private TMP_InputField rows;
     [SerializeField] private TMP_InputField columns;
 
-    
+    [SerializeField] private GameObject rowContainer;
+    private List<GameObject> rowsList;
+    [SerializeField] private GameObject colContainer;
+    private List<GameObject> colsList;
 
     private void Start()
     {
-       
+        rowsList = new List<GameObject>();
+        colsList = new List<GameObject>();
+        rowsList.Add(rowContainer);
+        colsList.Add(colContainer);
+    }
+
+    public void AnotherGridRow()
+    {
+        var newRowContainer = Instantiate(rowContainer, rowsList[rowsList.Count-1].transform.position + Vector3.down * 30, Quaternion.identity);
+        newRowContainer.transform.SetParent(this.transform);
+        newRowContainer.transform.SetSiblingIndex(rowsList[rowsList.Count-1].transform.GetSiblingIndex()+1);
+        rowsList.Add(newRowContainer);
+        // Expand
+        this.transform.parent.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -30);
+        this.transform.parent.GetComponent<RectTransform>().sizeDelta += new Vector2(0, 30);
+
+    }
+
+    public void AnotherGridCol()
+    {
+        var newColContainer = Instantiate(colContainer, colsList[colsList.Count-1].transform.position + Vector3.down * 30, Quaternion.identity);
+        newColContainer.transform.SetParent(this.transform);
+        newColContainer.transform.SetSiblingIndex(colsList[colsList.Count-1].transform.GetSiblingIndex()+1);
+
+        colsList.Add(newColContainer);
+        // Expand
+        this.transform.parent.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -30);
+        this.transform.parent.GetComponent<RectTransform>().sizeDelta += new Vector2(0, 30);
     }
 
     public void Execute(SelectionHandler objectSelectionHandler)
