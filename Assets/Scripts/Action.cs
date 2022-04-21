@@ -60,7 +60,7 @@ public class Action : MonoBehaviour
     {
         _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
         ObtainSelectionData();
-        addShapePanel.GetComponent<AddShape>().Execute();
+        addShapePanel.GetComponent<AddShape>().Execute(_objectSelectionHandler);
     }
 
     public void ExecuteCreateGridLines()
@@ -172,7 +172,6 @@ public class Action : MonoBehaviour
         var allObjs = new List<GameObject> {shape.gameObject};
         foreach (var child in children)
         {
-            Debug.Log("descendant: " + child);
             allObjs.AddRange(RecursivelyGetDescendants(child.GetComponent<Shape>()));
         }
 

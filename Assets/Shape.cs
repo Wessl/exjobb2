@@ -39,6 +39,11 @@ public class Shape : MonoBehaviour
     }
 
     // Can't really be called in Start() because this object might not yet know who is its own parent
+    public void SetupSizeExtent(Vector2 predefinedExtent)
+    {
+        // Supply vector2 if you want to manually define the extent
+        sizeExent = predefinedExtent;
+    }
     public void SetupSizeExtent()
     {
         // Basically, if there is a Mesh on this object, use that. If not, use the parent. 
@@ -53,6 +58,7 @@ public class Shape : MonoBehaviour
             throw new NotImplementedException("Implement the size extent thing!!");
         }
     }
+    
     
     
 }

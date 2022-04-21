@@ -23,20 +23,31 @@ public class AddShape : MonoBehaviour
     shape, parameters "cx, cy, w, h" specify the center point and size, parameter "offset" the relative depth with 
     respect to its parent, and parameter "visible" controls the visibility of the shape. The last two parameters are optional.
      */
-    public void Execute()
+    public void Execute(SelectionHandler objectSelectionHandler)
+    {
+        var currentlySelected = objectSelectionHandler.currentSelection;
+        foreach (var selected in currentlySelected)
+        {
+            CreateMesh(selected);
+        }
+        
+
+    }
+
+    private void CreateMesh(GameObject parentObj)
     {
         Mesh mesh = new Mesh();
         // First parse numbers from strings
-        int cx = int.Parse(centerX.text);
-        int cy = int.Parse(centerY.text);
-        int width = int.Parse(inputWidth.text);
-        int height = int.Parse(inputHeight.text);
+        float width = float.Parse(inputWidth.text);
+        float height = float.Parse(inputHeight.text);
+        float cx = float.Parse(centerX.text) + parentObj.transform.position.x + width/2;
+        float cy = float.Parse(centerY.text) + parentObj.transform.position.y + height/2;
         // Just create a quad
         Vector3[] vertices = new Vector3[4]
         {
-            new Vector3(-width / 2 - cx, -height / 2 + cy, 0),
-            new Vector3(width / 2 + cx, -height / 2 - cy, 0),
-            new Vector3(-width / 2 - cx, height / 2 + cy, 0),
+            new Vector3(-width / 2 + cx, -height / 2 + cy, 0),
+            new Vector3(width / 2 + cx, -height / 2 + cy, 0),
+            new Vector3(-width / 2 + cx, height / 2 + cy, 0),
             new Vector3(width / 2 + cx, height / 2 + cy, 0)
         };
         mesh.vertices = vertices;
@@ -66,14 +77,12 @@ public class AddShape : MonoBehaviour
         };
         mesh.uv = uv;
 
-        // Since addShape creates a new object, let's put it underneath Root for now
-        var root = GameObject.FindWithTag("Root");
+        // The shape created by AddShape should end up underneath the parent
         var newShape = new GameObject(label.text);
-        newShape.transform.parent = root.transform;
+        newShape.transform.parent = parentObj.transform;
         newShape.AddComponent<MeshFilter>();
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
-
     }
     
     EventSystem _eventSystem;

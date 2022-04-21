@@ -20,6 +20,7 @@ public class CreateGrid : MonoBehaviour
     public void Execute(SelectionHandler objectSelectionHandler)
     {
         var currentlySelected = objectSelectionHandler.currentSelection;
+        List<GameObject> newlyCreatedObjects = new List<GameObject>();
         var rowsList = rows.text.Split(',');
         var colsList = columns.text.Split(',');
         
@@ -36,23 +37,59 @@ public class CreateGrid : MonoBehaviour
                 float currRow = float.Parse(rowsList[j]);
                 float x = startPos.x;
                 float y = startPos.y + currRow;
-                newObjShapeComponent.GridRows.Add(currRow);
-                Debug.DrawLine(new Vector3(x,y,0), new Vector3(x + extent.x , y ,0), Color.cyan, 10);
+                if (y < (startPos.y + extent.y))
+                {
+                    newObjShapeComponent.GridRows.Add(currRow);
+                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x + extent.x , y ,0), Color.cyan, 100);
+                }
+                
             }
             for (int j = 0; j < colsList.Length; j++)
             {
                 float currCol = float.Parse(colsList[j]);
                 float x = startPos.x + currCol;
                 float y = startPos.y;
-                newObjShapeComponent.GridCols.Add(currCol);
-                Debug.DrawLine(new Vector3(x,y,0), new Vector3(x,y + extent.y,0), Color.yellow, 10);
+                if (x < (startPos.x + extent.x))
+                {
+                    newObjShapeComponent.GridCols.Add(currCol);
+                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x,y + extent.y,0), Color.yellow, 100);
+                }
+            }
+            // Now that we have all the knowledge of where grids are, let's actually create the grid components
+            var cols = newObjShapeComponent.GridCols;
+            var rows = newObjShapeComponent.GridRows;
+            cols.Insert(0, 0);
+            cols.Insert(cols.Count, extent.x);
+            rows.Insert(0, 0);
+            rows.Insert(rows.Count, extent.y);
+            for (int j = 0; j < cols.Count-1; j++)
+            {
+                for (int y = 0; y < rows.Count-1; y++)
+                {
+                    GameObject gridPart = new GameObject("gridPart");
+                    gridPart.name = label.text;
+                    gridPart.AddComponent<Shape>();
+                    var gridPartShapeComponent = gridPart.GetComponent<Shape>();
+                    gridPart.transform.position = new Vector3(cols[j] + startPos.x, rows[y] + startPos.y, 0);     // Sets the start pos for this grid component
+                    gridPartShapeComponent.Start();
+                    gridPart.transform.parent = currentlySelected[i].transform;
+                    gridPartShapeComponent.parent = currentlySelected[i];
+                    // Now find the size extent 
+                    var sizeExtentX = Mathf.Abs(cols[j] - cols[j + 1]);
+                    var sizeExtentY = Mathf.Abs(rows[y] - rows[y + 1]);
+                    gridPartShapeComponent.SetupSizeExtent(new Vector2(sizeExtentX, sizeExtentY));
+                    
+                    // Finally, add each one to the list of currently selected?
+                    newlyCreatedObjects.Add(gridPart);
+                }
             }
         }
+        currentlySelected.AddRange(newlyCreatedObjects);
     }
 
     private GameObject InitializeNewShape(Transform currentlySelectedsTransform)
     {
-        GameObject newObj = new GameObject(label.text + " yo mama");
+        GameObject newObj = new GameObject(label.text);
         var startTransform = currentlySelectedsTransform;
         newObj.AddComponent<Shape>();
         var newObjShapeComponent = newObj.GetComponent<Shape>();
