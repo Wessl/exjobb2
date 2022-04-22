@@ -16,6 +16,15 @@ public class Shape : MonoBehaviour
 
     [SerializeField] private Vector2 sizeExent;
     public Vector2 SizeExent => sizeExent;
+    
+    // Each shape may have multiple labels that it's known by, e.g. in a grid one cell can be part of a named row and named column
+    [SerializeField] private List<string> labels = new List<string>();
+
+    public List<string> Labels
+    {
+        get => labels;
+        set => labels = value;
+    }
 
     public List<float> GridRows
     {

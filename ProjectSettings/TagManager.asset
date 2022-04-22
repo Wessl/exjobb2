@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Root
+  - AttributeSelectorGO
+  - TopologySelectorGO
+  - GroupSelectorGO
+  - InputField
   layers:
   - Default
   - TransparentFX

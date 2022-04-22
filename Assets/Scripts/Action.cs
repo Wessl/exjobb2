@@ -29,11 +29,7 @@ public class Action : MonoBehaviour
             case 0:
                 SelectAddShape();
                 break;
-            case 1:
-                SelectCreateGrid();
-                break;
             case 9:
-                Debug.Log("Create grid");
                 SelectCreateGrid();
                 break;
             default:
