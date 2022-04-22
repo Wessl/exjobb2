@@ -18,6 +18,8 @@ public class AddShape : MonoBehaviour
     [SerializeField] private TMP_InputField offset;
     [SerializeField] private Toggle visible;
 
+    [SerializeField] private Material temporaryMat;
+
     /*
      * adds a 2D construction shape to another 2D construction shape. Parameter "la" specifies the label of the new
     shape, parameters "cx, cy, w, h" specify the center point and size, parameter "offset" the relative depth with 
@@ -76,13 +78,14 @@ public class AddShape : MonoBehaviour
             new Vector2(1, 1)
         };
         mesh.uv = uv;
-
+        
         // The shape created by AddShape should end up underneath the parent
         var newShape = new GameObject(label.text);
         newShape.transform.parent = parentObj.transform;
         newShape.AddComponent<MeshFilter>();
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
+        newShape.GetComponent<MeshRenderer>().material = temporaryMat;
     }
     
     EventSystem _eventSystem;

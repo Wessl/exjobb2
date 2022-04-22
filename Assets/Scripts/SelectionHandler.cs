@@ -77,12 +77,16 @@ public class SelectionHandler : MonoBehaviour
 
         if (labelOperator.Equals("=="))
         {
-            // Label is just... the name of a shape. lol
+            // Label is referred to as a list of strings. yeah
             foreach (var selection in currentSelection)
             {
-                if (selection.name.Equals(labelValue))
+                var labels = selection.GetComponent<Shape>().Labels;
+                foreach (var label in labels)
                 {
-                    newSelection.Add(selection);
+                    if (label.Equals(labelValue))
+                    {
+                        newSelection.Add(selection);
+                    }
                 }
             }
         }
