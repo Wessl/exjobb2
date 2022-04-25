@@ -17,6 +17,8 @@ public class AddShape : MonoBehaviour
     [SerializeField] private TMP_InputField inputHeight;
     [SerializeField] private TMP_InputField offset;
     [SerializeField] private Toggle visible;
+    [SerializeField] private TMP_Dropdown shapeTypeDropdown;
+    [SerializeField] private List<GameObject> premadeShapeTypes; 
 
     [SerializeField] private Material temporaryMat;
 
@@ -28,15 +30,40 @@ public class AddShape : MonoBehaviour
     public void Execute(SelectionHandler objectSelectionHandler)
     {
         var currentlySelected = objectSelectionHandler.currentSelection;
+        var newlySelected = new List<GameObject>();
         foreach (var selected in currentlySelected)
         {
-            CreateMesh(selected);
+            // If the object we are creating does not have a predefined mesh, make it
+            var meshName = shapeTypeDropdown.options[shapeTypeDropdown.value].text;
+            if (meshName.Equals("Default"))
+            {
+                CreateMesh(selected, newlySelected);
+            }
+            else
+            {
+                var activeMesh = premadeShapeTypes[shapeTypeDropdown.value - 1];
+                SpawnExistingMesh(selected, activeMesh, newlySelected);
+            }
         }
-        
+
+        objectSelectionHandler.currentSelection = newlySelected;
 
     }
 
-    private void CreateMesh(GameObject parentObj)
+    private void SpawnExistingMesh(GameObject parentObj, GameObject activeMesh, List<GameObject> newlySelected)
+    {
+        // Parse numerical values from strings
+        float width = float.Parse(inputWidth.text);
+        float height = float.Parse(inputHeight.text);
+        float cx = float.Parse(centerX.text) + parentObj.transform.position.x + width/2;
+        float cy = float.Parse(centerY.text) + parentObj.transform.position.y + height/2;
+
+        var newMesh = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
+        var originalShapeSize = FindTotalMeshSize(newMesh);
+        newMesh.transform.localScale = new Vector3(width / originalShapeSize.x, height / originalShapeSize.y, 1);
+    }
+
+    private void CreateMesh(GameObject parentObj, List<GameObject> newlySelected)
     {
         Mesh mesh = new Mesh();
         // First parse numbers from strings
@@ -86,6 +113,9 @@ public class AddShape : MonoBehaviour
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = temporaryMat;
+        
+        // Finally add the finished shape to the list of currently selected objects
+        newlySelected.Add(newShape);
     }
     
     EventSystem _eventSystem;
@@ -94,6 +124,24 @@ public class AddShape : MonoBehaviour
     {
         _eventSystem = EventSystem.current;
          
+    }
+
+    private Vector2 FindTotalMeshSize(GameObject parentObj)
+    {
+        var meshfilters = parentObj.GetComponentsInChildren<MeshFilter>();
+        Vector2 largestThusFar = new Vector2();
+        foreach (var meshfilter in meshfilters)
+        {
+            if (Mathf.Abs(largestThusFar.x) < Mathf.Abs(meshfilter.mesh.bounds.size.x))
+            {
+                largestThusFar.x = meshfilter.mesh.bounds.size.x;
+            }
+            if (Mathf.Abs(largestThusFar.y) < Mathf.Abs(meshfilter.mesh.bounds.size.y))
+            {
+                largestThusFar.y = meshfilter.mesh.bounds.size.y;
+            }
+        }
+        return largestThusFar;
     }
     
     public void Update()
