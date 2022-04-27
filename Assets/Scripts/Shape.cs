@@ -8,6 +8,13 @@ public class Shape : MonoBehaviour
     public GameObject parent;
     public List<GameObject> children;
     public List<GameObject> neighbours; // The real question is how the fuck do we populate this one
+    public enum ShapeType
+    {
+        Virtual,
+        Construction
+    }
+
+    public ShapeType currentType;
     
     // This may be temporary, but lets have information for certain virtual shapes? E.g. grids. Note that this current
     // impl. limits you to one grid per shape. more flexible to just have grid component, no?
@@ -40,6 +47,7 @@ public class Shape : MonoBehaviour
 
     public void Start()
     {
+        currentType = ShapeType.Construction;
         children ??= new List<GameObject>();
         neighbours ??= new List<GameObject>();
         gridRows = new List<float>();

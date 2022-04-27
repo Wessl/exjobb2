@@ -128,6 +128,9 @@ public class CreateGrid : MonoBehaviour
                     gridPartShapeComponent.Labels.Add(rowLabel);
                     gridPartShapeComponent.Labels.Add(colLabel);
                     
+                    // Set the Shape Type
+                    gridPartShapeComponent.currentType = Shape.ShapeType.Virtual;
+                    
                     // Now find the size extent 
                     var sizeExtentX = Mathf.Abs(cols[j] - cols[j + 1]);
                     var sizeExtentY = Mathf.Abs(rows[y] - rows[y + 1]);

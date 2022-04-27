@@ -35,35 +35,67 @@ public class AddShape : MonoBehaviour
         {
             // If the object we are creating does not have a predefined mesh, make it
             var meshName = shapeTypeDropdown.options[shapeTypeDropdown.value].text;
+            var shapeType = selected.GetComponent<Shape>().currentType;
             if (meshName.Equals("Default"))
             {
-                CreateMesh(selected, newlySelected);
+                CreateMesh(selected, newlySelected, shapeType);
             }
             else
             {
                 var activeMesh = premadeShapeTypes[shapeTypeDropdown.value - 1];
-                SpawnExistingMesh(selected, activeMesh, newlySelected);
+                SpawnExistingMesh(selected, activeMesh, newlySelected, shapeType);
             }
         }
-
+        // Assign parent, children, neighbours to each newly created object (all contained in newlySelected)
+        AssignShapeRelationships(newlySelected);
         objectSelectionHandler.currentSelection = newlySelected;
-
     }
 
-    private void SpawnExistingMesh(GameObject parentObj, GameObject activeMesh, List<GameObject> newlySelected)
+    private void AssignShapeRelationships(List<GameObject> newlyCreated)
+    {
+        foreach (var newObj in newlyCreated)
+        {
+            var newShape = newObj.GetComponent<Shape>();                    // Can this ever be null?
+            newShape.parent = newObj.transform.parent.gameObject;           // Set the parent
+            newShape.parent.GetComponent<Shape>().children.Add(newObj);     // Update the parent's children
+            newShape.children = null;
+            var potentialNeighbours = newShape.parent.GetComponentsInChildren<Shape>();
+            foreach (var potentialNeighbour in potentialNeighbours)
+            {
+                if (potentialNeighbour.gameObject != newShape.parent)
+                {
+                    newShape.neighbours.Add(potentialNeighbour.gameObject);
+                }
+            }
+        }
+    }
+
+    private void SpawnExistingMesh(GameObject parentObj, GameObject activeMesh, List<GameObject> newlySelected, Shape.ShapeType shapeType)
     {
         // Parse numerical values from strings
         float width = float.Parse(inputWidth.text);
         float height = float.Parse(inputHeight.text);
         float cx = float.Parse(centerX.text) + parentObj.transform.position.x + width/2;
         float cy = float.Parse(centerY.text) + parentObj.transform.position.y + height/2;
-
-        var newMesh = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
-        var originalShapeSize = FindTotalMeshSize(newMesh);
-        newMesh.transform.localScale = new Vector3(width / originalShapeSize.x, height / originalShapeSize.y, 1);
+        GameObject newShape;
+        if (shapeType == Shape.ShapeType.Construction)
+        {
+            newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
+            newShape.transform.parent = parentObj.transform;
+            // Finally add the finished shape to the list of currently selected objects
+            newlySelected.Add(newShape);
+        }
+        else
+        {
+            newShape = parentObj;
+            parentObj.GetComponent<Shape>().currentType = Shape.ShapeType.Construction; // Change from being virtual to construction?
+        }
+        
+        var originalShapeSize = FindTotalMeshSize(newShape);
+        newShape.transform.localScale = new Vector3(width / originalShapeSize.x, height / originalShapeSize.y, 1);
     }
 
-    private void CreateMesh(GameObject parentObj, List<GameObject> newlySelected)
+    private void CreateMesh(GameObject parentObj, List<GameObject> newlySelected, Shape.ShapeType shapeType)
     {
         Mesh mesh = new Mesh();
         // First parse numbers from strings
@@ -106,16 +138,27 @@ public class AddShape : MonoBehaviour
         };
         mesh.uv = uv;
         
-        // The shape created by AddShape should end up underneath the parent
-        var newShape = new GameObject(label.text);
-        newShape.transform.parent = parentObj.transform;
+        // The shape created by AddShape should end up underneath the parent if parent is Construction type
+        GameObject newShape;
+        if (shapeType == Shape.ShapeType.Construction)
+        {
+            newShape = new GameObject(label.text);
+            newShape.transform.parent = parentObj.transform;
+            // Finally add the finished shape to the list of currently selected objects
+            newlySelected.Add(newShape);
+        }
+        else
+        {
+            newShape = parentObj;
+            parentObj.GetComponent<Shape>().currentType = Shape.ShapeType.Construction; // Change from being virtual to construction?
+        }
+        
         newShape.AddComponent<MeshFilter>();
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = temporaryMat;
         
-        // Finally add the finished shape to the list of currently selected objects
-        newlySelected.Add(newShape);
+        
     }
     
     EventSystem _eventSystem;
