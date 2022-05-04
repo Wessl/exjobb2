@@ -107,7 +107,7 @@ public class Action : MonoBehaviour
         switch (selector.tag)
         {
             case "GroupSelectorGO":
-                GroupSelection();
+                GroupSelection(selector);
                 break;
             case "TopologySelectorGO":
                 TopologySelection(selector);
@@ -226,8 +226,25 @@ public class Action : MonoBehaviour
     /*
      * Group Selection
      */
-    private void GroupSelection()
+    private void GroupSelection(GameObject selector)
     {
-        throw new NotImplementedException();
+        var dropdown = selector.GetComponent<TMP_Dropdown>();
+        var dropdownValue = dropdown.options[dropdown.value].text;  
+        Debug.Log(dropdownValue);
+        switch (dropdownValue)
+        {
+            case "groupCols":
+                _objectSelectionHandler.GroupCols();
+                break;
+            case "groupRows":
+                _objectSelectionHandler.GroupRows();
+                break;
+            case "groupRegions":
+                _objectSelectionHandler.GroupRegions();
+                break;
+            default:
+                Debug.Log("group selector fell through without matching a case. Should not happen");
+                break;
+        }
     }
 }

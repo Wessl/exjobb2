@@ -141,7 +141,52 @@ public class CreateGrid : MonoBehaviour
                 }
             }
         }
+        AssignShapeRelations(newlyCreatedObjects);
         currentlySelected.AddRange(newlyCreatedObjects);
+    }
+
+    private void AssignShapeRelations(List<GameObject> newlyCreatedObjects)
+    {
+        float tolerance = 0.001f;   // This could probably be a float epsilon, but I don't think it matters
+        foreach (var obj in newlyCreatedObjects)
+        {
+            obj.transform.parent.GetComponent<Shape>().children.Add(obj);
+            var shape = obj.GetComponent<Shape>();
+            shape.parent = obj.transform.parent.gameObject;
+            var potentialNeighbours = shape.parent.GetComponentsInChildren<Shape>();
+            foreach (var potentialNeighbour in potentialNeighbours)
+            {
+                if (potentialNeighbour.parent != shape.parent || potentialNeighbour == shape) continue;     // Skip if different parents or if same object (GetComponentInChildren doesn't distinguish so we have to)
+                if (Math.Abs(shape.transform.position.x + shape.SizeExent.x - potentialNeighbour.transform.position.x) <
+                    tolerance && Math.Abs(shape.transform.position.y - potentialNeighbour.transform.position.y) <
+                    tolerance)
+                {
+                    // If this passes, it's a neighbour to the right
+                    shape.neighbours.Add(potentialNeighbour.gameObject);
+                }
+                if (Math.Abs(shape.transform.position.x - shape.SizeExent.x - potentialNeighbour.transform.position.x) <
+                    tolerance && Math.Abs(shape.transform.position.y - potentialNeighbour.transform.position.y) <
+                    tolerance)
+                {
+                    // If this passes, it's a neighbour to the left
+                    shape.neighbours.Add(potentialNeighbour.gameObject);
+                }
+                if (Math.Abs(shape.transform.position.y + shape.SizeExent.y - potentialNeighbour.transform.position.y) <
+                    tolerance && Math.Abs(shape.transform.position.x - potentialNeighbour.transform.position.x) <
+                    tolerance)
+                {
+                    // If this passes, it's a neighbour upwards
+                    shape.neighbours.Add(potentialNeighbour.gameObject);
+                }
+                if (Math.Abs(shape.transform.position.y - shape.SizeExent.y - potentialNeighbour.transform.position.y) <
+                    tolerance && Math.Abs(shape.transform.position.x - potentialNeighbour.transform.position.x) <
+                    tolerance)
+                {
+                    // If this passes, it's a neighbour downwards
+                    shape.neighbours.Add(potentialNeighbour.gameObject);
+                }
+            }
+        }
     }
 
     // Both combines every row and col list into one, but also saves the labels

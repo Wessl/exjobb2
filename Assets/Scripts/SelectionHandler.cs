@@ -176,6 +176,23 @@ public class SelectionHandler : MonoBehaviour
     {
         throw new NotImplementedException();
     }
+    
+    /*
+     * Grouping functionality
+     */
+    public void GroupCols()
+    {
+        
+    }
 
+    public void GroupRows()
+    {
+        
+    }
+
+    public void GroupRegions()
+    {
+        
+    }
     
 }

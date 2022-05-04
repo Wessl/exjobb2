@@ -92,7 +92,9 @@ public class AddShape : MonoBehaviour
             newShape = parentObj;
             parentObj.GetComponent<Shape>().currentType = Shape.ShapeType.Construction; // Change from being virtual to construction?
         }
-        
+        // Make sure it gets a label
+        newShape.GetComponent<Shape>().Labels.Add(label.text);
+
         var originalShapeSize = FindTotalMeshSize(newShape);
         newShape.transform.localScale = new Vector3(width / originalShapeSize.x, height / originalShapeSize.y, 1);
     }
@@ -155,6 +157,8 @@ public class AddShape : MonoBehaviour
             newShape = parentObj;
             parentObj.GetComponent<Shape>().currentType = Shape.ShapeType.Construction; // Change from being virtual to construction?
         }
+        // Make sure it gets a label
+        newShape.GetComponent<Shape>().Labels.Add(label.text);
         
         newShape.AddComponent<MeshFilter>();
         newShape.AddComponent<MeshRenderer>();
