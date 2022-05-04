@@ -56,6 +56,7 @@ public class AddShape : MonoBehaviour
         foreach (var newObj in newlyCreated)
         {
             var newShape = newObj.GetComponent<Shape>();                    // Can this ever be null?
+            newShape.Start();                                               // Essentially initializes it
             newShape.parent = newObj.transform.parent.gameObject;           // Set the parent
             newShape.parent.GetComponent<Shape>().children.Add(newObj);     // Update the parent's children
             newShape.children = null;
@@ -82,6 +83,7 @@ public class AddShape : MonoBehaviour
         {
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
             newShape.transform.parent = parentObj.transform;
+            newShape.AddComponent<Shape>();
             // Finally add the finished shape to the list of currently selected objects
             newlySelected.Add(newShape);
         }
@@ -143,6 +145,7 @@ public class AddShape : MonoBehaviour
         if (shapeType == Shape.ShapeType.Construction)
         {
             newShape = new GameObject(label.text);
+            newShape.AddComponent<Shape>();
             newShape.transform.parent = parentObj.transform;
             // Finally add the finished shape to the list of currently selected objects
             newlySelected.Add(newShape);

@@ -125,8 +125,8 @@ public class CreateGrid : MonoBehaviour
                     gridPartShapeComponent.parent = currentlySelected[i];
                     
                     // Handle labeling
-                    gridPartShapeComponent.Labels.Add(rowLabel);
-                    gridPartShapeComponent.Labels.Add(colLabel);
+                    if (rowLabel.Length > 0) gridPartShapeComponent.Labels.Add(rowLabel);
+                    if (colLabel.Length > 0) gridPartShapeComponent.Labels.Add(colLabel);
                     
                     // Set the Shape Type
                     gridPartShapeComponent.currentType = Shape.ShapeType.Virtual;
