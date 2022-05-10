@@ -85,7 +85,7 @@ public class CreateGrid : MonoBehaviour
                 if (y < (startPos.y + extent.y))
                 {
                     newObjShapeComponent.GridRows.Add(currRow);
-                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x + extent.x , y ,0), Color.cyan, 100);
+                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x + extent.x , y ,0), Color.cyan, 15);
                 }
                 
             }
@@ -97,7 +97,7 @@ public class CreateGrid : MonoBehaviour
                 if (x < (startPos.x + extent.x))
                 {
                     newObjShapeComponent.GridCols.Add(currCol);
-                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x,y + extent.y,0), Color.yellow, 100);
+                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x,y + extent.y,0), Color.yellow, 15);
                 }
             }
             // Now that we have all the knowledge of where grids are, let's actually create the grid components

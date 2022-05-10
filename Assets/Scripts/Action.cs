@@ -229,17 +229,16 @@ public class Action : MonoBehaviour
     private void GroupSelection(GameObject selector)
     {
         var dropdown = selector.GetComponent<TMP_Dropdown>();
-        var dropdownValue = dropdown.options[dropdown.value].text;  
-        Debug.Log(dropdownValue);
+        var dropdownValue = dropdown.options[dropdown.value].text;
         switch (dropdownValue)
         {
-            case "groupCols":
+            case "groupCols()":
                 _objectSelectionHandler.GroupCols();
                 break;
-            case "groupRows":
+            case "groupRows()":
                 _objectSelectionHandler.GroupRows();
                 break;
-            case "groupRegions":
+            case "groupRegions()":
                 _objectSelectionHandler.GroupRegions();
                 break;
             default:

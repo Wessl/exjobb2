@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -182,7 +183,87 @@ public class SelectionHandler : MonoBehaviour
      */
     public void GroupCols()
     {
-        
+        for (int i = 0; i < currentSelection.Count; i++)
+        {
+
+            List<GameObject> virtualObjectsToGroup = new List<GameObject>();
+            var selection = currentSelection[i];
+            var startPoint = selection;
+            virtualObjectsToGroup.Add(selection);
+            // Go upwards and find everything above
+            while (GetVirtualObjectAbove(selection) is var above && above != null)
+            {
+                selection = above;
+                virtualObjectsToGroup.Add(selection);
+            }
+            // Now start from the first one and go downwards 
+            selection = startPoint;
+            while (GetVirtualObjectBelow(selection) is var below && below != null)
+            {
+                selection = below;
+                virtualObjectsToGroup.Add(selection);
+            }
+            // Now we have all the parts... How to combine into a larger virtual shape?
+            // 1. Go through every collected thing
+            // 2. save the largest extent in positive and negative x,y directions
+            // 3. delete all current virtual objects, remove from currentSelection
+            // 4. create new virtual object with the new extent instead
+            // 5. break this out into a new function
+            List<string> labels = new List<string>();
+            Vector2 largest = new Vector2(-float.Epsilon, -float.Epsilon);
+            Vector2 smallest = new Vector2(float.Epsilon, float.Epsilon);
+            for (int y = 0; y < virtualObjectsToGroup.Count; y++)
+            {
+                var vObjToGroup = virtualObjectsToGroup[y];
+                if (vObjToGroup.CompareTag("Root")) continue;                           // this is bad practice, but I can't really think of another way
+                var currShape = vObjToGroup.GetComponent<Shape>();
+                var extent = currShape.SizeExent;
+                var currX = extent.x + vObjToGroup.transform.position.x;
+                var currY = extent.y + vObjToGroup.transform.position.y;
+                if (currX > largest.x) largest.x = currX;
+                if (currY > largest.y) largest.y = currY;
+                if (currX < smallest.x) smallest.x = currX;
+                if (currY < smallest.y) smallest.y = currY;
+                labels.AddRange(selection.GetComponent<Shape>().Labels);
+                currentSelection.Remove(vObjToGroup);
+                Destroy(vObjToGroup);
+            }
+            // Create a new virtual object which has these properties
+            // We also probalby need to also assign new shape relations and shit... fuck
+            GameObject groupedCol = new GameObject("gridPart");
+
+            groupedCol.AddComponent<Shape>();
+            var groupedColShape = groupedCol.GetComponent<Shape>();
+            groupedCol.transform.position = new Vector3(smallest.x, smallest.y, 0);     // Sets the start pos for this grid component
+            groupedColShape.Start();
+            
+            // Parent assignment
+            if (selection.transform.parent != null)
+            {
+                groupedCol.transform.parent = selection.transform.parent; 
+                groupedColShape.parent = selection.transform.parent.gameObject;
+            }
+
+            // Handle labeling
+            if (labels.Count > 0) groupedColShape.Labels.AddRange(labels);
+
+            // Set the Shape Type
+            groupedColShape.currentType = Shape.ShapeType.Virtual;
+                    
+            // Assign the already known size extent
+            var sizeExtentX = largest.x;
+            var sizeExtentY = largest.y;
+            groupedColShape.SetupSizeExtent(new Vector2(sizeExtentX, sizeExtentY));
+                    
+            // Finally, add each one to the list of currently selected?
+            currentSelection.Add(groupedCol);
+            
+            // Debug
+            Debug.DrawLine(new Vector3(smallest.x, smallest.y, 0), new Vector3(smallest.x, largest.y, 0), Color.red, 50);
+            Debug.DrawLine(new Vector3(smallest.x, smallest.y, 0), new Vector3(largest.x, smallest.y, 0), Color.red, 50);
+            Debug.DrawLine(new Vector3(largest.x, smallest.y, 0), new Vector3(largest.x, largest.y, 0), Color.red, 50);
+            Debug.DrawLine(new Vector3(smallest.x, largest.y, 0), new Vector3(largest.x, largest.y, 0), Color.red,50);
+        }
     }
 
     public void GroupRows()
@@ -193,6 +274,75 @@ public class SelectionHandler : MonoBehaviour
     public void GroupRegions()
     {
         
+    }
+
+    private GameObject GetVirtualObjectAbove(GameObject currentObj)
+    {
+        // Do the same thing for below, left, right, then make it recursive so we get everything in a column or row
+        var currentShape = currentObj.GetComponent<Shape>();
+        var neighbours = currentShape.neighbours;
+        var tolerance = 0.001f;
+        foreach (var neighbour in neighbours)
+        {
+            if (Math.Abs(currentShape.transform.position.y + currentShape.SizeExent.y - neighbour.transform.position.y) <
+                tolerance )
+            {
+                return neighbour;
+            }
+        }
+
+        return null;
+    }
+
+    private GameObject GetVirtualObjectBelow(GameObject currentObj)
+    {
+        var currentShape = currentObj.GetComponent<Shape>();
+        var neighbours = currentShape.neighbours;
+        var tolerance = 0.001f;
+        foreach (var neighbour in neighbours)
+        {
+            if (Math.Abs(currentShape.transform.position.y - currentShape.SizeExent.y - neighbour.transform.position.y) <
+                tolerance )
+            {
+                return neighbour;
+            }
+        }
+
+        return null;
+    }
+
+    private GameObject GetVirtualObjectRight(GameObject currentObj)
+    {
+        var currentShape = currentObj.GetComponent<Shape>();
+        var neighbours = currentShape.neighbours;
+        var tolerance = 0.001f;
+        foreach (var neighbour in neighbours)
+        {
+            if (Math.Abs(currentShape.transform.position.x + currentShape.SizeExent.x - neighbour.transform.position.x) <
+                tolerance )
+            {
+                return neighbour;
+            }
+        }
+
+        return null;
+    }
+
+    private GameObject GetVirtualObjectLeft(GameObject currentObj)
+    {
+        var currentShape = currentObj.GetComponent<Shape>();
+        var neighbours = currentShape.neighbours;
+        var tolerance = 0.001f;
+        foreach (var neighbour in neighbours)
+        {
+            if (Math.Abs(currentShape.transform.position.x + currentShape.SizeExent.x - neighbour.transform.position.x) <
+                tolerance )
+            {
+                return neighbour;
+            }
+        }
+
+        return null;
     }
     
 }
