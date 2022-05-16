@@ -184,6 +184,7 @@ public class SelectionHandler : MonoBehaviour
      */
     public void GroupCols()
     {
+        List<GameObject> createdCols = new List<GameObject>();
         for (int i = 0; i < currentSelection.Count; i++)
         {
 
@@ -206,12 +207,20 @@ public class SelectionHandler : MonoBehaviour
                 virtualObjectsToGroup.Add(selection);
             }
             // Now we have all the parts necessary to turn all the components into a single large column
-            CombineShape(virtualObjectsToGroup, selection);
+            // However, if the selection did not operate on a row or column, i.e. was solo shape, ignore it
+            if (virtualObjectsToGroup.Count > 1)
+            {
+                var newShape = CombineShape(virtualObjectsToGroup, selection);
+                createdCols.Add(newShape);
+            }
+            // Assigning neighbours?
+            CreateGrid.AssignShapeRelations(createdCols);
         }
     }
 
     public void GroupRows()
     {
+        List<GameObject> createdRows = new List<GameObject>();
         for (int i = 0; i < currentSelection.Count; i++)
         {
             List<GameObject> virtualObjectsToGroup = new List<GameObject>();
@@ -236,8 +245,11 @@ public class SelectionHandler : MonoBehaviour
             // However, if the selection did not operate on a row or column, i.e. was solo shape, ignore it
             if (virtualObjectsToGroup.Count > 1)
             {
-                CombineShape(virtualObjectsToGroup, selection);
+                var newShape = CombineShape(virtualObjectsToGroup, selection);
+                createdRows.Add(newShape);
             }
+            // Assigning neighbours
+            CreateGrid.AssignShapeRelations(createdRows);
         }
     }
 
@@ -252,7 +264,7 @@ public class SelectionHandler : MonoBehaviour
         3. delete all current virtual objects, remove from currentSelection
         4. create new virtual object with the new extent instead
      */
-    private void CombineShape(List<GameObject> virtualObjectsToGroup, GameObject selection)
+    private GameObject CombineShape(List<GameObject> virtualObjectsToGroup, GameObject selection)
     {
       
         List<string> labels = new List<string>();
@@ -311,6 +323,8 @@ public class SelectionHandler : MonoBehaviour
         Debug.DrawLine(new Vector3(smallest.x, smallest.y, 0), new Vector3(largest.x, smallest.y, 0), Color.red, 50);
         Debug.DrawLine(new Vector3(largest.x, smallest.y, 0), new Vector3(largest.x, largest.y, 0), Color.red, 50);
         Debug.DrawLine(new Vector3(smallest.x, largest.y, 0), new Vector3(largest.x, largest.y, 0), Color.red,50);
+
+        return groupedCol;
     }
 
     private GameObject GetVirtualObjectAbove(GameObject currentObj)

@@ -148,7 +148,7 @@ public class CreateGrid : MonoBehaviour
         currentlySelected.AddRange(newlyCreatedObjects);
     }
 
-    private void AssignShapeRelations(List<GameObject> newlyCreatedObjects)
+    public static void AssignShapeRelations(List<GameObject> newlyCreatedObjects)
     {
         float tolerance = 0.001f;   // This could probably be a float epsilon, but I don't think it matters
         foreach (var obj in newlyCreatedObjects)
