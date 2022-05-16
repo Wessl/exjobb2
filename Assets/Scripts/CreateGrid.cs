@@ -173,7 +173,6 @@ public class CreateGrid : MonoBehaviour
                     tolerance)
                 {
                     // If this passes, it's a neighbour to the left
-                    Debug.Log("adding new neighbour to the left. " + potentialNeighbour.gameObject.name);
                     shape.neighbours.Add(potentialNeighbour.gameObject);
                 }
                 if (Math.Abs(shape.transform.position.y + shape.SizeExent.y - potentialNeighbour.transform.position.y) <
@@ -188,7 +187,6 @@ public class CreateGrid : MonoBehaviour
                     tolerance)
                 {
                     // If this passes, it's a neighbour downwards
-                    Debug.Log("adding new neighbour downwards. " + potentialNeighbour.gameObject.name);
                     shape.neighbours.Add(potentialNeighbour.gameObject);
                 }
                 

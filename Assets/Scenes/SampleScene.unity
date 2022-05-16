@@ -1155,8 +1155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
-  children:
-  - {fileID: 0}
+  children: []
   neighbours: []
   currentType: 0
   sizeExent: {x: 15, y: 15}

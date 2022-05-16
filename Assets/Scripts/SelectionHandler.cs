@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -189,6 +190,7 @@ public class SelectionHandler : MonoBehaviour
             List<GameObject> virtualObjectsToGroup = new List<GameObject>();
             var selection = currentSelection[i];
             var startPoint = selection;
+
             virtualObjectsToGroup.Add(selection);
             // Go upwards and find everything above
             while (GetVirtualObjectAbove(selection) is var above && above != null)
@@ -221,6 +223,7 @@ public class SelectionHandler : MonoBehaviour
             {
                 selection = right;
                 virtualObjectsToGroup.Add(selection);
+                
             }
             // Now start from the original one and go to the left
             selection = startPoint;
@@ -230,7 +233,11 @@ public class SelectionHandler : MonoBehaviour
                 virtualObjectsToGroup.Add(selection);
             }
             // Now we have all the parts necessary to turn all the components into a single large column
-            CombineShape(virtualObjectsToGroup, selection);
+            // However, if the selection did not operate on a row or column, i.e. was solo shape, ignore it
+            if (virtualObjectsToGroup.Count > 1)
+            {
+                CombineShape(virtualObjectsToGroup, selection);
+            }
         }
     }
 
@@ -239,7 +246,7 @@ public class SelectionHandler : MonoBehaviour
         
     }
 
-    /*
+    /*  Operating on e.g. a row or column of selected shapes...
      *  1. Go through every collected virtual construction shape
         2. save the largest extent in positive and negative x,y directions
         3. delete all current virtual objects, remove from currentSelection
@@ -251,6 +258,8 @@ public class SelectionHandler : MonoBehaviour
         List<string> labels = new List<string>();
         Vector2 largest = new Vector2(float.MinValue, float.MinValue);
         Vector2 smallest = new Vector2(float.MaxValue, float.MaxValue);
+        var startPos = virtualObjectsToGroup.OrderBy(o => Vector3.Distance(o.transform.position, Vector3.zero)).ToList()[0].transform.position;
+        
         for (int y = 0; y < virtualObjectsToGroup.Count; y++)
         {
             var vObjToGroup = virtualObjectsToGroup[y];
@@ -274,10 +283,6 @@ public class SelectionHandler : MonoBehaviour
         groupedCol.AddComponent<Shape>();
         var groupedColShape = groupedCol.GetComponent<Shape>();
         groupedCol.transform.position = new Vector3(smallest.x, smallest.y, 0);     // Sets the start pos for this grid component
-        Debug.Log("smallest x:" + smallest.x);
-        Debug.Log("smallest y:" + smallest.y);
-        Debug.Log("largest x: " + largest.x);
-        Debug.Log("largest y: " + largest.y);
         groupedColShape.Start();
         
         // Parent assignment
@@ -294,8 +299,8 @@ public class SelectionHandler : MonoBehaviour
         groupedColShape.currentType = Shape.ShapeType.Virtual;
                 
         // Assign the already known size extent
-        var sizeExtentX = largest.x;
-        var sizeExtentY = largest.y;
+        var sizeExtentX = largest.x - startPos.x;
+        var sizeExtentY = largest.y - startPos.y;
         groupedColShape.SetupSizeExtent(new Vector2(sizeExtentX, sizeExtentY));
                 
         // Finally, add each one to the list of currently selected?
