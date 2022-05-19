@@ -18,7 +18,8 @@ public class AddShape : MonoBehaviour
     [SerializeField] private TMP_InputField offset;
     [SerializeField] private Toggle visible;
     [SerializeField] private TMP_Dropdown shapeTypeDropdown;
-    [SerializeField] private List<GameObject> premadeShapeTypes; 
+    [SerializeField] private List<GameObject> premadeShapeTypes;
+    [SerializeField] private TMP_InputField randomizationInputField;
 
     [SerializeField] private Material temporaryMat;
 
@@ -33,6 +34,8 @@ public class AddShape : MonoBehaviour
         var newlySelected = new List<GameObject>();
         foreach (var selected in currentlySelected)
         {
+            // Before we do anything, check the randomization factor and decide if we're even gonna add the current one
+            if (!DetermineRandomizationResult()) continue;
             // If the object we are creating does not have a predefined mesh, make it
             var meshName = shapeTypeDropdown.options[shapeTypeDropdown.value].text;
             var shapeType = selected.GetComponent<Shape>().currentType;
@@ -49,6 +52,12 @@ public class AddShape : MonoBehaviour
         // Assign parent, children, neighbours to each newly created object (all contained in newlySelected)
         AssignShapeRelationships(newlySelected);
         objectSelectionHandler.currentSelection = newlySelected;
+    }
+
+    private bool DetermineRandomizationResult()
+    {
+        var value = float.Parse(randomizationInputField.text != "" ? randomizationInputField.text : 1.ToString());
+        return (Random.Range(0f, 1f) <= value);
     }
 
     private void AssignShapeRelationships(List<GameObject> newlyCreated)
