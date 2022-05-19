@@ -12,6 +12,7 @@ public class Action : MonoBehaviour
     [SerializeField] private GameObject addShapePanel;
     [SerializeField] private GameObject createGridPanel;
     [SerializeField] private GameObject rotatePanel;
+    [SerializeField] private GameObject scalePanel;
 
     private GameObject lastSelection;   // used to hide the last selection easily
     private SelectionHandler _objectSelectionHandler;
@@ -48,19 +49,6 @@ public class Action : MonoBehaviour
         }
     }
 
-    private void SelectScale()
-    {
-        throw new NotImplementedException();
-    }
-
-    private void SelectRotate()
-    {
-        // First set up the UI shit then just add the functionality... easy? yes. useful? maybe, maybe not
-        rotatePanel.SetActive(true);
-        HideLastSelection();
-        lastSelection = rotatePanel;
-    }
-
     private void SelectTransform()
     {
         throw new NotImplementedException();
@@ -78,6 +66,22 @@ public class Action : MonoBehaviour
         createGridPanel.SetActive(true);
         HideLastSelection();
         lastSelection = createGridPanel;
+    }
+    
+    private void SelectRotate()
+    {
+        // First set up the UI shit then just add the functionality... easy? yes. useful? maybe, maybe not
+        rotatePanel.SetActive(true);
+        HideLastSelection();
+        lastSelection = rotatePanel;
+    }
+    
+    private void SelectScale()
+    {
+        // First set up the UI shit then just add the functionality... easy? yes. useful? maybe, maybe not
+        scalePanel.SetActive(true);
+        HideLastSelection();
+        lastSelection = scalePanel;
     }
 
     public void ExecuteAddShape()
@@ -99,6 +103,13 @@ public class Action : MonoBehaviour
         _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
         ObtainSelectionData();
         rotatePanel.GetComponent<Transforms>().ExecuteRotate(_objectSelectionHandler);
+    }
+    
+    public void ExecuteScale()
+    {
+        _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
+        ObtainSelectionData();
+        scalePanel.GetComponent<Transforms>().ExecuteRotate(_objectSelectionHandler);
     }
 
     private void HideLastSelection()
