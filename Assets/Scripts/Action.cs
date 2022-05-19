@@ -11,6 +11,7 @@ public class Action : MonoBehaviour
     public GameObject selectionParent;  // This is set by the Selex parent cell that creates it
     [SerializeField] private GameObject addShapePanel;
     [SerializeField] private GameObject createGridPanel;
+    [SerializeField] private GameObject rotatePanel;
 
     private GameObject lastSelection;   // used to hide the last selection easily
     private SelectionHandler _objectSelectionHandler;
@@ -32,10 +33,37 @@ public class Action : MonoBehaviour
             case 9:
                 SelectCreateGrid();
                 break;
+            case 14:
+                SelectTransform();
+                break;
+            case 15:
+                SelectRotate();
+                break;
+            case 16:
+                SelectScale();
+                break;
             default:
                 lastSelection = null;
                 break;
         }
+    }
+
+    private void SelectScale()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void SelectRotate()
+    {
+        // First set up the UI shit then just add the functionality... easy? yes. useful? maybe, maybe not
+        rotatePanel.SetActive(true);
+        HideLastSelection();
+        lastSelection = rotatePanel;
+    }
+
+    private void SelectTransform()
+    {
+        throw new NotImplementedException();
     }
 
     private void SelectAddShape()
@@ -64,6 +92,13 @@ public class Action : MonoBehaviour
         _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
         ObtainSelectionData();
         createGridPanel.GetComponent<CreateGrid>().Execute(_objectSelectionHandler);
+    }
+
+    public void ExecuteRotate()
+    {
+        _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
+        ObtainSelectionData();
+        rotatePanel.GetComponent<Transforms>().ExecuteRotate(_objectSelectionHandler);
     }
 
     private void HideLastSelection()
