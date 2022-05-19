@@ -20,6 +20,10 @@ public class Transforms : MonoBehaviour
     [SerializeField] private TMP_InputField scaleXInputField;
     [SerializeField] private TMP_InputField scaleYInputField;
     [SerializeField] private TMP_InputField scaleZInputField;
+
+    [SerializeField] private TMP_InputField translateXInputField;
+    [SerializeField] private TMP_InputField translateYInputField;
+    [SerializeField] private TMP_InputField translateZInputField;
     public void ExecuteRotate(SelectionHandler objectSelectionHandler)
     {
         var currentlySelected = objectSelectionHandler.currentSelection;
@@ -35,15 +39,29 @@ public class Transforms : MonoBehaviour
     public void ExecuteScale(SelectionHandler objectSelectionHandler)
     {
         var currentlySelected = objectSelectionHandler.currentSelection;
-        var scaleX = float.Parse(scaleXInputField.text);
-        var scaleY = float.Parse(scaleYInputField.text);
-        var scaleZ = float.Parse(scaleZInputField.text);
-        // You have to get the axes of rotation and how much, then just apply it
+        var scaleX = float.Parse(scaleXInputField.text != "" ? scaleXInputField.text : 1.ToString());
+        var scaleY = float.Parse(scaleYInputField.text != "" ? scaleYInputField.text : 1.ToString());
+        var scaleZ = float.Parse(scaleZInputField.text != "" ? scaleZInputField.text : 1.ToString());
+        // You have to get the axes of scale and how much, then just apply it
         foreach (var currentObj in currentlySelected)
         {
             var scale = currentObj.transform.localScale;
             scale = new Vector3(scale.x * scaleX, scale.y * scaleY, scale.z * scaleZ);
             currentObj.transform.localScale = scale;
+        }
+    }
+    
+    public void ExecuteTranslation(SelectionHandler objectSelectionHandler)
+    {
+        var currentlySelected = objectSelectionHandler.currentSelection;
+        var translateX = float.Parse(translateXInputField.text != "" ? translateXInputField.text : 0.ToString());
+        var translateY = float.Parse(translateYInputField.text != "" ? translateYInputField.text : 0.ToString());
+        var translateZ = float.Parse(translateZInputField.text != "" ? translateZInputField.text : 0.ToString());
+        // You have to get the axes of translation and how much, then just apply it
+        foreach (var currentObj in currentlySelected)
+        {
+            var translation = new Vector3(translateX, translateY, translateZ);
+            currentObj.transform.position += translation;
         }
     }
 }

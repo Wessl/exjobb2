@@ -13,6 +13,7 @@ public class Action : MonoBehaviour
     [SerializeField] private GameObject createGridPanel;
     [SerializeField] private GameObject rotatePanel;
     [SerializeField] private GameObject scalePanel;
+    [SerializeField] private GameObject translatePanel;
 
     private GameObject lastSelection;   // used to hide the last selection easily
     private SelectionHandler _objectSelectionHandler;
@@ -42,6 +43,9 @@ public class Action : MonoBehaviour
                 break;
             case 16:
                 SelectScale();
+                break;
+            case 17:
+                SelectTranslate();
                 break;
             default:
                 lastSelection = null;
@@ -83,6 +87,14 @@ public class Action : MonoBehaviour
         HideLastSelection();
         lastSelection = scalePanel;
     }
+    
+    private void SelectTranslate()
+    {
+        // First set up the UI shit then just add the functionality... easy? yes. useful? maybe, maybe not
+        translatePanel.SetActive(true);
+        HideLastSelection();
+        lastSelection = translatePanel;
+    }
 
     public void ExecuteAddShape()
     {
@@ -109,7 +121,14 @@ public class Action : MonoBehaviour
     {
         _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
         ObtainSelectionData();
-        scalePanel.GetComponent<Transforms>().ExecuteRotate(_objectSelectionHandler);
+        scalePanel.GetComponent<Transforms>().ExecuteScale(_objectSelectionHandler);
+    }
+    
+    public void ExecuteTranslation()
+    {
+        _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
+        ObtainSelectionData();
+        translatePanel.GetComponent<Transforms>().ExecuteTranslation(_objectSelectionHandler);
     }
 
     private void HideLastSelection()
