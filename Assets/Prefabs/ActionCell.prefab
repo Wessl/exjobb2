@@ -11356,6 +11356,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279de32ffe53d164fb6e6e7ceae36cae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageAgeType: {fileID: 2149729787566290272}
+  noiseModifier: {fileID: 3185417359890362120}
+  densityPercent: {fileID: 4933272853336173508}
+  vectorModifier: {fileID: 3307960297638053812}
+  helperLabel: {fileID: 231275604424764681}
 --- !u!1 &5333212369165053038
 GameObject:
   m_ObjectHideFlags: 0
