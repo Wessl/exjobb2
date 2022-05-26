@@ -14,6 +14,7 @@ public class Action : MonoBehaviour
     [SerializeField] private GameObject rotatePanel;
     [SerializeField] private GameObject scalePanel;
     [SerializeField] private GameObject translatePanel;
+    [SerializeField] private GameObject damageAndAgePanel;
 
     private GameObject lastSelection;   // used to hide the last selection easily
     private SelectionHandler _objectSelectionHandler;
@@ -47,6 +48,9 @@ public class Action : MonoBehaviour
             case 17:
                 SelectTranslate();
                 break;
+            case 21:
+                SelectDamageAndAge();
+                break;
             default:
                 lastSelection = null;
                 break;
@@ -56,6 +60,12 @@ public class Action : MonoBehaviour
     private void SelectTransform()
     {
         throw new NotImplementedException();
+    }
+    private void SelectDamageAndAge()
+    {
+        damageAndAgePanel.SetActive(true);
+        HideLastSelection();
+        lastSelection = damageAndAgePanel;
     }
 
     private void SelectAddShape()
@@ -129,6 +139,13 @@ public class Action : MonoBehaviour
         _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
         ObtainSelectionData();
         translatePanel.GetComponent<Transforms>().ExecuteTranslation(_objectSelectionHandler);
+    }
+
+    public void ExecuteDamageAndAge()
+    {
+        _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
+        ObtainSelectionData();
+        damageAndAgePanel.GetComponent<DamageAndAge>().Execute(_objectSelectionHandler);
     }
 
     private void HideLastSelection()

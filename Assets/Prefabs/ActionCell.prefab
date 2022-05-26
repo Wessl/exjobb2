@@ -5522,7 +5522,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6329626177190196884}
         m_TargetAssemblyTypeName: Action, Assembly-CSharp
-        m_MethodName: ExecuteAddShape
+        m_MethodName: ExecuteDamageAndAge
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7568,6 +7568,7 @@ MonoBehaviour:
   rotatePanel: {fileID: 7395844064814810500}
   scalePanel: {fileID: 6855129514012460323}
   translatePanel: {fileID: 3291214682008878899}
+  damageAndAgePanel: {fileID: 0}
 --- !u!1 &3611064966050511427
 GameObject:
   m_ObjectHideFlags: 0
@@ -11280,7 +11281,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2730615484290161298
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18553,7 +18554,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4018657601954170004
 RectTransform:
   m_ObjectHideFlags: 0

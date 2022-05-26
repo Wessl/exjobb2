@@ -21,7 +21,7 @@ public class DamageAndAge : MonoBehaviour
         foreach (var selected in currentlySelected)
         {  
             // 1. Find out if we are going to use any other objects as helpers (i.e. a window)
-            
+            GetHelpObjectsInfo(selected);
             // 2. Once we have the texture to operate on, start by expanding it (forget the name of it)
             
             // 3. Apply random noise to it
@@ -40,9 +40,23 @@ public class DamageAndAge : MonoBehaviour
         {
             // There is probably something to sample. Check if anything has the correct label
             List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helpLabelText);
-            
+            var stepDist = selectedObject.GetComponent<Shape>().SizeExent / new Vector2(width, height);
+            Vector2 currStep = new Vector2();
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    // Sample here
+                    RaycastHit[] hits = Physics.RaycastAll(new Vector3(currStep.x, currStep.y, 0), Vector3.forward, 100);
+                    Debug.Log("hits: " + hits.Length);
+                    currStep.x += stepDist.x;
+                }
+
+                currStep.y += stepDist.y;
+            }
+
             // Make sure every object you are comparing against has a collider
-            
+
             // Shoot out a ray from each point of the thing. if we collide with one of the allowed objs, mark the pixel 
         }
         else
