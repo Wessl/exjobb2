@@ -174,7 +174,8 @@ public class AddShape : MonoBehaviour
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = temporaryMat;
         
-        
+        // Shape extent setup
+        newShape.GetComponent<Shape>().SetupSizeExtent(new Vector2(width, height));
     }
     
     EventSystem _eventSystem;

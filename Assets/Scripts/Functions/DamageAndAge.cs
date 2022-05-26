@@ -74,14 +74,22 @@ public class DamageAndAge : MonoBehaviour
         foreach (var rootChild in rootChildren)
         {
             var labels = rootChild.GetComponent<Shape>()?.Labels;
-            foreach (var label in labels)
+            if (labels is null)
             {
-                if (label.Equals(helpLabelText))
-                {   
-                    Debug.Log("OH SHIT YOU FOUND IT BITCH");
-                    foundObjects.Add(rootChild.gameObject);
+                Debug.Log("There are no labels associated with the current object, skipping");
+            }
+            else
+            {
+                foreach (var label in labels)
+                {
+                    if (label.Equals(helpLabelText))
+                    {   
+                        Debug.Log("OH SHIT YOU FOUND IT BITCH. ");
+                        foundObjects.Add(rootChild.gameObject);
+                    }
                 }
             }
+            
         }
 
         return foundObjects;

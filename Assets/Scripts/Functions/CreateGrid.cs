@@ -64,7 +64,9 @@ public class CreateGrid : MonoBehaviour
 
     public void Execute(SelectionHandler objectSelectionHandler)
     {
+        Debug.Log("Creating Grid");
         var currentlySelected = objectSelectionHandler.currentSelection;
+        
         List<GameObject> newlyCreatedObjects = new List<GameObject>();
         
         CombineRowColListsIntoOne();    // Will populate rowsList and colsList

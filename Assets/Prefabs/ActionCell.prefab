@@ -7568,7 +7568,7 @@ MonoBehaviour:
   rotatePanel: {fileID: 7395844064814810500}
   scalePanel: {fileID: 6855129514012460323}
   translatePanel: {fileID: 3291214682008878899}
-  damageAndAgePanel: {fileID: 0}
+  damageAndAgePanel: {fileID: 5324165095931844295}
 --- !u!1 &3611064966050511427
 GameObject:
   m_ObjectHideFlags: 0

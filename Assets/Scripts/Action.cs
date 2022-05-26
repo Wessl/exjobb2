@@ -161,7 +161,6 @@ public class Action : MonoBehaviour
      */
     public void ObtainSelectionData()
     {
-        Debug.Log("trying to obtain selection data");   
         var selexObjParent = selectionParent.GetComponent<Selex>();
         // Now find all the things being selected by this...?
         var listOfGameObjects = new List<List<GameObject>>()
@@ -225,7 +224,6 @@ public class Action : MonoBehaviour
                 _objectSelectionHandler.currentSelection = new List<GameObject>(){ parent };
                 break;
             case "descendant()":
-                Debug.Log("descendant");
                 List<GameObject> descendants = RecursivelyGetDescendants(startpointShape);
                 break;
             case "root()":
