@@ -90,6 +90,7 @@ public class AddShape : MonoBehaviour
         GameObject newShape;
         if (shapeType == Shape.ShapeType.Construction)
         {
+            Debug.Log("spawning in to " + cx + ", " + cy);
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
             newShape.transform.parent = parentObj.transform;
             newShape.AddComponent<Shape>();
@@ -107,6 +108,9 @@ public class AddShape : MonoBehaviour
         var originalShapeSize = FindTotalMeshSize(newShape);
         // Potential bug waiting to happen... completely flat object on one axis will cause error
         newShape.transform.localScale = new Vector3(width / originalShapeSize.x, height / originalShapeSize.y, 1);
+        
+        // Shape extent setup
+        newShape.GetComponent<Shape>().SetupSizeExtent(new Vector2(width, height));
     }
 
     private void CreateMesh(GameObject parentObj, List<GameObject> newlySelected, Shape.ShapeType shapeType)
@@ -120,10 +124,10 @@ public class AddShape : MonoBehaviour
         // Just create a quad
         Vector3[] vertices = new Vector3[4]
         {
-            new Vector3(-width / 2 + cx, -height / 2 + cy, 0),
-            new Vector3(width / 2 + cx, -height / 2 + cy, 0),
-            new Vector3(-width / 2 + cx, height / 2 + cy, 0),
-            new Vector3(width / 2 + cx, height / 2 + cy, 0)
+            new Vector3(-width / 2, -height / 2, 0),
+            new Vector3(width / 2, -height / 2, 0),
+            new Vector3(-width / 2, height / 2, 0),
+            new Vector3(width / 2, height / 2, 0)
         };
         mesh.vertices = vertices;
         int[] tris = new int[6]
@@ -157,11 +161,13 @@ public class AddShape : MonoBehaviour
         if (shapeType == Shape.ShapeType.Construction)
         {
             newShape = new GameObject(label.text);
+            newShape.transform.position = new Vector3(cx, cy, 0);
             newShape.AddComponent<Shape>();
             newShape.transform.parent = parentObj.transform;
             // Finally add the finished shape to the list of currently selected objects
             newlySelected.Add(newShape);
         }
+        // Else, it's virtual and it should take the place of the virtual shape
         else
         {
             newShape = parentObj;
@@ -207,7 +213,6 @@ public class AddShape : MonoBehaviour
     
     public void Update()
     {
-        
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             Selectable next = _eventSystem.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown();

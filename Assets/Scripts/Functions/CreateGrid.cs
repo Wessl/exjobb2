@@ -75,7 +75,8 @@ public class CreateGrid : MonoBehaviour
         for (int i = 0; i < currentlySelected.Count; i++)
         {
             var newObj = InitializeNewShape(currentlySelected[i].transform);
-            var startPos = currentlySelected[i].transform.position;
+            var shape = currentlySelected[i].GetComponent<Shape>();
+            var startPos = currentlySelected[i].transform.position - new Vector3(shape.SizeExent.x/2, shape.SizeExent.y/2, 0);
             var newObjShapeComponent = newObj.GetComponent<Shape>();
             var extent = newObjShapeComponent.SizeExent;
             Debug.Log("extent: " + extent);
