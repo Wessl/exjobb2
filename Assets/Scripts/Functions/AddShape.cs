@@ -18,8 +18,8 @@ public class AddShape : MonoBehaviour
     [SerializeField] private TMP_InputField offset;
     [SerializeField] private Toggle visible;
     [SerializeField] private TMP_Dropdown shapeTypeDropdown;
-    [SerializeField] private List<GameObject> premadeShapeTypes;
     [SerializeField] private TMP_InputField randomizationInputField;
+    [SerializeField] private List<GameObject> premadeShapeTypes;
 
     [SerializeField] private Material temporaryMat;
 
@@ -105,6 +105,7 @@ public class AddShape : MonoBehaviour
         newShape.GetComponent<Shape>().Labels.Add(label.text);
 
         var originalShapeSize = FindTotalMeshSize(newShape);
+        // Potential bug waiting to happen... completely flat object on one axis will cause error
         newShape.transform.localScale = new Vector3(width / originalShapeSize.x, height / originalShapeSize.y, 1);
     }
 
