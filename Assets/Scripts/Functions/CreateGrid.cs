@@ -85,7 +85,7 @@ public class CreateGrid : MonoBehaviour
                 float currRow = combinedRowsList[j].Item1;
                 float x = startPos.x;
                 float y = startPos.y + currRow;
-                if (y < (startPos.y + extent.y))
+                if (y <= (startPos.y + extent.y))
                 {
                     newObjShapeComponent.GridRows.Add(currRow);
                     Debug.DrawLine(new Vector3(x,y,0), new Vector3(x + extent.x , y ,0), Color.cyan, 15);
@@ -97,7 +97,7 @@ public class CreateGrid : MonoBehaviour
                 float currCol = combinedColsList[j].Item1;
                 float x = startPos.x + currCol;
                 float y = startPos.y;
-                if (x < (startPos.x + extent.x))
+                if (x <= (startPos.x + extent.x))
                 {
                     newObjShapeComponent.GridCols.Add(currCol);
                     Debug.DrawLine(new Vector3(x,y,0), new Vector3(x,y + extent.y,0), Color.yellow, 15);
@@ -210,6 +210,7 @@ public class CreateGrid : MonoBehaviour
                 if (inputField.CompareTag("InputField"))
                 {
                     var cols = inputField.text.Split(',');
+                    Debug.Log("cols: " + cols[0] + ", " +cols[cols.Length-1]);
                     string otherInputField = inputFields[(i + 1) % (inputFields.Length)].text;
                     foreach (var column in cols)
                     {
