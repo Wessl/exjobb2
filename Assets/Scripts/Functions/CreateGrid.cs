@@ -132,7 +132,9 @@ public class CreateGrid : MonoBehaviour
                     if (colLabel.Length > 0) gridPartShapeComponent.Labels.Add(colLabel);
                     
                     // Set the Shape Type
+                    Debug.Log("shape type: " + gridPartShapeComponent.currentType);
                     gridPartShapeComponent.currentType = Shape.ShapeType.Virtual;
+                    Debug.Log("shape type: " + gridPartShapeComponent.currentType);
                     
                     // Now find the size extent 
                     var sizeExtentX = Mathf.Abs(cols[j] - cols[j + 1]);
@@ -141,12 +143,17 @@ public class CreateGrid : MonoBehaviour
                     
                     // Finally, add each one to the list of currently selected?
                     newlyCreatedObjects.Add(gridPart);
+                    Debug.Log("shape type: " + gridPartShapeComponent.currentType);
                 }
             }
             // newObj was only used as reference, no longer needed
             objectSelectionHandler.DestroyShapeSafely(newObj.GetComponent<Shape>());
         }
-        
+
+        foreach (var obj in newlyCreatedObjects)
+        {
+            Debug.Log("shape type now? " + obj.GetComponent<Shape>().currentType);
+        }
         AssignShapeRelations(newlyCreatedObjects);
         currentlySelected.AddRange(newlyCreatedObjects);
     }

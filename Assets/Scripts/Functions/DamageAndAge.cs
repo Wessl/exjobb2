@@ -33,7 +33,7 @@ public class DamageAndAge : MonoBehaviour
     private void GetHelpObjectsInfo(GameObject selectedObject)
     {
         // 1. Set up texture
-        int height = 1000, width = 1000;
+        int height = 100, width = 100;
         Texture2D backgroundTex = new Texture2D(width, height);
         var helpLabelText = helperLabel.text;
         if (helpLabelText != "")
@@ -41,6 +41,7 @@ public class DamageAndAge : MonoBehaviour
             // There is probably something to sample. Check if anything has the correct label
             List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helpLabelText);
             var stepDist = selectedObject.GetComponent<Shape>().SizeExent / new Vector2(width, height);
+            Debug.Log("step dist: " + stepDist);
             Vector2 currStep = new Vector2();
             for (int y = 0; y < height; y++)
             {
@@ -71,6 +72,7 @@ public class DamageAndAge : MonoBehaviour
         GameObject root = GameObject.FindWithTag("Root");
         List<GameObject> foundObjects = new List<GameObject>();
         var rootChildren = root.GetComponentsInChildren<Transform>();
+        Debug.Log("how many rootchildren? " +rootChildren.Length);
         foreach (var rootChild in rootChildren)
         {
             var labels = rootChild.GetComponent<Shape>()?.Labels;

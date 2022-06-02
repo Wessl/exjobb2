@@ -47,12 +47,12 @@ public class Shape : MonoBehaviour
 
     public void Start()
     {
-        currentType = ShapeType.Construction;
+        //currentType = ShapeType.Construction;
         children ??= new List<GameObject>();
         neighbours ??= new List<GameObject>();
         gridRows = new List<float>();
         gridCols = new List<float>();
-        
+        Debug.Log("start is running now");
     }
 
     // Can't really be called in Start() because this object might not yet know who is its own parent
