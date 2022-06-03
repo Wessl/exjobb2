@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -35,15 +36,16 @@ public class DamageAndAge : MonoBehaviour
     {
         // 1. Set up texture
         int height = 100, width = 100;
-        Texture2D backgroundTex = new Texture2D(width, height, TextureFormat.RGB24, false);
+        Texture2D backgroundTex = CreateSingleColorTexture2D(width, height, TextureFormat.RGB24, false, Color.black);
         var helpLabelText = helperLabel.text;
         if (helpLabelText != "")
         {
             // There is probably something to sample. Check if anything has the correct label
             List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helpLabelText);
             var stepDist = selectedObject.GetComponent<Shape>().SizeExent / new Vector2(width, height);
-            Debug.Log("step dist: " + stepDist);
-            Vector2 currStep = new Vector2(selectedObject.transform.position.x, selectedObject.transform.position.y);
+            // Get the start position of where you should be stepping in world space (it makes sense)
+            Vector2 currStep = new Vector2(selectedObject.transform.position.x - selectedObject.GetComponent<Shape>().SizeExent.x/2, selectedObject.transform.position.y - selectedObject.GetComponent<Shape>().SizeExent.y/2);
+            
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
@@ -55,24 +57,23 @@ public class DamageAndAge : MonoBehaviour
                     {
                         if (sampleSourceObjects.Contains(hit.transform.gameObject))
                         {
-                            Debug.Log("yeah we found one alright");
-                            backgroundTex.SetPixel(x,y,Color.black);
+                            backgroundTex.SetPixel(x,y,Color.white);
                         }
                     }
                     
                     currStep.x += stepDist.x;
                 }
 
-                currStep.x = selectedObject.transform.position.x; // set back to 0, start on next row
+                currStep.x = selectedObject.transform.position.x - selectedObject.GetComponent<Shape>().SizeExent.x/2; // set back to 0, start on next row
                 currStep.y += stepDist.y;
             }
+            // Save texture to disk (maybe not necessary in the end, but really good for debugging purposes
             byte[] bytes = backgroundTex.EncodeToPNG();
             var dirPath = Application.dataPath + "/../SaveImages/";
             if(!Directory.Exists(dirPath)) {
                 Directory.CreateDirectory(dirPath);
             }
             File.WriteAllBytes(dirPath + "Image" + ".png", bytes);
-            Debug.Log("finished writing texture");
             
             // Make sure every object you are comparing against has a collider
 
@@ -113,5 +114,16 @@ public class DamageAndAge : MonoBehaviour
         }
 
         return foundObjects;
+    }
+
+    private Texture2D CreateSingleColorTexture2D(int width, int height, TextureFormat textureFormat, bool mipChain,
+        Color color)
+    {
+        var texture = new Texture2D(width, height, textureFormat, mipChain);
+        Color[] pixels = Enumerable.Repeat(color, width * height).ToArray();
+        texture.SetPixels(pixels);
+        texture.Apply();
+        return texture;
+
     }
 }
