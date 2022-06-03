@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 
@@ -34,7 +35,7 @@ public class DamageAndAge : MonoBehaviour
     {
         // 1. Set up texture
         int height = 100, width = 100;
-        Texture2D backgroundTex = new Texture2D(width, height);
+        Texture2D backgroundTex = new Texture2D(width, height, TextureFormat.RGB24, false);
         var helpLabelText = helperLabel.text;
         if (helpLabelText != "")
         {
@@ -42,20 +43,37 @@ public class DamageAndAge : MonoBehaviour
             List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helpLabelText);
             var stepDist = selectedObject.GetComponent<Shape>().SizeExent / new Vector2(width, height);
             Debug.Log("step dist: " + stepDist);
-            Vector2 currStep = new Vector2();
+            Vector2 currStep = new Vector2(selectedObject.transform.position.x, selectedObject.transform.position.y);
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
                     // Sample here
-                    RaycastHit[] hits = Physics.RaycastAll(new Vector3(currStep.x, currStep.y, 0), Vector3.forward, 100);
-                    Debug.Log("hits: " + hits.Length);
+                    RaycastHit[] hits = Physics.RaycastAll(new Vector3(currStep.x, currStep.y, 1), -Vector3.forward, 100);
+                    
+                    foreach (var hit in hits)
+                    {
+                        if (sampleSourceObjects.Contains(hit.transform.gameObject))
+                        {
+                            Debug.Log("yeah we found one alright");
+                            backgroundTex.SetPixel(x,y,Color.black);
+                        }
+                    }
+                    
                     currStep.x += stepDist.x;
                 }
 
+                currStep.x = selectedObject.transform.position.x; // set back to 0, start on next row
                 currStep.y += stepDist.y;
             }
-
+            byte[] bytes = backgroundTex.EncodeToPNG();
+            var dirPath = Application.dataPath + "/../SaveImages/";
+            if(!Directory.Exists(dirPath)) {
+                Directory.CreateDirectory(dirPath);
+            }
+            File.WriteAllBytes(dirPath + "Image" + ".png", bytes);
+            Debug.Log("finished writing texture");
+            
             // Make sure every object you are comparing against has a collider
 
             // Shoot out a ray from each point of the thing. if we collide with one of the allowed objs, mark the pixel 
@@ -71,7 +89,7 @@ public class DamageAndAge : MonoBehaviour
         // Start with the root
         GameObject root = GameObject.FindWithTag("Root");
         List<GameObject> foundObjects = new List<GameObject>();
-        var rootChildren = root.GetComponentsInChildren<Transform>();
+        var rootChildren = root.GetComponentsInChildren<Shape>();
         Debug.Log("how many rootchildren? " +rootChildren.Length);
         foreach (var rootChild in rootChildren)
         {

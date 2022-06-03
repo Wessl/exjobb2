@@ -15,7 +15,8 @@ public class SelectionHandler : MonoBehaviour
     void Start()
     {
         currentSelection = new List<GameObject>();
-        var rootChildren = root.GetComponentsInChildren<Transform>();
+        var rootChildren = root.GetComponentsInChildren<Shape>();
+        rootChildren = rootChildren.Skip(1).ToArray();  // don't include root
         foreach (var rootChild in rootChildren)
         {
             currentSelection.Add(rootChild.gameObject);

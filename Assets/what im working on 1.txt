@@ -1,3 +1,3 @@
 what I'm working on right now:
 make sure extra shape does not get created when doing already existing mesh. altho... hmm... it only gets created because we're also selecting the parent construction shape that's also along the grid... right?
-now it seems like creategrid doesnt even create virtual shapes to begin with?
+now just fix the extra shape, then make a defaut testing ground with ready-made background and windows (with labels...) so we can actually makethe damage and age thing work. ok?

@@ -90,16 +90,19 @@ public class AddShape : MonoBehaviour
         GameObject newShape;
         if (shapeType == Shape.ShapeType.Construction)
         {
-            Debug.Log("spawning in to " + cx + ", " + cy);
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
             newShape.transform.parent = parentObj.transform;
-            newShape.AddComponent<Shape>();
+            newShape.AddComponent<Shape>().Start();
             // Finally add the finished shape to the list of currently selected objects
             newlySelected.Add(newShape);
         }
         else
         {
-            newShape = parentObj;
+            newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
+            newShape.transform.parent = parentObj.transform;
+            newShape.AddComponent<Shape>().Start();
+
+            //newShape = parentObj;
             parentObj.GetComponent<Shape>().currentType = Shape.ShapeType.Construction; // Change from being virtual to construction?
         }
         // Make sure it gets a label
@@ -108,6 +111,8 @@ public class AddShape : MonoBehaviour
         var originalShapeSize = FindTotalMeshSize(newShape);
         // Potential bug waiting to happen... completely flat object on one axis will cause error
         newShape.transform.localScale = new Vector3(width / originalShapeSize.x, height / originalShapeSize.y, 1);
+        
+        newShape.GetComponent<Shape>().currentType = Shape.ShapeType.Construction;
         
         // Shape extent setup
         newShape.GetComponent<Shape>().SetupSizeExtent(new Vector2(width, height));
@@ -180,7 +185,7 @@ public class AddShape : MonoBehaviour
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = temporaryMat;
-        
+        newShape.GetComponent<Shape>().currentType = Shape.ShapeType.Construction;
         // Shape extent setup
         newShape.GetComponent<Shape>().SetupSizeExtent(new Vector2(width, height));
     }
