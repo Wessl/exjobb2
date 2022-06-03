@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CatlikeCoding.SDFToolkit;
 using TMPro;
 using UnityEngine;
 
@@ -23,65 +24,76 @@ public class DamageAndAge : MonoBehaviour
         foreach (var selected in currentlySelected)
         {  
             // 1. Find out if we are going to use any other objects as helpers (i.e. a window)
-            GetHelpObjectsInfo(selected);
-            // 2. Once we have the texture to operate on, start by expanding it (forget the name of it)
-            
+            var tex = CreateTextureMaskBase(selected);
+            // 2. Once we have the texture to operate on, start by expanding it (signed distance field)
+            ApplySDFToTexture(tex);
             // 3. Apply random noise to it
-            
+
             // 4. Texture mask that shit
         }
     }
 
-    private void GetHelpObjectsInfo(GameObject selectedObject)
+    private void ApplySDFToTexture(Texture2D tex)
+    {
+        Texture2D dest = new Texture2D(100, 100);
+        SDFTextureGenerator.Generate(tex, dest, 0, 40, 40, RGBFillMode.Black);
+        byte[] bytes = dest.EncodeToPNG();
+        var dirPath = Application.dataPath + "/SaveImages/";
+        if(!Directory.Exists(dirPath)) {
+            Directory.CreateDirectory(dirPath);
+        }
+        File.WriteAllBytes(dirPath + "Image2" + ".png", bytes);
+    }
+
+    private Texture2D CreateTextureMaskBase(GameObject selectedObject)
     {
         // 1. Set up texture
         int height = 100, width = 100;
-        Texture2D backgroundTex = CreateSingleColorTexture2D(width, height, TextureFormat.RGB24, false, Color.black);
+        
         var helpLabelText = helperLabel.text;
         if (helpLabelText != "")
         {
+            Texture2D backgroundTex = CreateSingleColorTexture2D(width, height, TextureFormat.RGB24, false, Color.black);
             // There is probably something to sample. Check if anything has the correct label
             List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helpLabelText);
             var stepDist = selectedObject.GetComponent<Shape>().SizeExent / new Vector2(width, height);
+            
             // Get the start position of where you should be stepping in world space (it makes sense)
             Vector2 currStep = new Vector2(selectedObject.transform.position.x - selectedObject.GetComponent<Shape>().SizeExent.x/2, selectedObject.transform.position.y - selectedObject.GetComponent<Shape>().SizeExent.y/2);
             
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    // Sample here
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    // Shoot out a ray from each point of the thing in the negative Z, towards camera. if we collide with one of the allowed objs, mark the pixel 
                     RaycastHit[] hits = Physics.RaycastAll(new Vector3(currStep.x, currStep.y, 1), -Vector3.forward, 100);
                     
                     foreach (var hit in hits)
                     {
                         if (sampleSourceObjects.Contains(hit.transform.gameObject))
                         {
-                            backgroundTex.SetPixel(x,y,Color.white);
+                            // Set the color to white to begin a mask of where windows are
+                            backgroundTex.SetPixel(x,y,Color.white);    
                         }
                     }
-                    
                     currStep.x += stepDist.x;
                 }
-
-                currStep.x = selectedObject.transform.position.x - selectedObject.GetComponent<Shape>().SizeExent.x/2; // set back to 0, start on next row
+                // start on next row
+                currStep.x = selectedObject.transform.position.x - selectedObject.GetComponent<Shape>().SizeExent.x/2; 
                 currStep.y += stepDist.y;
             }
             // Save texture to disk (maybe not necessary in the end, but really good for debugging purposes
             byte[] bytes = backgroundTex.EncodeToPNG();
-            var dirPath = Application.dataPath + "/../SaveImages/";
+            var dirPath = Application.dataPath + "/SaveImages/";
             if(!Directory.Exists(dirPath)) {
                 Directory.CreateDirectory(dirPath);
             }
             File.WriteAllBytes(dirPath + "Image" + ".png", bytes);
-            
-            // Make sure every object you are comparing against has a collider
 
-            // Shoot out a ray from each point of the thing. if we collide with one of the allowed objs, mark the pixel 
+            return backgroundTex;
         }
         else
         {
-            // Idk do nothing bitch
+            // Everything is valid, so just use a fully filled in mask - a white texture
+            return CreateSingleColorTexture2D(width, height, TextureFormat.RGB24, false, Color.white);
         }
     }
 
@@ -105,7 +117,6 @@ public class DamageAndAge : MonoBehaviour
                 {
                     if (label.Equals(helpLabelText))
                     {   
-                        Debug.Log("OH SHIT YOU FOUND IT BITCH. ");
                         foundObjects.Add(rootChild.gameObject);
                     }
                 }
@@ -120,7 +131,9 @@ public class DamageAndAge : MonoBehaviour
         Color color)
     {
         var texture = new Texture2D(width, height, textureFormat, mipChain);
+        // Set colors alpha value to be 1 if black 0 if white?? yezzzzz
         Color[] pixels = Enumerable.Repeat(color, width * height).ToArray();
+        
         texture.SetPixels(pixels);
         texture.Apply();
         return texture;

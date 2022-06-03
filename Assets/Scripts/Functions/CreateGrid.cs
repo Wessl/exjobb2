@@ -64,7 +64,6 @@ public class CreateGrid : MonoBehaviour
 
     public void Execute(SelectionHandler objectSelectionHandler)
     {
-        Debug.Log("Creating Grid");
         var currentlySelected = objectSelectionHandler.currentSelection;
         
         List<GameObject> newlyCreatedObjects = new List<GameObject>();
@@ -79,7 +78,6 @@ public class CreateGrid : MonoBehaviour
             var startPos = currentlySelected[i].transform.position - new Vector3(shape.SizeExent.x/2, shape.SizeExent.y/2, 0);
             var newObjShapeComponent = newObj.GetComponent<Shape>();
             var extent = newObjShapeComponent.SizeExent;
-            Debug.Log("extent: " + extent);
             for (int j = 0; j < combinedRowsList.Count; j++)
             {
                 float currRow = combinedRowsList[j].Item1;
@@ -132,9 +130,7 @@ public class CreateGrid : MonoBehaviour
                     if (colLabel.Length > 0) gridPartShapeComponent.Labels.Add(colLabel);
                     
                     // Set the Shape Type
-                    Debug.Log("shape type: " + gridPartShapeComponent.currentType);
                     gridPartShapeComponent.currentType = Shape.ShapeType.Virtual;
-                    Debug.Log("shape type: " + gridPartShapeComponent.currentType);
                     
                     // Now find the size extent 
                     var sizeExtentX = Mathf.Abs(cols[j] - cols[j + 1]);
@@ -217,7 +213,6 @@ public class CreateGrid : MonoBehaviour
                 if (inputField.CompareTag("InputField"))
                 {
                     var cols = inputField.text.Split(',');
-                    Debug.Log("cols: " + cols[0] + ", " +cols[cols.Length-1]);
                     string otherInputField = inputFields[(i + 1) % (inputFields.Length)].text;
                     foreach (var column in cols)
                     {
