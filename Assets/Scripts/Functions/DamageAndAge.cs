@@ -31,6 +31,7 @@ public class DamageAndAge : MonoBehaviour
             // 3. Apply random noise to it
             RandomNoise(tex);
             // 4. Texture mask that shit
+            // My plan of how to do this: Idk mang. Like, use the texture as a reference, and just... put more of the reference texture into the spots where it's more white??? should work right?
         }
     }
 
