@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using CatlikeCoding.SDFToolkit;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 public class DamageAndAge : MonoBehaviour
@@ -20,40 +21,64 @@ public class DamageAndAge : MonoBehaviour
     public void Execute(SelectionHandler objectSelectionHandler)
     {
         var currentlySelected = objectSelectionHandler.currentSelection;
-        
+        int width = 128, height = 128;
         foreach (var selected in currentlySelected)
         {  
             // 1. Find out if we are going to use any other objects as helpers (i.e. a window)
-            var tex = CreateTextureMaskBase(selected);
+            Texture2D tex = CreateTextureMaskBase(selected, width, height);
             // 2. Once we have the texture to operate on, start by expanding it (signed distance field)
-            ApplySDFToTexture(tex);
+            tex = ApplySDFToTexture(tex);
             // 3. Apply random noise to it
-
+            RandomNoise(tex);
             // 4. Texture mask that shit
         }
     }
 
-    private void ApplySDFToTexture(Texture2D tex)
+    private void RandomNoise(Texture2D tex)
     {
-        Texture2D dest = new Texture2D(100, 100);
-        SDFTextureGenerator.Generate(tex, dest, 0, 40, 40, RGBFillMode.Black);
+        // First check what kind of noise we want (or if we want any at all)
+        var noise = noiseModifier.options[noiseModifier.value].text;
+        switch (noise)
+        {
+            case "perlin":
+                Debug.Log("perlin");
+                break;
+            case "simplex":
+                Debug.Log("simplex");
+                break;
+            case "none":
+            default:
+                Debug.Log("yo mama");
+                break;
+        }
+        // Then apply that noise to the pixels with strength depending on the input alpha, I guess?
+    }
+
+    private Texture2D ApplySDFToTexture(Texture2D tex)
+    {
+        Texture2D dest = new Texture2D(tex.width, tex.height, TextureFormat.Alpha8, false);
+        dest.alphaIsTransparency = true;
+        SDFTextureGenerator.Generate(tex, dest, 0, 30, 30, RGBFillMode.Source);
+        dest.Apply();
         byte[] bytes = dest.EncodeToPNG();
         var dirPath = Application.dataPath + "/SaveImages/";
         if(!Directory.Exists(dirPath)) {
             Directory.CreateDirectory(dirPath);
         }
         File.WriteAllBytes(dirPath + "Image2" + ".png", bytes);
+        AssetDatabase.Refresh();                                            // Force asset database to refresh
+        return dest;
     }
 
-    private Texture2D CreateTextureMaskBase(GameObject selectedObject)
+    private Texture2D CreateTextureMaskBase(GameObject selectedObject, int width, int height)
     {
         // 1. Set up texture
-        int height = 100, width = 100;
-        
+
         var helpLabelText = helperLabel.text;
         if (helpLabelText != "")
         {
-            Texture2D backgroundTex = CreateSingleColorTexture2D(width, height, TextureFormat.RGB24, false, Color.black);
+            // Create a new background of black (representing nothing), with alpha channel also set to 0 (needed to fill SDF texture later)
+            Texture2D backgroundTex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0));
             // There is probably something to sample. Check if anything has the correct label
             List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helpLabelText);
             var stepDist = selectedObject.GetComponent<Shape>().SizeExent / new Vector2(width, height);
@@ -81,6 +106,7 @@ public class DamageAndAge : MonoBehaviour
                 currStep.y += stepDist.y;
             }
             // Save texture to disk (maybe not necessary in the end, but really good for debugging purposes
+            backgroundTex.Apply();
             byte[] bytes = backgroundTex.EncodeToPNG();
             var dirPath = Application.dataPath + "/SaveImages/";
             if(!Directory.Exists(dirPath)) {
@@ -93,7 +119,7 @@ public class DamageAndAge : MonoBehaviour
         else
         {
             // Everything is valid, so just use a fully filled in mask - a white texture
-            return CreateSingleColorTexture2D(width, height, TextureFormat.RGB24, false, Color.white);
+            return CreateSingleColorTexture2D(width, height, TextureFormat.RGB24, false, new Color(1,1,1,0));
         }
     }
 
@@ -133,7 +159,7 @@ public class DamageAndAge : MonoBehaviour
         var texture = new Texture2D(width, height, textureFormat, mipChain);
         // Set colors alpha value to be 1 if black 0 if white?? yezzzzz
         Color[] pixels = Enumerable.Repeat(color, width * height).ToArray();
-        
+        Debug.Log("What is the default alpha value? " + pixels[0]);
         texture.SetPixels(pixels);
         texture.Apply();
         return texture;
