@@ -40,10 +40,11 @@ public class DamageAndAge : MonoBehaviour
         var noise = noiseModifier.options[noiseModifier.value].text;
         switch (noise)
         {
-            case "perlin":
-                Debug.Log("perlin");
+            case "Perlin":
+                tex = NoiseGenerator.CalculatePerlinNoise(tex, scale: 10);
+                DrawTextureIntoImage(tex, "image3");
                 break;
-            case "simplex":
+            case "Simplex":
                 Debug.Log("simplex");
                 break;
             case "none":
@@ -60,13 +61,7 @@ public class DamageAndAge : MonoBehaviour
         dest.alphaIsTransparency = true;
         SDFTextureGenerator.Generate(tex, dest, 0, 30, 30, RGBFillMode.Source);
         dest.Apply();
-        byte[] bytes = dest.EncodeToPNG();
-        var dirPath = Application.dataPath + "/SaveImages/";
-        if(!Directory.Exists(dirPath)) {
-            Directory.CreateDirectory(dirPath);
-        }
-        File.WriteAllBytes(dirPath + "Image2" + ".png", bytes);
-        AssetDatabase.Refresh();                                            // Force asset database to refresh
+        DrawTextureIntoImage(dest, "image2");
         return dest;
     }
 
@@ -107,12 +102,7 @@ public class DamageAndAge : MonoBehaviour
             }
             // Save texture to disk (maybe not necessary in the end, but really good for debugging purposes
             backgroundTex.Apply();
-            byte[] bytes = backgroundTex.EncodeToPNG();
-            var dirPath = Application.dataPath + "/SaveImages/";
-            if(!Directory.Exists(dirPath)) {
-                Directory.CreateDirectory(dirPath);
-            }
-            File.WriteAllBytes(dirPath + "Image" + ".png", bytes);
+            DrawTextureIntoImage(backgroundTex, "image");
 
             return backgroundTex;
         }
@@ -163,6 +153,18 @@ public class DamageAndAge : MonoBehaviour
         texture.SetPixels(pixels);
         texture.Apply();
         return texture;
-
     }
+
+    private void DrawTextureIntoImage(Texture2D tex, string imgName)
+    {
+        byte[] bytes = tex.EncodeToPNG();
+        var dirPath = Application.dataPath + "/SaveImages/";
+        if(!Directory.Exists(dirPath)) {
+            Directory.CreateDirectory(dirPath);
+        }
+        File.WriteAllBytes(dirPath + imgName + ".png", bytes);
+        AssetDatabase.Refresh();                                            // Force asset database to refresh
+    }
+
+    
 }

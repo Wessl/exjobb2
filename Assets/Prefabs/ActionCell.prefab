@@ -1037,13 +1037,13 @@ MonoBehaviour:
     m_Options:
     - m_Text: Noise Modifier
       m_Image: {fileID: 0}
-    - m_Text: Window1
+    - m_Text: Perlin
       m_Image: {fileID: 0}
-    - m_Text: Door1
+    - m_Text: Simplex
       m_Image: {fileID: 0}
-    - m_Text: Flowerpot1
+    - m_Text: Ass
       m_Image: {fileID: 0}
-    - m_Text: Windowsill1
+    - m_Text: Johnathan C-na
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -18556,7 +18556,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4018657601954170004
 RectTransform:
   m_ObjectHideFlags: 0
