@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class NoiseGenerator
 {
-    public static Texture2D CalculatePerlinNoise(Texture2D source, float scale)
+    public static Texture2D ApplyPerlinNoiseToTexture(Texture2D source, float scale)
     {
         // Width and height of the texture in pixels.
         int pixWidth = source.width;
@@ -40,5 +40,40 @@ public static class NoiseGenerator
         noiseTex.SetPixels(pix);
         noiseTex.Apply();
         return noiseTex;
+    }
+
+    public static Texture2D ApplyNoiseToTexture(Texture2D sourceTex)
+    {
+        
+        int pixWidth = sourceTex.width;
+        int pixHeight = sourceTex.height;
+        float stepSize = 1f / pixHeight;
+        sourceTex = new Texture2D(pixWidth, pixHeight);
+        float frequency = 10f;
+        Vector3 point00 = new Vector3(-0.5f,-0.5f);
+        Vector3 point10 = new Vector3( 0.5f,-0.5f);
+        Vector3 point01 = new Vector3(-0.5f, 0.5f);
+        Vector3 point11 = new Vector3( 0.5f, 0.5f);
+        Random.seed = 42;
+        for (int y = 0; y < pixHeight; y++)
+        {
+            Vector3 point0 = Vector3.Lerp(point00, point01, (y + 0.5f) * stepSize);
+            Vector3 point1 = Vector3.Lerp(point10, point11, (y + 0.5f) * stepSize);
+            for (int x = 0; x < pixWidth; x++)
+            {
+                Vector3 point = Vector3.Lerp(point0, point1, (x + 0.5f) * stepSize);
+                Debug.Log(Value(point, frequency));
+                sourceTex.SetPixel(x, y, Color.white * Value(point, frequency));
+            }
+        }
+        sourceTex.Apply();
+        return sourceTex;
+    }
+
+    public static float Value(Vector3 point, float frequency)
+    {
+        point *= frequency;
+        float i = point.x;
+        return i % 2;
     }
 }

@@ -49,11 +49,17 @@ public class DamageAndAge : MonoBehaviour
         switch (noise)
         {
             case "Perlin":
-                tex = NoiseGenerator.CalculatePerlinNoise(tex, scale: 35);
+                tex = NoiseGenerator.ApplyPerlinNoiseToTexture(tex, scale: 35);
                 DrawTextureIntoImage(tex, "image3");
                 break;
             case "Simplex":
                 Debug.Log("simplex (NOT YET IMPLEMENTED)");
+                break;
+            case "Value":
+                tex = NoiseGenerator.ApplyNoiseToTexture(tex);
+                DrawTextureIntoImage(tex, "image3");
+
+                Debug.Log("Applying value noise");
                 break;
             case "none":
             default:
