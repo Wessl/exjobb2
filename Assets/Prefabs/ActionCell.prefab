@@ -11362,6 +11362,7 @@ MonoBehaviour:
   densityPercent: {fileID: 4933272853336173508}
   vectorModifier: {fileID: 3307960297638053812}
   helperLabel: {fileID: 231275604424764681}
+  textureMaskMat: {fileID: 2100000, guid: fdb8d3df7a704bc4ab1caadff2fb4c74, type: 2}
 --- !u!1 &5333212369165053038
 GameObject:
   m_ObjectHideFlags: 0

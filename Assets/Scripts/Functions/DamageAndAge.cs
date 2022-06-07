@@ -14,6 +14,7 @@ public class DamageAndAge : MonoBehaviour
     [SerializeField] private TMP_InputField densityPercent;
     [SerializeField] private TMP_InputField vectorModifier;
     [SerializeField] private TMP_InputField helperLabel;
+    [SerializeField] private Material textureMaskMat;
     
     /*
      * Attempts to create a damage and/or aging effect to the currently selected objects.
@@ -21,46 +22,55 @@ public class DamageAndAge : MonoBehaviour
     public void Execute(SelectionHandler objectSelectionHandler)
     {
         var currentlySelected = objectSelectionHandler.currentSelection;
-        int width = 128, height = 128;
+        int width = 512, height = 512;
         foreach (var selected in currentlySelected)
         {  
             // 1. Find out if we are going to use any other objects as helpers (i.e. a window)
             Texture2D tex = CreateTextureMaskBase(selected, width, height);
             // 2. Once we have the texture to operate on, start by expanding it (signed distance field)
-            tex = ApplySDFToTexture(tex);
+            tex = ApplySDFToTexture(tex, width, height);
             // 3. Apply random noise to it
-            RandomNoise(tex);
+            tex = RandomNoise(tex);
             // 4. Texture mask that shit
+            ApplyTextureMaskingMaterial(selected);
             // My plan of how to do this: Idk mang. Like, use the texture as a reference, and just... put more of the reference texture into the spots where it's more white??? should work right?
         }
     }
 
-    private void RandomNoise(Texture2D tex)
+    private void ApplyTextureMaskingMaterial(GameObject selected)
+    {
+        selected.GetComponent<MeshRenderer>().material = textureMaskMat;
+    }
+
+    private Texture2D RandomNoise(Texture2D tex)
     {
         // First check what kind of noise we want (or if we want any at all)
         var noise = noiseModifier.options[noiseModifier.value].text;
         switch (noise)
         {
             case "Perlin":
-                tex = NoiseGenerator.CalculatePerlinNoise(tex, scale: 10);
+                tex = NoiseGenerator.CalculatePerlinNoise(tex, scale: 35);
                 DrawTextureIntoImage(tex, "image3");
                 break;
             case "Simplex":
-                Debug.Log("simplex");
+                Debug.Log("simplex (NOT YET IMPLEMENTED)");
                 break;
             case "none":
             default:
                 Debug.Log("yo mama");
                 break;
         }
+
+        return tex;
         // Then apply that noise to the pixels with strength depending on the input alpha, I guess?
     }
 
-    private Texture2D ApplySDFToTexture(Texture2D tex)
+    private Texture2D ApplySDFToTexture(Texture2D tex, int width, int height)
     {
         Texture2D dest = new Texture2D(tex.width, tex.height, TextureFormat.Alpha8, false);
         dest.alphaIsTransparency = true;
-        SDFTextureGenerator.Generate(tex, dest, 0, 30, 30, RGBFillMode.Source);
+        int spreadDivisor = 4;  // Determines how far out the SDF will "grow". e.g. img size of 128 pixels and spreadDivisor of 4 => approx 30 pixels spread.
+        SDFTextureGenerator.Generate(tex, dest, 0, (int)(width/spreadDivisor), (int)(height/spreadDivisor), RGBFillMode.Source);
         dest.Apply();
         DrawTextureIntoImage(dest, "image2");
         return dest;
