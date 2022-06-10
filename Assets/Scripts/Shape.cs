@@ -8,6 +8,7 @@ public class Shape : MonoBehaviour
     public GameObject parent;
     public List<GameObject> children;
     public List<GameObject> neighbours; // The real question is how the fuck do we populate this one
+    public bool tileMaterial;
     public enum ShapeType
     {
         Virtual,
