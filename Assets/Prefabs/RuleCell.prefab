@@ -682,8 +682,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   possibleRules:
-  - {fileID: 3229632301698194732, guid: 8333b338f4acaf24b893452e0f4bba03, type: 3}
-  - {fileID: 3580882096800703893, guid: b88795e63b442484baa2b87cfbdc0e92, type: 3}
   - {fileID: 3580882096800703893, guid: 21a5684a13d5c4143863c3140c96c6ac, type: 3}
   dropdown: {fileID: 6687286010796696431}
 --- !u!1 &3974436207114694182

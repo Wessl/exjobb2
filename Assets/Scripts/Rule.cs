@@ -18,13 +18,13 @@ public class Rule : MonoBehaviour
         // Remove ability to click on same one to make new rule
         var button = GetComponentInChildren<Button>();
         Destroy(button.gameObject);
-        // Show rule choice dropdown
-        dropdown.gameObject.SetActive(true);
+        
+        // Instantiate Selex cell
+        InstantiateSelexCell();
     }
 
     private void Start()
     {
-        
         SetUpRuleChoice();
     }
 
@@ -35,9 +35,9 @@ public class Rule : MonoBehaviour
         dropdown.AddOptions(possibleRules.Select(o => o.name).ToList());
     }
 
-    public void SetDropdownVal(int val)
+    private void InstantiateSelexCell()
     {
-        var newCell = Instantiate(possibleRules[val-1], transform.position, Quaternion.identity);// -1 cuz default option 
+        var newCell = Instantiate(possibleRules[0], transform.position, Quaternion.identity);// -1 cuz default option 
         newCell.transform.SetParent(gameObject.transform.parent, false);
         newCell.transform.SetSiblingIndex(this.transform.GetSiblingIndex());                                // Put into correct hierarchy position
         

@@ -1,4 +1,4 @@
 what I'm working on right now:
 make sure extra shape does not get created when doing already existing mesh. altho... hmm... it only gets created because we're also selecting the parent construction shape that's also along the grid... right?
 now just fix the extra shape, then make a defaut testing ground with ready-made background and windows (with labels...) so we can actually makethe damage and age thing work. ok?
-now im working on making the uh sdf thing work. line 134 in damageand age
+now is the time to try to clean stuff up, implement small easy things, see if there is anything left in terms of selex, and then remove things from the UI that won't be added
