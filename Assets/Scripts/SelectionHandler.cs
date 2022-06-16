@@ -16,7 +16,7 @@ public class SelectionHandler : MonoBehaviour
     {
         currentSelection = new List<GameObject>();
         var rootChildren = root.GetComponentsInChildren<Shape>();
-        rootChildren = rootChildren.Skip(1).ToArray();  // don't include root
+        //rootChildren = rootChildren.Skip(1).ToArray();  // don't include root // update: actually you wanna include root otherwise if you only start with root there is nothing to start building on
         foreach (var rootChild in rootChildren)
         {
             currentSelection.Add(rootChild.gameObject);

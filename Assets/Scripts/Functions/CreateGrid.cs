@@ -139,17 +139,12 @@ public class CreateGrid : MonoBehaviour
                     
                     // Finally, add each one to the list of currently selected?
                     newlyCreatedObjects.Add(gridPart);
-                    Debug.Log("shape type: " + gridPartShapeComponent.currentType);
                 }
             }
             // newObj was only used as reference, no longer needed
             objectSelectionHandler.DestroyShapeSafely(newObj.GetComponent<Shape>());
         }
 
-        foreach (var obj in newlyCreatedObjects)
-        {
-            Debug.Log("shape type now? " + obj.GetComponent<Shape>().currentType);
-        }
         AssignShapeRelations(newlyCreatedObjects);
         currentlySelected.AddRange(newlyCreatedObjects);
     }

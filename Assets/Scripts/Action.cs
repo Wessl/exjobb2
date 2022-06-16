@@ -33,22 +33,22 @@ public class Action : MonoBehaviour
             case 0:
                 SelectAddShape();
                 break;
-            case 9:
+            case 3:
                 SelectCreateGrid();
                 break;
-            case 14:
+            case 7:
                 SelectTransform();
                 break;
-            case 15:
+            case 8:
                 SelectRotate();
                 break;
-            case 16:
+            case 9:
                 SelectScale();
                 break;
-            case 17:
+            case 10:
                 SelectTranslate();
                 break;
-            case 21:
+            case 13:
                 SelectDamageAndAge();
                 break;
             default:

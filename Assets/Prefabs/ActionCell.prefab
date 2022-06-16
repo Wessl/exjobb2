@@ -16905,19 +16905,7 @@ MonoBehaviour:
     m_Options:
     - m_Text: AddShape()
       m_Image: {fileID: 0}
-    - m_Text: AttachShape()
-      m_Image: {fileID: 0}
-    - m_Text: ConnectShape()
-      m_Image: {fileID: 0}
-    - m_Text: CoverShape()
-      m_Image: {fileID: 0}
     - m_Text: CopyShape()
-      m_Image: {fileID: 0}
-    - m_Text: Polygon()
-      m_Image: {fileID: 0}
-    - m_Text: AddVolume()
-      m_Image: {fileID: 0}
-    - m_Text: LineElem()
       m_Image: {fileID: 0}
     - m_Text: Group()
       m_Image: {fileID: 0}
@@ -16928,8 +16916,6 @@ MonoBehaviour:
     - m_Text: Cols()
       m_Image: {fileID: 0}
     - m_Text: SetAttrib()
-      m_Image: {fileID: 0}
-    - m_Text: Exchange()
       m_Image: {fileID: 0}
     - m_Text: Transform()
       m_Image: {fileID: 0}
@@ -16942,8 +16928,6 @@ MonoBehaviour:
     - m_Text: Include()
       m_Image: {fileID: 0}
     - m_Text: ShareCorner()
-      m_Image: {fileID: 0}
-    - m_Text: FinalRoof()
       m_Image: {fileID: 0}
     - m_Text: DamageAndAge()
       m_Image: {fileID: 0}
@@ -18483,6 +18467,14 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: FacadeWhiteConcrete
       m_Image: {fileID: 0}
+    - m_Text: SignBoard09
+      m_Image: {fileID: 0}
+    - m_Text: Door Basic
+      m_Image: {fileID: 0}
+    - m_Text: Door01
+      m_Image: {fileID: 0}
+    - m_Text: wooden Door
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -18557,7 +18549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4018657601954170004
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18652,6 +18644,10 @@ MonoBehaviour:
   - {fileID: 8979339644071875328, guid: 03fd697fdac35104d84f726fde4a2f59, type: 3}
   - {fileID: 6233405129902173460, guid: 1990ffa4f888f024a8613d82b736eb5b, type: 3}
   - {fileID: 919132149155446097, guid: a80ac1b6b709e2d4ab7d34aad36242a2, type: 3}
+  - {fileID: 8782911747130204825, guid: cc367d399340792428da6f55ac3ccc9c, type: 3}
+  - {fileID: 4305179797465504066, guid: d019f91891b8b14498fd585110bd2e00, type: 3}
+  - {fileID: 6504361742570850935, guid: 157022afc1a8d4446ab47ea47fc89023, type: 3}
+  - {fileID: 919132149155446097, guid: 3b0b4797b8b892741b4097955cf2ef39, type: 3}
   temporaryMat: {fileID: 2100000, guid: 49583f190b3b8594dbea6875ccff9ab0, type: 2}
 --- !u!1 &8342850051209393419
 GameObject:

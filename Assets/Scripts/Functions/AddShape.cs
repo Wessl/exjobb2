@@ -93,8 +93,7 @@ public class AddShape : MonoBehaviour
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
             newShape.transform.parent = parentObj.transform;
             newShape.AddComponent<Shape>().Start();
-            // Finally add the finished shape to the list of currently selected objects
-            newlySelected.Add(newShape);
+            
         }
         else
         {
@@ -105,11 +104,14 @@ public class AddShape : MonoBehaviour
             //newShape = parentObj;
             parentObj.GetComponent<Shape>().currentType = Shape.ShapeType.Construction; // Change from being virtual to construction?
         }
+        // Finally add the finished shape to the list of currently selected objects
+        newlySelected.Add(newShape);
         // Make sure it gets a label
         newShape.GetComponent<Shape>().Labels.Add(label.text);
 
         var originalShapeSize = FindTotalMeshSize(newShape);
         // Potential bug waiting to happen... completely flat object on one axis will cause error
+        // figure out if I want the inputted value or what. like think about it 
         newShape.transform.localScale = new Vector3(width / originalShapeSize.x, height / originalShapeSize.y, 1);
         
         newShape.GetComponent<Shape>().currentType = Shape.ShapeType.Construction;
