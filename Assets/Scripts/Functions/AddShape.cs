@@ -16,10 +16,12 @@ public class AddShape : MonoBehaviour
     [SerializeField] private TMP_InputField inputWidth;
     [SerializeField] private TMP_InputField inputHeight;
     [SerializeField] private TMP_InputField offset;
-    [SerializeField] private Toggle visible;
+    [SerializeField] private Toggle scaleAgainstParentToggle;
     [SerializeField] private TMP_Dropdown shapeTypeDropdown;
     [SerializeField] private TMP_InputField randomizationInputField;
     [SerializeField] private List<GameObject> premadeShapeTypes;
+    [SerializeField] private TMP_InputField insetXPercent;
+    [SerializeField] private TMP_InputField insetYPercent;
 
     [SerializeField] private Material temporaryMat;
 
@@ -83,8 +85,8 @@ public class AddShape : MonoBehaviour
     private void SpawnExistingMesh(GameObject parentObj, GameObject activeMesh, List<GameObject> newlySelected, Shape.ShapeType shapeType)
     {
         // Parse numerical values from strings
-        float width = float.Parse(inputWidth.text);
-        float height = float.Parse(inputHeight.text);
+        float width = float.Parse((inputWidth.text != "" ? inputWidth.text : "0"));
+        float height = float.Parse((inputHeight.text != "" ? inputHeight.text : "0"));
         float cx = float.Parse(centerX.text) + parentObj.transform.position.x + width/2;
         float cy = float.Parse(centerY.text) + parentObj.transform.position.y + height/2;
         GameObject newShape;
@@ -110,11 +112,8 @@ public class AddShape : MonoBehaviour
         newlySelected.Add(newShape);
         // Make sure it gets a label
         newShape.GetComponent<Shape>().Labels.Add(label.text);
-
-        var originalMeshSize = FindTotalMeshSize(newShape);
-        // Potential bug waiting to happen... completely flat object on one axis will cause error
         
-        newShape.transform.localScale = new Vector3((width / originalMeshSize.x) / parentSizeExtent.x, (height / originalMeshSize.y) / parentSizeExtent.y, 1);
+        ApplySizing(newShape, width, height, FindTotalMeshSize(newShape), parentSizeExtent);
         
         newShape.GetComponent<Shape>().currentType = Shape.ShapeType.Construction;
         
@@ -122,6 +121,31 @@ public class AddShape : MonoBehaviour
         newShape.GetComponent<Shape>().SetupSizeExtent(new Vector2(width, height));
     }
 
+    private void ApplySizing(GameObject newShape, float width, float height, Vector2 originalMeshSize, Vector2 parentSizeExtent)
+    {
+        
+        // Potential bug waiting to happen... completely flat object on one axis will cause error
+        if (scaleAgainstParentToggle.isOn)  // Use parent scale and inset % to give size of objects 
+        {
+            var insetX = float.Parse(insetXPercent.text);
+            var insetY = float.Parse(insetYPercent.text);
+            
+            // Get the parent sizeExtent
+            var parent = newShape.transform.parent.GetComponent<Shape>();
+            var sizeExtent = parent.SizeExent;
+            var newSizeExtent = sizeExtent * ( new Vector2(1 - insetX * 0.01f, 1 - insetY * 0.01f) ) ;
+            newShape.transform.localScale = new Vector3((newSizeExtent.x / originalMeshSize.x ) / parent.transform.localScale.x,
+                ( newSizeExtent.y / originalMeshSize.y ) / parent.transform.localScale.y, 1);
+
+
+        }
+        else // Just apply the actual width and height that the user desires
+        {
+            newShape.transform.localScale = new Vector3((width / originalMeshSize.x) / parentSizeExtent.x, (height / originalMeshSize.y) / parentSizeExtent.y, 1);
+
+        }
+        
+    }
 
 
     private void CreateMesh(GameObject parentObj, List<GameObject> newlySelected, Shape.ShapeType shapeType)
@@ -237,8 +261,12 @@ public class AddShape : MonoBehaviour
         }
         
         return Vector2.one;
-        
-        
+    }
+
+    public void ToggleInsetXYInputfields()
+    {
+        insetXPercent.gameObject.SetActive(scaleAgainstParentToggle.isOn);
+        insetYPercent.gameObject.SetActive(scaleAgainstParentToggle.isOn);
     }
     
     public void Update()
