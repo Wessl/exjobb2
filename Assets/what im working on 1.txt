@@ -6,4 +6,5 @@ now is the time to try to clean stuff up, implement small easy things, see if th
 why does applying noise to the root1 sample scene work but not to a newly created one? 
 the reason why it creates a big extra window is because the facade itself is included - but why is it so big? it shouldn't be
 
-line 113 addShape
+let's think about how to make adding things like windows to grid scale according to area and not have to put in specific values each time. 
+but also, why the fuck are they construction shapes. line 230 addshape

@@ -88,6 +88,7 @@ public class AddShape : MonoBehaviour
         float cx = float.Parse(centerX.text) + parentObj.transform.position.x + width/2;
         float cy = float.Parse(centerY.text) + parentObj.transform.position.y + height/2;
         GameObject newShape;
+        Vector2 parentSizeExtent = Vector2.one;
         if (shapeType == Shape.ShapeType.Construction)
         {
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
@@ -102,6 +103,7 @@ public class AddShape : MonoBehaviour
             newShape.AddComponent<Shape>().Start();
 
             //newShape = parentObj;
+            parentSizeExtent = FindParentSizeExtent(newShape);
             parentObj.GetComponent<Shape>().currentType = Shape.ShapeType.Construction; // Change from being virtual to construction?
         }
         // Finally add the finished shape to the list of currently selected objects
@@ -109,10 +111,10 @@ public class AddShape : MonoBehaviour
         // Make sure it gets a label
         newShape.GetComponent<Shape>().Labels.Add(label.text);
 
-        var originalShapeSize = FindTotalMeshSize(newShape);
+        var originalMeshSize = FindTotalMeshSize(newShape);
         // Potential bug waiting to happen... completely flat object on one axis will cause error
-        // figure out if I want the inputted value or what. like think about it 
-        newShape.transform.localScale = new Vector3(width / originalShapeSize.x, height / originalShapeSize.y, 1);
+        
+        newShape.transform.localScale = new Vector3((width / originalMeshSize.x) / parentSizeExtent.x, (height / originalMeshSize.y) / parentSizeExtent.y, 1);
         
         newShape.GetComponent<Shape>().currentType = Shape.ShapeType.Construction;
         
@@ -120,8 +122,11 @@ public class AddShape : MonoBehaviour
         newShape.GetComponent<Shape>().SetupSizeExtent(new Vector2(width, height));
     }
 
+
+
     private void CreateMesh(GameObject parentObj, List<GameObject> newlySelected, Shape.ShapeType shapeType)
     {
+        Debug.Log("You tried creating a mesh out of thin air - this feature is deprecated.");
         Mesh mesh = new Mesh();
         // First parse numbers from strings
         float width = float.Parse(inputWidth.text);
@@ -216,6 +221,24 @@ public class AddShape : MonoBehaviour
             }
         }
         return largestThusFar;
+    }
+    
+    private Vector2 FindParentSizeExtent(GameObject newShape)
+    {
+        var parent = newShape.transform.parent;
+        if (parent != null)
+        {
+            Shape shape = parent.GetComponent<Shape>();
+            Debug.Log("current type: " + shape.currentType + " and name: " + shape.transform.name);
+            if (shape.currentType == Shape.ShapeType.Construction)
+            {
+                return shape.SizeExent;
+            }
+        }
+        
+        return Vector2.one;
+        
+        
     }
     
     public void Update()

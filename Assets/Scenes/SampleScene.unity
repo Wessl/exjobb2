@@ -1572,8 +1572,8 @@ MonoBehaviour:
   children: []
   neighbours: []
   tileMaterial: 0
-  currentType: 1
-  sizeExent: {x: 15, y: 15}
+  currentType: 0
+  sizeExent: {x: 1, y: 1}
   labels: []
 --- !u!4 &1404139871
 Transform:
