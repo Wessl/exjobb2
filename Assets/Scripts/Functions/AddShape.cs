@@ -96,7 +96,7 @@ public class AddShape : MonoBehaviour
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
             newShape.transform.parent = parentObj.transform;
             newShape.AddComponent<Shape>().Start();
-            
+            parentSizeExtent = newShape.transform.parent.transform.localScale;
         }
         else
         {
@@ -134,9 +134,10 @@ public class AddShape : MonoBehaviour
             var parent = newShape.transform.parent.GetComponent<Shape>();
             var sizeExtent = parent.SizeExent;
             var newSizeExtent = sizeExtent * ( new Vector2(1 - insetX * 0.01f, 1 - insetY * 0.01f) ) ;
-            newShape.transform.localScale = new Vector3((newSizeExtent.x / originalMeshSize.x ) / parent.transform.localScale.x,
-                ( newSizeExtent.y / originalMeshSize.y ) / parent.transform.localScale.y, 1);
-
+            newShape.transform.localScale = new Vector3((newSizeExtent.x / originalMeshSize.x ) / parentSizeExtent.x,
+                ( newSizeExtent.y / originalMeshSize.y ) / parentSizeExtent.y, 1);
+            newShape.transform.position +=
+                new Vector3(sizeExtent.x / 2, sizeExtent.y / 2, 0);
 
         }
         else // Just apply the actual width and height that the user desires
