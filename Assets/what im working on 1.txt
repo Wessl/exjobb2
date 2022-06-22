@@ -10,3 +10,7 @@ this would replace the normal "width" and "height" parameters with "inset x % (f
 * it doesn't work on the root
 - benefits?
 * it will work on every element selected in a grid, so strange, uneven grids can still get some nice windows
+
+I really should make the addShape predefined models automatically fill up the UI list of available options. 
+also change the pivot point of pipes, i mean come on
+line 34 in scaleByImage
