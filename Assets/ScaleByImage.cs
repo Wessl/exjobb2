@@ -13,7 +13,7 @@ public class ScaleByImage : MonoBehaviour
     [SerializeField] private TMP_InputField selectFileInputField;
     [SerializeField] private TMP_InputField selectBackgroundShape;  // Typically this will be facade
 
-    public void Execute()
+    public void Execute(SelectionHandler selectionHandler)
     {
         var lower = float.Parse(lowerBound.text);
         var higher = float.Parse(upperBound.text);
@@ -31,7 +31,16 @@ public class ScaleByImage : MonoBehaviour
         if (backgroundShapeText != "")
         {
             List<GameObject> sampledSourceObjects = GetSampleSourceObjects(backgroundShapeText); // This probably does not need to be a list?
-            // Actually maybe completely rethink how we're doing this, this might be really dumb and I'm really tired
+            GameObject firstFoundSourceObj = sampledSourceObjects[0];
+            Shape backgroundShape = firstFoundSourceObj.GetComponent<Shape>();
+            Vector2 sizeExtent = backgroundShape.SizeExent;
+            Vector2 scaleFactor = new Vector2(texture.width / sizeExtent.x, texture.height / sizeExtent.y);
+            foreach (var selection in selectionHandler.currentSelection)
+            {
+                var pos = selection.transform.position;
+                var pixelValAtPos = texture.GetPixel(Mathf.FloorToInt(pos.x * scaleFactor.x), Mathf.FloorToInt(pos.y * scaleFactor.y));
+                Debug.Log("pixel value: " + pixelValAtPos);
+            }
         }
         // now just get the positions of each selected object, and then get the same position on the input image
         // we also need a "background" in the same way as the damage and age
@@ -49,13 +58,12 @@ public class ScaleByImage : MonoBehaviour
         GameObject root = GameObject.FindWithTag("Root");
         List<GameObject> foundObjects = new List<GameObject>();
         var rootChildren = root.GetComponentsInChildren<Shape>();
-        Debug.Log("how many rootchildren? " +rootChildren.Length);
         foreach (var rootChild in rootChildren)
         {
             var labels = rootChild.GetComponent<Shape>()?.Labels;
             if (labels is null)
             {
-                Debug.Log("There are no labels associated with the current object, skipping");
+                // do nothing
             }
             else
             {

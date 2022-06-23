@@ -15,6 +15,7 @@ public class Action : MonoBehaviour
     [SerializeField] private GameObject scalePanel;
     [SerializeField] private GameObject translatePanel;
     [SerializeField] private GameObject damageAndAgePanel;
+    [SerializeField] private GameObject scaleByImagePanel;
 
     private GameObject lastSelection;   // used to hide the last selection easily
     private SelectionHandler _objectSelectionHandler;
@@ -50,6 +51,9 @@ public class Action : MonoBehaviour
                 break;
             case 13:
                 SelectDamageAndAge();
+                break;
+            case 14:
+                SelectScaleByImage();
                 break;
             default:
                 lastSelection = null;
@@ -105,6 +109,14 @@ public class Action : MonoBehaviour
         HideLastSelection();
         lastSelection = translatePanel;
     }
+    
+    private void SelectScaleByImage()
+    {
+        // First set up the UI shit then just add the functionality... easy? yes. useful? maybe, maybe not
+        scaleByImagePanel.SetActive(true);
+        HideLastSelection();
+        lastSelection = scaleByImagePanel;
+    }
 
     public void ExecuteAddShape()
     {
@@ -146,6 +158,13 @@ public class Action : MonoBehaviour
         _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
         ObtainSelectionData();
         damageAndAgePanel.GetComponent<DamageAndAge>().Execute(_objectSelectionHandler);
+    }
+
+    public void ExecuteScaleByImage()
+    {
+        _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
+        ObtainSelectionData();
+        scaleByImagePanel.GetComponent<ScaleByImage>().Execute(_objectSelectionHandler);
     }
 
     private void HideLastSelection()
