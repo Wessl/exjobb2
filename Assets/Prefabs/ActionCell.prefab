@@ -22372,6 +22372,8 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Rusty Pipe
       m_Image: {fileID: 0}
+    - m_Text: Circular Window
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -22548,6 +22550,7 @@ MonoBehaviour:
   - {fileID: 6504361742570850935, guid: 157022afc1a8d4446ab47ea47fc89023, type: 3}
   - {fileID: 919132149155446097, guid: 3b0b4797b8b892741b4097955cf2ef39, type: 3}
   - {fileID: 7752956462510493495, guid: 8f93885c50771334c9621d494a8f1549, type: 3}
+  - {fileID: 905482637609979376, guid: e4b4e8a1eaab7684b8a582f48a446528, type: 3}
   insetXPercent: {fileID: 7729214306450517948}
   insetYPercent: {fileID: 4864796690908502039}
   temporaryMat: {fileID: 2100000, guid: 49583f190b3b8594dbea6875ccff9ab0, type: 2}

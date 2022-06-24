@@ -39,7 +39,7 @@ public class ScaleByImage : MonoBehaviour
             {
                 var pos = selection.transform.position;
                 var pixelValAtPos = texture.GetPixel(Mathf.FloorToInt(pos.x * scaleFactor.x), Mathf.FloorToInt(pos.y * scaleFactor.y));
-                var t = pixelValAtPos.r;
+                var t = pixelValAtPos.a;    // r or a is different depending on whether or not single channel rgb or alpha
                 var scaleVal = Mathf.Lerp(lower, higher, t);
                 selection.transform.localScale *= scaleVal;
             }
