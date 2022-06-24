@@ -17,7 +17,7 @@ public class ScaleByImage : MonoBehaviour
     {
         var lower = float.Parse(lowerBound.text);
         var higher = float.Parse(upperBound.text);
-        string path = selectFileInputField.text;
+        string path = "Assets/" + selectFileInputField.text;
         
         Texture2D texture = new Texture2D(512, 512);
 
@@ -39,14 +39,11 @@ public class ScaleByImage : MonoBehaviour
             {
                 var pos = selection.transform.position;
                 var pixelValAtPos = texture.GetPixel(Mathf.FloorToInt(pos.x * scaleFactor.x), Mathf.FloorToInt(pos.y * scaleFactor.y));
-                Debug.Log("pixel value: " + pixelValAtPos);
+                var t = pixelValAtPos.r;
+                var scaleVal = Mathf.Lerp(lower, higher, t);
+                selection.transform.localScale *= scaleVal;
             }
         }
-        // now just get the positions of each selected object, and then get the same position on the input image
-        // we also need a "background" in the same way as the damage and age
-        // depending on how black or white it is, scale by a linearly interpolated value between lower and higher with rgb b/w value as t value
-        // then literally just apply that as the scale... almost sounds too simple to be true! :D 
-
     }
     
     /*
