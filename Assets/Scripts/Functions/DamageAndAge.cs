@@ -10,6 +10,7 @@ using UnityEngine;
 public class DamageAndAge : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown damageAgeType;
+    [SerializeField] private List<Material> damageAgeTypeMats;
     [SerializeField] private TMP_Dropdown noiseModifier;
     [SerializeField] private TMP_InputField densityPercent;
     [SerializeField] private TMP_InputField vectorModifier;
@@ -33,13 +34,14 @@ public class DamageAndAge : MonoBehaviour
             tex = RandomNoise(tex);
             // 4. Texture mask that shit
             ApplyTextureMaskingMaterial(selected);
-            // My plan of how to do this: Idk mang. Like, use the texture as a reference, and just... put more of the reference texture into the spots where it's more white??? should work right?
         }
     }
 
     private void ApplyTextureMaskingMaterial(GameObject selected)
     {
-        selected.GetComponent<MeshRenderer>().material = textureMaskMat;
+        // Find out what kind of texture we working with? Like, rust or impact or smth? 
+        var dropdownOpt = damageAgeTypeMats[damageAgeType.value];
+        selected.GetComponent<MeshRenderer>().material = dropdownOpt;
     }
 
     private Texture2D RandomNoise(Texture2D tex)

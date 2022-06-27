@@ -1486,7 +1486,7 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Value
       m_Image: {fileID: 0}
-    - m_Text: Johnathan C-na
+    - m_Text: None
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13939,7 +13939,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2730615484290161298
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14016,6 +14016,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageAgeType: {fileID: 2149729787566290272}
+  damageAgeTypeMats:
+  - {fileID: 2100000, guid: fcb37f5314ced664184ded83d642b55b, type: 2}
+  - {fileID: 2100000, guid: 8f8fd0387ac92b04da7aed4f7c7a408b, type: 2}
+  - {fileID: 2100000, guid: 31114d30cee0012469f430cae820ad75, type: 2}
+  - {fileID: 2100000, guid: 1609c380d8b41aa44ae79ba6ae6b2745, type: 2}
   noiseModifier: {fileID: 3185417359890362120}
   densityPercent: {fileID: 4933272853336173508}
   vectorModifier: {fileID: 3307960297638053812}
@@ -16893,13 +16898,13 @@ MonoBehaviour:
     m_Options:
     - m_Text: Type of damage/aging
       m_Image: {fileID: 0}
-    - m_Text: Window1
+    - m_Text: Rust
       m_Image: {fileID: 0}
-    - m_Text: Door1
+    - m_Text: Scratch
       m_Image: {fileID: 0}
-    - m_Text: Flowerpot1
+    - m_Text: Patina
       m_Image: {fileID: 0}
-    - m_Text: Windowsill1
+    - m_Text: Moss
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
