@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 6758302547265124270}
   - component: {fileID: 7347960609094613818}
   m_Layer: 0
-  m_Name: Windowsill Prefab
+  m_Name: windowsill basic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

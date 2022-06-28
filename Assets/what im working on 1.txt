@@ -3,17 +3,7 @@ make sure extra shape does not get created when doing already existing mesh. alt
 now just fix the extra shape, then make a defaut testing ground with ready-made background and windows (with labels...) so we can actually makethe damage and age thing work. ok?
 now is the time to try to clean stuff up, implement small easy things, see if there is anything left in terms of selex, and then remove things from the UI that won't be added
 
-let's think about how to make adding things like windows to grid scale according to area and not have to put in specific values each time. 
-I think the way to do it is to include a way to simply check a box that says "scale against parent"
-this would replace the normal "width" and "height" parameters with "inset x % (from each side)" and "inset y %"
-- are there any problems with this? 
-* it doesn't work on the root
-- benefits?
-* it will work on every element selected in a grid, so strange, uneven grids can still get some nice windows
-
 I really should make the addShape predefined models automatically fill up the UI list of available options. 
-also change the pivot point of pipes, i mean come on
-we also gotta do the angle modifier of damage. i have a plan. 
 
 importante: maybe apply physically based shading techniques as those described by megan walker in her thesis "REALISTIC AGING OF MATERIALS IN COMPUTER GRAPHICS"
 

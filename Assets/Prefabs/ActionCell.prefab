@@ -22798,7 +22798,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4018657601954170004
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22890,15 +22890,15 @@ MonoBehaviour:
   shapeTypeDropdown: {fileID: 1946444760430082631}
   randomizationInputField: {fileID: 207564874222993109}
   premadeShapeTypes:
+  - {fileID: 919132149155446097, guid: a80ac1b6b709e2d4ab7d34aad36242a2, type: 3}
   - {fileID: 3047656970148707977, guid: d5fd10d4cc5df0140ab8053d65d8c3f2, type: 3}
-  - {fileID: 3074387775021171457, guid: 6868165cb284aa14f8815c0c2a57d0f0, type: 3}
   - {fileID: 8979339644071875328, guid: 03fd697fdac35104d84f726fde4a2f59, type: 3}
   - {fileID: 6233405129902173460, guid: 1990ffa4f888f024a8613d82b736eb5b, type: 3}
-  - {fileID: 919132149155446097, guid: a80ac1b6b709e2d4ab7d34aad36242a2, type: 3}
   - {fileID: 8782911747130204825, guid: cc367d399340792428da6f55ac3ccc9c, type: 3}
+  - {fileID: 3074387775021171457, guid: 6868165cb284aa14f8815c0c2a57d0f0, type: 3}
   - {fileID: 4305179797465504066, guid: d019f91891b8b14498fd585110bd2e00, type: 3}
-  - {fileID: 6504361742570850935, guid: 157022afc1a8d4446ab47ea47fc89023, type: 3}
   - {fileID: 919132149155446097, guid: 3b0b4797b8b892741b4097955cf2ef39, type: 3}
+  - {fileID: 6504361742570850935, guid: 157022afc1a8d4446ab47ea47fc89023, type: 3}
   - {fileID: 7752956462510493495, guid: 8f93885c50771334c9621d494a8f1549, type: 3}
   - {fileID: 905482637609979376, guid: e4b4e8a1eaab7684b8a582f48a446528, type: 3}
   insetXPercent: {fileID: 7729214306450517948}

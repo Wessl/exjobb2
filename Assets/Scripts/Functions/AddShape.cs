@@ -47,7 +47,7 @@ public class AddShape : MonoBehaviour
             }
             else
             {
-                var activeMesh = premadeShapeTypes[shapeTypeDropdown.value - 1];
+                var activeMesh = premadeShapeTypes[shapeTypeDropdown.value];
                 SpawnExistingMesh(selected, activeMesh, newlySelected, shapeType);
             }
         }
@@ -227,7 +227,13 @@ public class AddShape : MonoBehaviour
     void Start ()
     {
         _eventSystem = EventSystem.current;
-         
+        List<string> shapeNames = new List<string>();
+        shapeTypeDropdown.options = new List<TMP_Dropdown.OptionData>();
+        foreach (var shapeType in premadeShapeTypes)
+        {
+            shapeNames.Add(shapeType.name);
+        }
+        shapeTypeDropdown.AddOptions(shapeNames);
     }
 
     private Vector2 FindTotalMeshSize(GameObject parentObj)
@@ -287,6 +293,7 @@ public class AddShape : MonoBehaviour
    
         }
     }
+    
 
     public string Label => label.text;
 }
