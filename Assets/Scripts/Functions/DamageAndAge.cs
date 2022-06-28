@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,8 @@ public class DamageAndAge : MonoBehaviour
     [SerializeField] private List<Material> damageAgeTypeMats;
     [SerializeField] private TMP_Dropdown noiseModifier;
     [SerializeField] private TMP_InputField densityPercent;
-    [SerializeField] private TMP_InputField vectorModifier;
+    [SerializeField] private TMP_InputField vectorModX;
+    [SerializeField] private TMP_InputField vectorModY;
     [SerializeField] private TMP_InputField helperLabel;
     [SerializeField] private Material textureMaskMat;
     
@@ -28,6 +30,8 @@ public class DamageAndAge : MonoBehaviour
         {  
             // 1. Find out if we are going to use any other objects as helpers (i.e. a window)
             Texture2D tex = CreateTextureMaskBase(selected, width, height);
+            // 1.5 Apply angle modification
+            tex = ApplyAngleModifier(tex, width, height);
             // 2. Once we have the texture to operate on, start by expanding it (signed distance field)
             tex = ApplySDFToTexture(tex, width, height);
             // 3. Apply random noise to it
@@ -35,6 +39,118 @@ public class DamageAndAge : MonoBehaviour
             // 4. Texture mask that shit
             ApplyTextureMaskingMaterial(selected);
         }
+    }
+
+    /*
+     * Add pixels as if a square was moving along the direction vector, only to new pixels covered by said square
+     * Get the input vector, start on the edges being pointed to by vector
+     * Then for each iteration, move vector value pixel amount,
+     * once along X axis, incrementing by Y value,
+     * once along Y axis, incrementing by X value
+     */
+    private Texture2D ApplyAngleModifier(Texture2D tex, int width, int height)
+    {
+        var angle = new Vector2(float.Parse(vectorModX.text != "" ? vectorModX.text : "0" ), float.Parse(vectorModY.text != "" ? vectorModY.text : "0" ));
+        if (angle.magnitude <= float.MinValue ) return tex;
+        var largestSmallest = LargestSmallestOfPicture(tex);
+        Vector2 startXY = FindStartXY(angle, tex, largestSmallest);
+        var largest = largestSmallest.Item1;
+        var smallest = largestSmallest.Item2;
+
+        Vector2 ranges = new Vector2(Mathf.Abs(largest.x - smallest.x), Mathf.Abs(largest.y - smallest.y));
+        
+        Texture2D newDirTex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0));
+        Vector2 currentPixel = new Vector2 (Mathf.FloorToInt(smallest.x),  Mathf.FloorToInt(startXY.y));
+        // Fill along X
+        for (int y = 0; y < ranges.y; y++)
+        {   
+            for (int x = 0; x < ranges.x; x++)
+            {   
+                if (currentPixel.x >= width) continue;
+                if (currentPixel.y >= height) continue;
+                newDirTex.SetPixel(Mathf.FloorToInt(currentPixel.x), Mathf.FloorToInt(currentPixel.y), Color.white);
+                currentPixel.x += 1;
+            }
+            currentPixel.y += angle.y;
+            currentPixel.x = smallest.x + angle.x * y;
+        }
+        
+        currentPixel = new Vector2 (Mathf.FloorToInt(startXY.x),  Mathf.FloorToInt(smallest.y));
+        // Fill along Y
+        for (int x = 0; x < ranges.x; x++)
+        {   
+            for (int y = 0; y < ranges.y; y++)
+            {   
+                if (currentPixel.x >= width) continue;
+                if (currentPixel.y >= height) continue;
+                newDirTex.SetPixel(Mathf.FloorToInt(currentPixel.x), Mathf.FloorToInt(currentPixel.y), Color.white);
+                currentPixel.y += 1;
+            }
+            currentPixel.x += angle.x;
+            currentPixel.y = smallest.y + angle.y * x;
+        }
+        
+        Debug.Log("drawing texture now");
+        newDirTex.Apply();
+        DrawTextureIntoImage(newDirTex, "directionTextureTest");
+        return newDirTex;
+    }
+
+    private Vector2 FindStartXY(Vector2 angle, Texture2D tex, Tuple<Vector2, Vector2> largestSmallest)
+    {
+        Vector2 resultAngle;
+        
+        bool topSide = angle.y < 0;
+        bool leftSide = angle.x < 0;
+
+        var largest = largestSmallest.Item1;
+        var smallest = largestSmallest.Item2;
+        if (topSide)
+        {
+            resultAngle = leftSide ? smallest : new Vector2(largest.x, smallest.y);
+        }
+        else
+        {
+            resultAngle = leftSide ? new Vector2(smallest.x, largest.y) : largest;
+        }
+
+        return resultAngle;
+    }
+
+    private Tuple<Vector2, Vector2> LargestSmallestOfPicture(Texture2D tex)
+    {
+        var texPixels = tex.GetPixels();
+        Vector2 largest = Vector2.negativeInfinity; Vector2 smallest = Vector2.positiveInfinity;
+        for (int x = 0; x < tex.width; x++)
+        {
+            for (int y = 0; y < tex.height; y++)
+            {
+                if (texPixels[x + tex.width * y].a > 0)
+                {
+                    if (x > largest.x)
+                    {
+                        largest.x = x;
+                    }
+
+                    if (x < smallest.x)
+                    {
+                        smallest.x = x;
+                    }
+
+                    if (y > largest.y)
+                    {
+                        largest.y = y;
+                    }
+
+                    if (y < smallest.y)
+                    {
+                        smallest.y = y;
+                    }
+                }
+            }
+        }
+
+        return Tuple.Create(largest, smallest);
     }
 
     private void ApplyTextureMaskingMaterial(GameObject selected)
@@ -162,6 +278,7 @@ public class DamageAndAge : MonoBehaviour
         return foundObjects;
     }
 
+    // Important note: When creating a starting out texture for SDFs, remember to change the alpha channel as well! 
     private Texture2D CreateSingleColorTexture2D(int width, int height, TextureFormat textureFormat, bool mipChain,
         Color color)
     {

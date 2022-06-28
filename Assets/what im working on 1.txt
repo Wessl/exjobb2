@@ -13,7 +13,7 @@ this would replace the normal "width" and "height" parameters with "inset x % (f
 
 I really should make the addShape predefined models automatically fill up the UI list of available options. 
 also change the pivot point of pipes, i mean come on
-we also gotta do the angle modifier of damage
+we also gotta do the angle modifier of damage. i have a plan. 
 
 importante: maybe apply physically based shading techniques as those described by megan walker in her thesis "REALISTIC AGING OF MATERIALS IN COMPUTER GRAPHICS"
 
