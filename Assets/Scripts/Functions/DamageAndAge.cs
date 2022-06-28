@@ -57,38 +57,45 @@ public class DamageAndAge : MonoBehaviour
         var largest = largestSmallest.Item1;
         var smallest = largestSmallest.Item2;
 
-        Vector2 ranges = new Vector2(Mathf.Abs(largest.x - smallest.x), Mathf.Abs(largest.y - smallest.y));
+        Vector2 ranges = new Vector2(Mathf.FloorToInt(Mathf.Abs(largest.x - smallest.x)), Mathf.FloorToInt(Mathf.Abs(largest.y - smallest.y)));
         
         Texture2D newDirTex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0));
         Vector2 currentPixel = new Vector2 (Mathf.FloorToInt(smallest.x),  Mathf.FloorToInt(startXY.y));
         // Fill along X
-        for (int y = 0; y < ranges.y; y++)
-        {   
-            for (int x = 0; x < ranges.x; x++)
-            {   
-                if (currentPixel.x >= width) continue;
-                if (currentPixel.y >= height) continue;
-                newDirTex.SetPixel(Mathf.FloorToInt(currentPixel.x), Mathf.FloorToInt(currentPixel.y), Color.white);
-                currentPixel.x += 1;
-            }
-            currentPixel.y += angle.y;
-            currentPixel.x = smallest.x + angle.x * y;
-        }
-        
-        currentPixel = new Vector2 (Mathf.FloorToInt(startXY.x),  Mathf.FloorToInt(smallest.y));
-        // Fill along Y
-        for (int x = 0; x < ranges.x; x++)
-        {   
+        if (Math.Abs(angle.y) > 0)
+        {
             for (int y = 0; y < ranges.y; y++)
             {   
-                if (currentPixel.x >= width) continue;
-                if (currentPixel.y >= height) continue;
-                newDirTex.SetPixel(Mathf.FloorToInt(currentPixel.x), Mathf.FloorToInt(currentPixel.y), Color.white);
-                currentPixel.y += 1;
+                for (int x = 0; x < ranges.x; x++)
+                {   
+                    if (currentPixel.x >= width) continue;
+                    if (currentPixel.y >= height) continue;
+                    newDirTex.SetPixel(Mathf.FloorToInt(currentPixel.x), Mathf.FloorToInt(currentPixel.y), Color.white);
+                    currentPixel.x += 1;
+                }
+                currentPixel.y += angle.y;
+                currentPixel.x = smallest.x + angle.x * y;
             }
-            currentPixel.x += angle.x;
-            currentPixel.y = smallest.y + angle.y * x;
         }
+
+        currentPixel = new Vector2 (Mathf.FloorToInt(startXY.x),  Mathf.FloorToInt(smallest.y));
+        // Fill along Y
+        if (Math.Abs(angle.x) > 0)
+        {
+            for (int x = 0; x < ranges.x; x++)
+            {   
+                for (int y = 0; y < ranges.y; y++)
+                {   
+                    if (currentPixel.x >= width) continue;
+                    if (currentPixel.y >= height) continue;
+                    newDirTex.SetPixel(Mathf.FloorToInt(currentPixel.x), Mathf.FloorToInt(currentPixel.y), Color.white);
+                    currentPixel.y += 1;
+                }
+                currentPixel.x += angle.x;
+                currentPixel.y = smallest.y + angle.y * x;
+            }
+        }
+        
         
         Debug.Log("drawing texture now");
         newDirTex.Apply();
@@ -157,7 +164,8 @@ public class DamageAndAge : MonoBehaviour
     {
         // Find out what kind of texture we working with? Like, rust or impact or smth? 
         var dropdownOpt = damageAgeTypeMats[damageAgeType.value];
-        selected.GetComponent<MeshRenderer>().material = dropdownOpt;
+        textureMaskMat.SetTexture("TextureToApply", dropdownOpt.mainTexture);
+        selected.GetComponent<MeshRenderer>().material = textureMaskMat;
     }
 
     private Texture2D RandomNoise(Texture2D tex)
