@@ -27,7 +27,7 @@ public class DamageAndAge : MonoBehaviour
     public void Execute(SelectionHandler objectSelectionHandler)
     {
         var currentlySelected = objectSelectionHandler.currentSelection;
-        int width = 512, height = 512;
+        int width = 1024, height = 1024;
         foreach (var selected in currentlySelected)
         {  
             // 1. Find out if we are going to use any other objects as helpers (i.e. a window)
@@ -53,7 +53,8 @@ public class DamageAndAge : MonoBehaviour
     private Texture2D ApplyAngleModifier(Texture2D tex, int width, int height)
     {
         var angle = new Vector2(float.Parse(vectorModX.text != "" ? vectorModX.text : "0" ), float.Parse(vectorModY.text != "" ? vectorModY.text : "0" ));
-        if (angle.magnitude <= float.MinValue ) return tex;
+        Debug.Log("angle mag: " + angle.magnitude);
+        if (angle.magnitude <= float.Epsilon ) return tex;
         var largestSmallest = LargestSmallestOfPicture(tex);
         Vector2 startXY = FindStartXY(angle, tex, largestSmallest);
         var largest = largestSmallest.Item1;

@@ -7,4 +7,3 @@ importante: maybe apply physically based shading techniques as those described b
 
 adding shapes against non-grid background puts them in the wrong place zzzzzzzz
 
-if you dont include vector the noise is invisible
