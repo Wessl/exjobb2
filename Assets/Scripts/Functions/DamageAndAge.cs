@@ -18,6 +18,8 @@ public class DamageAndAge : MonoBehaviour
     [SerializeField] private TMP_InputField vectorModY;
     [SerializeField] private TMP_InputField helperLabel;
     [SerializeField] private Material textureMaskMat;
+    [SerializeField] private TMP_InputField noiseScaleIF;
+    [SerializeField] private float defaultNoiseScale = 35;
     
     /*
      * Attempts to create a damage and/or aging effect to the currently selected objects.
@@ -163,8 +165,10 @@ public class DamageAndAge : MonoBehaviour
     private void ApplyTextureMaskingMaterial(GameObject selected)
     {
         // Find out what kind of texture we working with? Like, rust or impact or smth? 
-        var dropdownOpt = damageAgeTypeMats[damageAgeType.value];
-        textureMaskMat.SetTexture("TextureToApply", dropdownOpt.mainTexture);
+        var dropdownOpt = damageAgeTypeMats[damageAgeType.value-1];
+        Debug.Log("tryin to set this texture: " + dropdownOpt.mainTexture.name);
+        textureMaskMat.SetTexture("_TextureToApply", dropdownOpt.mainTexture);
+        Debug.Log("after " + textureMaskMat.GetTexture("_TextureToApply"));
         selected.GetComponent<MeshRenderer>().material = textureMaskMat;
     }
 
@@ -172,17 +176,18 @@ public class DamageAndAge : MonoBehaviour
     {
         // First check what kind of noise we want (or if we want any at all)
         var noise = noiseModifier.options[noiseModifier.value].text;
+        var scale = float.Parse(noiseScaleIF.text != "" ? noiseScaleIF.text : defaultNoiseScale.ToString());
         switch (noise)
         {
             case "Perlin":
-                tex = NoiseGenerator.ApplyPerlinNoiseToTexture(tex, scale: 35);
+                tex = NoiseGenerator.ApplyPerlinNoiseToTexture(tex, scale);
                 DrawTextureIntoImage(tex, "image3");
                 break;
             case "Simplex":
                 Debug.Log("simplex (NOT YET IMPLEMENTED)");
                 break;
             case "Value":
-                tex = NoiseGenerator.ApplyNoiseToTexture(tex);
+                tex = NoiseGenerator.ApplyNoiseToTexture(tex, scale);
                 DrawTextureIntoImage(tex, "image3");
 
                 Debug.Log("Applying value noise");

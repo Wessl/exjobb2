@@ -44,13 +44,13 @@ public static class NoiseGenerator
         return noiseTex;
     }
 
-    public static Texture2D ApplyNoiseToTexture(Texture2D sourceTex)
+    public static Texture2D ApplyNoiseToTexture(Texture2D sourceTex, float scale)
     {
         int octaves = 4;
         int pixWidth = sourceTex.width;
         int pixHeight = sourceTex.height;
         float stepSize = 1f / pixHeight;
-        float frequency = 16f;
+        float frequency = scale;
         Vector3 point00 = new Vector3(-0.5f,-0.5f);
         Vector3 point10 = new Vector3( 0.5f,-0.5f);
         Vector3 point01 = new Vector3(-0.5f, 0.5f);

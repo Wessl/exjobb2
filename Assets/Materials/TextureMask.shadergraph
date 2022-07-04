@@ -892,7 +892,7 @@
     },
     "m_Name": "TextureToApply",
     "m_DefaultReferenceName": "Texture2D_3cbbe29cd0314c64a85167d4078b3acf",
-    "m_OverrideReferenceName": "",
+    "m_OverrideReferenceName": "_TextureToApply",
     "m_GeneratePropertyBlock": true,
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
