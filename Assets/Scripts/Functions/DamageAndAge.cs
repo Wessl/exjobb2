@@ -217,7 +217,6 @@ public class DamageAndAge : MonoBehaviour
     private Texture2D CreateTextureMaskBase(GameObject selectedObject, int width, int height)
     {
         // 1. Set up texture
-
         var helpLabelText = helperLabel.text;
         if (helpLabelText != "")
         {

@@ -5,5 +5,7 @@ now is the time to try to clean stuff up, implement small easy things, see if th
 
 importante: maybe apply physically based shading techniques as those described by megan walker in her thesis "REALISTIC AGING OF MATERIALS IN COMPUTER GRAPHICS"
 
-adding shapes against non-grid background puts them in the wrong place zzzzzzzz
+adding shapes against non-grid background puts them in the wrong place - hello new me here. and the reasoning is quite simple - basically, it has to do with the origin point of the object its being created on top of. grids have their origin in bottom left, 
+other objects have it in the middle
 
+maybe i should include non-rectangular facades
