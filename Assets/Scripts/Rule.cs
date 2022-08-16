@@ -93,21 +93,21 @@ public class Rule : MonoBehaviour
         {
             
         }
-        CreateRoofMesh(extent.x/2, extent.y, extent.x / 2, extent.y/2, edgePoints[4].z);
-        CreateRoofMesh(extent.x/2, extent.y, extent.x, extent.y/2, edgePoints[4].z);
-        CreateRoofMesh(extent.x/2, extent.y, extent.x / 2, extent.y/2, edgePoints[4].z);
-        CreateRoofMesh(extent.x/2, extent.y, 0, extent.y/2, edgePoints[4].z);
+        CreateRoofMesh(extent.x/2, extent.y, walls[0].transform.position.x, walls[0].transform.position.z, edgePoints[4].z, 0);
+        CreateRoofMesh(extent.x/2, extent.y, walls[1].transform.position.x, walls[1].transform.position.z, edgePoints[4].z, -90);
+        CreateRoofMesh(extent.x/2, extent.y, walls[2].transform.position.x, walls[2].transform.position.z, edgePoints[4].z, -180);
+        CreateRoofMesh(extent.x/2, extent.y, walls[3].transform.position.x, walls[3].transform.position.z, edgePoints[4].z, -270);
         
     }
     
-    private void CreateRoofMesh(float width, float height, float centerX, float centerY, float z)
+    private void CreateRoofMesh(float width, float height, float centerX, float centerZ, float z, float rot)
     {
         Mesh mesh = new Mesh();
         // Just create a triangle
         Vector3[] vertices = new Vector3[3]
         {
-            new Vector3(-width / 2, -height / 2, 0),
-            new Vector3(width / 2, -height / 2, 0),
+            new Vector3(-width, 0, 0),
+            new Vector3(width, 0, 0),
             new Vector3(0, height / 2, z)
         };
         mesh.vertices = vertices;
@@ -133,11 +133,11 @@ public class Rule : MonoBehaviour
         };
         mesh.uv = uv;
         
-        // The shape created by AddShape should end up underneath the parent if parent is Construction type
         GameObject newShape;
         
         newShape = new GameObject();
-        newShape.transform.position = new Vector3(centerX, centerY, 0);
+        newShape.transform.position = new Vector3(centerX, height, centerZ);
+        newShape.transform.Rotate(new Vector3(0,rot,0), Space.World);
         newShape.AddComponent<Shape>();
         // newShape.transform.parent = parentObj.transform;
 
