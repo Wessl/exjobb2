@@ -491,6 +491,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3a3df7fc6823a74abeda2640bb01771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flatButton: {fileID: 9080402117788814315}
+  pyramidButton: {fileID: 8191194207712419158}
+  tentButton: {fileID: 7394993399819256868}
 --- !u!1 &4068245489345812161
 GameObject:
   m_ObjectHideFlags: 0

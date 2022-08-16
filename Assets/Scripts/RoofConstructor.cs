@@ -32,7 +32,7 @@ public static class RoofConstructor
                 CreatePyramidRoof(extent, walls, edgePoints);
                 break;
             case RoofType.Tent:
-                CreateTentRoof();
+                CreateTentRoof(extent, walls, edgePoints);
                 break;
             default:
                 CreatePyramidRoof(extent, walls, edgePoints);
@@ -43,20 +43,23 @@ public static class RoofConstructor
 
     static void CreatePyramidRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints)
     {
-        CreateTriRoofMesh(extent.x/2, extent.y, walls[0].transform.position.x, walls[0].transform.position.z, edgePoints[4].z, 0);
-        CreateTriRoofMesh(extent.x/2, extent.y, walls[1].transform.position.x, walls[1].transform.position.z, edgePoints[4].z, -90);
-        CreateTriRoofMesh(extent.x/2, extent.y, walls[2].transform.position.x, walls[2].transform.position.z, edgePoints[4].z, -180);
-        CreateTriRoofMesh(extent.x/2, extent.y, walls[3].transform.position.x, walls[3].transform.position.z, edgePoints[4].z, -270);   
+        CreateTriRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[0].transform.position.z, edgePoints[4].z, 0);
+        CreateTriRoofMesh(extent.x, extent.y, walls[1].transform.position.x, walls[1].transform.position.z, edgePoints[4].z, -90);
+        CreateTriRoofMesh(extent.x, extent.y, walls[2].transform.position.x, walls[2].transform.position.z, edgePoints[4].z, -180);
+        CreateTriRoofMesh(extent.x, extent.y, walls[3].transform.position.x, walls[3].transform.position.z, edgePoints[4].z, -270);   
     }
     
     static void CreateFlatRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints)
     {
-        CreateQuadRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[1].transform.position.z);
+        CreateQuadRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[1].transform.position.z, extent.y, new Vector3(90, 0, 0));
     }
 
-    static void CreateTentRoof()
+    static void CreateTentRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints)
     {
-        throw new NotImplementedException();
+        CreateTriRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[0].transform.position.z, 0, 0);
+        CreateQuadRoofMesh(extent.x, extent.x * 0.75f, walls[1].transform.position.x * 0.75f, walls[1].transform.position.z, extent.y * 1.25f ,new Vector3(45,-90,0));
+        CreateTriRoofMesh(extent.x, extent.y, walls[2].transform.position.x, walls[2].transform.position.z, 0, -180);
+        CreateQuadRoofMesh(extent.x, extent.x * 0.75f, walls[1].transform.position.x * 0.25f, walls[3].transform.position.z, extent.y * 1.25f, new Vector3(45,-270,0));
     }
     
     static void CreateTriRoofMesh(float width, float height, float centerX, float centerZ, float z, float rot)
@@ -65,8 +68,8 @@ public static class RoofConstructor
         // Just create a triangle
         Vector3[] vertices = new Vector3[3]
         {
-            new Vector3(-width, 0, 0),
-            new Vector3(width, 0, 0),
+            new Vector3(-width/2, 0, 0),
+            new Vector3(width/2, 0, 0),
             new Vector3(0, height / 2, z)
         };
         mesh.vertices = vertices;
@@ -104,7 +107,7 @@ public static class RoofConstructor
         
     }
     
-    static void CreateQuadRoofMesh(float width, float height, float centerX, float centerZ)
+    static void CreateQuadRoofMesh(float width, float height, float centerX, float centerZ, float centerY, Vector3 rot)
     {
         Mesh mesh = new Mesh();
         // Just create a quad
@@ -144,8 +147,8 @@ public static class RoofConstructor
         
         // The shape created by AddShape should end up underneath the parent if parent is Construction type
         GameObject newShape = new GameObject();
-        newShape.transform.position = new Vector3(centerX, height, centerZ);
-        newShape.transform.Rotate(90, 0, 0);
+        newShape.transform.position = new Vector3(centerX, centerY, centerZ);
+        newShape.transform.Rotate(rot, Space.World);
 
         newShape.AddComponent<MeshFilter>();
         newShape.AddComponent<MeshRenderer>();

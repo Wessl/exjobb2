@@ -1,13 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Finalization : MonoBehaviour
 {
     private GameObject root;
     private GameObject[] walls;
     private Vector2 extent;
-    
+    public GameObject flatButton;
+    public GameObject pyramidButton;
+    public GameObject tentButton;
+    private GameObject[] roofButtons;
+
+    private void Start()
+    {
+        roofButtons = new[] {flatButton, pyramidButton, tentButton};
+        FlipRoofButtonsActive();
+    }
+
     public void AutomaticFinalize()
     {
         root = GameObject.FindGameObjectWithTag("Root");
@@ -29,7 +41,16 @@ public class Finalization : MonoBehaviour
         wall3.transform.Rotate(0,  90, 0);
         wall3.transform.SetParent(root.transform);
         walls = new GameObject[] {belowRoot.gameObject, wall1, wall2, wall3};
+        FlipRoofButtonsActive();
+    }
 
+    private void FlipRoofButtonsActive()
+    {
+        foreach (var roofButton in roofButtons)
+        {
+            var button = roofButton.GetComponent<Button>();
+            button.interactable = !button.interactable;
+        }
     }
 
     public void ConstructRoofFlat()
