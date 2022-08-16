@@ -9,3 +9,5 @@ adding shapes against non-grid background puts them in the wrong place - hello n
 other objects have it in the middle
 
 maybe i should include non-rectangular facades
+
+make it so that you cant create a roof before having created sides
