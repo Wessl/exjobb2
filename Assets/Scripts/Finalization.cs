@@ -18,6 +18,7 @@ public class Finalization : MonoBehaviour
     private bool camCanMove;
     private float camAroundCircleRadius = 10f;
     private Vector3 centerOfBuilding;
+    public List<Material> roofMaterials;
 
     private void Start()
     {
@@ -31,9 +32,10 @@ public class Finalization : MonoBehaviour
     {
         if (camCanMove)
         {
+            // instead of using vector3.forward and hte like, use the center points to rotate around that instead
             var v = camAroundCircleRadius * (Vector3.forward * Mathf.Cos(Time.time) + Vector3.right * Mathf.Sin(Time.time));
             Debug.Log(v);
-            mainCam.transform.position = v;
+            mainCam.transform.position = v + centerOfBuilding;
             mainCam.transform.LookAt(centerOfBuilding);
             
         }
@@ -74,17 +76,17 @@ public class Finalization : MonoBehaviour
 
     public void ConstructRoofFlat()
     {
-        RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Flat);
+        RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Flat, roofMaterials);
     }
     
     public void ConstructRoofPyramid()
     {
-        RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Pyramid);
+        RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Pyramid, roofMaterials);
     }
     
     public void ConstructRoofTent()
     {
-        RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Tent);
+        RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Tent, roofMaterials);
     }
 
     public void ViewBuilding()

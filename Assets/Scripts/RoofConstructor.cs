@@ -12,7 +12,7 @@ public static class RoofConstructor
         Tent
     }
 
-    public static void ConstructRoof(GameObject root, GameObject[] walls, Vector2 extent, RoofType roofType)
+    public static void ConstructRoof(GameObject root, GameObject[] walls, Vector2 extent, RoofType roofType, List<Material> roofMaterials)
     {
         // Get edges
         Vector3[] edgePoints = new Vector3[5];
@@ -26,43 +26,43 @@ public static class RoofConstructor
         switch (roofType)
         {
             case RoofType.Flat:
-                CreateFlatRoof(extent, walls, edgePoints);
+                CreateFlatRoof(extent, walls, edgePoints, roofMaterials);
                 break;
             case RoofType.Pyramid:
-                CreatePyramidRoof(extent, walls, edgePoints);
+                CreatePyramidRoof(extent, walls, edgePoints, roofMaterials);
                 break;
             case RoofType.Tent:
-                CreateTentRoof(extent, walls, edgePoints);
+                CreateTentRoof(extent, walls, edgePoints, roofMaterials);
                 break;
             default:
-                CreatePyramidRoof(extent, walls, edgePoints);
+                CreatePyramidRoof(extent, walls, edgePoints, roofMaterials);
                 break;
         }
 
     }
 
-    static void CreatePyramidRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints)
+    static void CreatePyramidRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints, List<Material> roofMaterials)
     {
-        CreateTriRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[0].transform.position.z, edgePoints[4].z, 0);
-        CreateTriRoofMesh(extent.x, extent.y, walls[1].transform.position.x, walls[1].transform.position.z, edgePoints[4].z, -90);
-        CreateTriRoofMesh(extent.x, extent.y, walls[2].transform.position.x, walls[2].transform.position.z, edgePoints[4].z, -180);
-        CreateTriRoofMesh(extent.x, extent.y, walls[3].transform.position.x, walls[3].transform.position.z, edgePoints[4].z, -270);   
+        CreateTriRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[0].transform.position.z, edgePoints[4].z, 0, roofMaterials);
+        CreateTriRoofMesh(extent.x, extent.y, walls[1].transform.position.x, walls[1].transform.position.z, edgePoints[4].z, -90, roofMaterials);
+        CreateTriRoofMesh(extent.x, extent.y, walls[2].transform.position.x, walls[2].transform.position.z, edgePoints[4].z, -180, roofMaterials);
+        CreateTriRoofMesh(extent.x, extent.y, walls[3].transform.position.x, walls[3].transform.position.z, edgePoints[4].z, -270, roofMaterials);   
     }
     
-    static void CreateFlatRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints)
+    static void CreateFlatRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints, List<Material> roofMaterials)
     {
-        CreateQuadRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[1].transform.position.z, extent.y, new Vector3(90, 0, 0));
+        CreateQuadRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[1].transform.position.z, extent.y, new Vector3(90, 0, 0), roofMaterials);
     }
 
-    static void CreateTentRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints)
+    static void CreateTentRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints, List<Material> roofMaterials)
     {
-        CreateTriRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[0].transform.position.z, 0, 0);
-        CreateQuadRoofMesh(extent.x, extent.x * 0.75f, walls[1].transform.position.x * 0.75f, walls[1].transform.position.z, extent.y * 1.25f ,new Vector3(45,-90,0));
-        CreateTriRoofMesh(extent.x, extent.y, walls[2].transform.position.x, walls[2].transform.position.z, 0, -180);
-        CreateQuadRoofMesh(extent.x, extent.x * 0.75f, walls[1].transform.position.x * 0.25f, walls[3].transform.position.z, extent.y * 1.25f, new Vector3(45,-270,0));
+        CreateTriRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[0].transform.position.z, 0, 0, roofMaterials);
+        CreateQuadRoofMesh(extent.x, extent.x * 0.75f, walls[1].transform.position.x * 0.75f, walls[1].transform.position.z, extent.y * 1.25f ,new Vector3(45,-90,0), roofMaterials);
+        CreateTriRoofMesh(extent.x, extent.y, walls[2].transform.position.x, walls[2].transform.position.z, 0, -180, roofMaterials);
+        CreateQuadRoofMesh(extent.x, extent.x * 0.75f, walls[1].transform.position.x * 0.25f, walls[3].transform.position.z, extent.y * 1.25f, new Vector3(45,-270,0), roofMaterials);
     }
     
-    static void CreateTriRoofMesh(float width, float height, float centerX, float centerZ, float z, float rot)
+    static void CreateTriRoofMesh(float width, float height, float centerX, float centerZ, float z, float rot, List<Material> roofMaterials)
     {
         Mesh mesh = new Mesh();
         // Just create a triangle
@@ -103,11 +103,11 @@ public static class RoofConstructor
         newShape.AddComponent<MeshFilter>();
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
-        //newShape.GetComponent<MeshRenderer>().material = temporaryMat;
+        newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
         
     }
     
-    static void CreateQuadRoofMesh(float width, float height, float centerX, float centerZ, float centerY, Vector3 rot)
+    static void CreateQuadRoofMesh(float width, float height, float centerX, float centerZ, float centerY, Vector3 rot, List<Material> roofMaterials)
     {
         Mesh mesh = new Mesh();
         // Just create a quad
@@ -153,7 +153,7 @@ public static class RoofConstructor
         newShape.AddComponent<MeshFilter>();
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
-        // newShape.GetComponent<MeshRenderer>().material = temporaryMat;
+        newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
         // Shape extent setup}
         
     }

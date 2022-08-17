@@ -705,6 +705,9 @@ MonoBehaviour:
   flatButton: {fileID: 9080402117788814315}
   pyramidButton: {fileID: 8191194207712419158}
   tentButton: {fileID: 7394993399819256868}
+  roofMaterials:
+  - {fileID: 2100000, guid: 840099973340add459a02c0387754701, type: 2}
+  - {fileID: 2100000, guid: f9e307a0746e28544b76d80ae1232570, type: 2}
 --- !u!1 &4068245489345812161
 GameObject:
   m_ObjectHideFlags: 0
