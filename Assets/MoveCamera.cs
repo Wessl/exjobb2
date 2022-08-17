@@ -7,7 +7,6 @@ public class MoveCamera : MonoBehaviour
     private Camera mainCam;
     private Vector3 panOrigin;
     private float cameraZDist;
-    private float t = 0;
 
     // Start is called before the first frame update
     void Start()

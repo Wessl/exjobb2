@@ -9,6 +9,7 @@ TagManager:
   - TopologySelectorGO
   - GroupSelectorGO
   - InputField
+  - Roof
   layers:
   - Default
   - TransparentFX

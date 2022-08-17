@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public static class RoofConstructor
 {
@@ -14,6 +15,12 @@ public static class RoofConstructor
 
     public static void ConstructRoof(GameObject root, GameObject[] walls, Vector2 extent, RoofType roofType, List<Material> roofMaterials)
     {
+        // First, remove old roof objects as they are no longer needed
+        var roofs = GameObject.FindGameObjectsWithTag("Roof");
+        foreach (var roof in roofs)
+        {
+            Object.Destroy(roof);
+        }
         // Get edges
         Vector3[] edgePoints = new Vector3[5];
         edgePoints[0] = new Vector3(0, extent.y, 0);
@@ -38,6 +45,7 @@ public static class RoofConstructor
                 CreatePyramidRoof(extent, walls, edgePoints, roofMaterials);
                 break;
         }
+        
 
     }
 
@@ -104,7 +112,8 @@ public static class RoofConstructor
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
-        
+        newShape.tag = "Roof";
+
     }
     
     static void CreateQuadRoofMesh(float width, float height, float centerX, float centerZ, float centerY, Vector3 rot, List<Material> roofMaterials)
@@ -154,7 +163,7 @@ public static class RoofConstructor
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
-        // Shape extent setup}
+        newShape.tag = "Roof";
         
     }
 }
