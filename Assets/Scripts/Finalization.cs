@@ -19,6 +19,7 @@ public class Finalization : MonoBehaviour
     private float camAroundCircleRadius = 10f;
     private Vector3 centerOfBuilding;
     public List<Material> roofMaterials;
+    public GameObject customBasePanel;
 
     private void Start()
     {
@@ -26,6 +27,7 @@ public class Finalization : MonoBehaviour
         FlipRoofButtonsActive();
         mainCam = Camera.main;
         camCanMove = false;
+        customBasePanel.SetActive(false);
     }
 
     private void Update()
@@ -101,6 +103,6 @@ public class Finalization : MonoBehaviour
 
     public void CustomFinalize()
     {
-        
+        customBasePanel.SetActive(true);
     }
 }
