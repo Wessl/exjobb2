@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,11 +14,29 @@ public class Finalization : MonoBehaviour
     public GameObject pyramidButton;
     public GameObject tentButton;
     private GameObject[] roofButtons;
+    private Camera mainCam;
+    private bool camCanMove;
+    private float camAroundCircleRadius = 10f;
+    private Vector3 centerOfBuilding;
 
     private void Start()
     {
         roofButtons = new[] {flatButton, pyramidButton, tentButton};
         FlipRoofButtonsActive();
+        mainCam = Camera.main;
+        camCanMove = false;
+    }
+
+    private void Update()
+    {
+        if (camCanMove)
+        {
+            var v = camAroundCircleRadius * (Vector3.forward * Mathf.Cos(Time.time) + Vector3.right * Mathf.Sin(Time.time));
+            Debug.Log(v);
+            mainCam.transform.position = v;
+            mainCam.transform.LookAt(centerOfBuilding);
+            
+        }
     }
 
     public void AutomaticFinalize()
@@ -67,7 +86,14 @@ public class Finalization : MonoBehaviour
     {
         RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Tent);
     }
-    
+
+    public void ViewBuilding()
+    {
+        GameObject.FindObjectOfType<GeneralUI>().ToggleUIVisible();
+        // Find center point of walls
+        centerOfBuilding = new Vector3(walls.Average(o => o.transform.position.x), walls.Average(o => o.transform.position.y), walls.Average(o => o.transform.position.z));
+        camCanMove = true;
+    }
 
     
 
