@@ -15,7 +15,7 @@ public class Finalization : MonoBehaviour
     public GameObject tentButton;
     private GameObject[] roofButtons;
     private Camera mainCam;
-    private bool camCanMove;
+    public bool camCanMove;
     private float camAroundCircleRadius = 10f;
     private Vector3 centerOfBuilding;
     public List<Material> roofMaterials;
