@@ -110,6 +110,8 @@ public class Finalization : MonoBehaviour
     public void CustomFinalize(List<Vector2> endPositions, float scaleFactor, Vector2 sizeDelta)
     {
         // Actually do the finalization
+        // Set up walls[] 
+        walls = new GameObject[endPositions.Count / 2];
         root = GameObject.FindGameObjectWithTag("Root");
         var belowRoot = root.transform.GetChild(0);
         extent = belowRoot.GetComponent<Shape>().SizeExent;
@@ -131,7 +133,11 @@ public class Finalization : MonoBehaviour
             // how to make the scale work
             wall.transform.localScale = new Vector3(distance / belowRoot.transform.localScale.x * 1.25f, wall.transform.localScale.y / belowRoot.transform.localScale.y, wall.transform.localScale.z / belowRoot.transform.localScale.z); 
             wall.transform.SetParent(root.transform, true);
+            walls[i / 2] = wall;
         }
+        FlipRoofButtonsActive();
+        roofButtons[1].SetActive(false);    // Currently not supported
+        roofButtons[2].SetActive(false);    // Currently not supported
         Destroy(belowRoot.gameObject);
     }
 }
