@@ -101,8 +101,35 @@ public class Finalization : MonoBehaviour
 
     
 
-    public void CustomFinalize()
+    public void CustomFinalizeButton()
     {
         customBasePanel.SetActive(true);
+    }
+
+    public void CustomFinalize(List<Vector2> endPositions, float scaleFactor, Vector2 sizeDelta)
+    {
+        // Actually do the finalization
+        root = GameObject.FindGameObjectWithTag("Root");
+        var belowRoot = root.transform.GetChild(0);
+        extent = belowRoot.GetComponent<Shape>().SizeExent;
+        // make the walls appear in these positions
+        var posCount = endPositions.Count;
+        for (int i = 0; i < posCount-1; i += 2)
+        {
+            // pixel to world space... 
+            var A = new Vector3(endPositions[i].x / sizeDelta.x, 0, endPositions[i].y / sizeDelta.y) * scaleFactor;
+            var B = new Vector3(endPositions[(i + 1)].x / sizeDelta.x, 0, endPositions[(i+1)].y / sizeDelta.y) * scaleFactor;
+            var AB = (B - A);
+            var distance = AB.magnitude;
+            var halfway = AB.normalized * distance * 0.5f;
+            Debug.Log(halfway);
+            var angle = Vector3.Angle(Vector3.right, AB.normalized);
+            if (B.z < A.z) angle = -angle;
+            Debug.Log(angle);
+            var wall =Instantiate(belowRoot.gameObject, halfway, Quaternion.Euler(0,angle-90,0));
+            // how to make the scale work
+            wall.transform.SetParent(root.transform);
+        }
+        Destroy(belowRoot.gameObject);
     }
 }

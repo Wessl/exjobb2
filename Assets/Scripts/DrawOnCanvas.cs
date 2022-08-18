@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,12 +15,16 @@ public class DrawOnCanvas : MonoBehaviour
     private List<Vector2> clickedPositions;
     public float clickPosTolerance = 50f; //pixels away from previous click
     private float determineClosurePointTol = 0.1f;
+    public GameObject finishButton;
+    private float scaleFactor;
+    [SerializeField] private TMP_InputField inputField;
 
     private void Awake()
     {
         this.raycaster = GetComponent<GraphicRaycaster>();
         clickIsDown = false;
         clickedPositions = new List<Vector2>();
+        finishButton.SetActive(false);
     }
 
     // Update is called once per frame
@@ -59,6 +64,7 @@ public class DrawOnCanvas : MonoBehaviour
  
             //Raycast using the Graphics Raycaster and mouse click position
             pointerData.position = Input.mousePosition;
+            if ((pointerData.position - downPos).magnitude < determineClosurePointTol) return;  // it was just a click, not a drag
             
             // Check distances from previous click locations
             pointerData.position = LeastDistancePoint(pointerData);
@@ -123,8 +129,20 @@ public class DrawOnCanvas : MonoBehaviour
 
         if (markedPositions == clickedPositions.Count && markedPositions > 2)
         {
-            Debug.Log("closed!");
+            finishButton.SetActive(true);
         }
+        else
+        {
+            finishButton.SetActive(false);
+        }
+    }
+
+    public void ClickFinishButton()
+    {
+        scaleFactor = float.Parse(inputField.text);
+        this.gameObject.SetActive(false);
+        var sizeDelta = this.gameObject.GetComponent<RectTransform>().sizeDelta;
+        GameObject.FindObjectOfType<Finalization>().CustomFinalize(clickedPositions, scaleFactor, sizeDelta);
     }
 }
 
