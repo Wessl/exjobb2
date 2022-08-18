@@ -140,7 +140,7 @@ public class DrawOnCanvas : MonoBehaviour
     public void ClickFinishButton()
     {
         scaleFactor = float.Parse(inputField.text);
-        this.gameObject.SetActive(false);
+        // this.gameObject.SetActive(false);
         var sizeDelta = this.gameObject.GetComponent<RectTransform>().sizeDelta;
         GameObject.FindObjectOfType<Finalization>().CustomFinalize(clickedPositions, scaleFactor, sizeDelta);
     }

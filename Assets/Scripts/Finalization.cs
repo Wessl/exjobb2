@@ -20,6 +20,7 @@ public class Finalization : MonoBehaviour
     private Vector3 centerOfBuilding;
     public List<Material> roofMaterials;
     public GameObject customBasePanel;
+    public GameObject cube;
 
     private void Start()
     {
@@ -117,18 +118,19 @@ public class Finalization : MonoBehaviour
         for (int i = 0; i < posCount-1; i += 2)
         {
             // pixel to world space... 
-            var A = new Vector3(endPositions[i].x / sizeDelta.x, 0, endPositions[i].y / sizeDelta.y) * scaleFactor;
-            var B = new Vector3(endPositions[(i + 1)].x / sizeDelta.x, 0, endPositions[(i+1)].y / sizeDelta.y) * scaleFactor;
+            var A = new Vector3(endPositions[i].x / sizeDelta.x, 0, endPositions[i].y / sizeDelta.x) * scaleFactor;
+            var B = new Vector3(endPositions[(i + 1)].x / sizeDelta.x, 0, endPositions[(i+1)].y / sizeDelta.x) * scaleFactor;
+            Instantiate(cube, A, Quaternion.identity);
+            Instantiate(cube, B, Quaternion.identity);
             var AB = (B - A);
             var distance = AB.magnitude;
             var halfway = AB.normalized * distance * 0.5f;
-            Debug.Log(halfway);
             var angle = Vector3.Angle(Vector3.right, AB.normalized);
-            if (B.z < A.z) angle = -angle;
-            Debug.Log(angle);
-            var wall =Instantiate(belowRoot.gameObject, halfway, Quaternion.Euler(0,angle-90,0));
+            if (A.z < B.z) angle = -angle;
+            var wall =Instantiate(belowRoot.gameObject, halfway + A, Quaternion.Euler(0,angle + 180,0));
             // how to make the scale work
-            wall.transform.SetParent(root.transform);
+            wall.transform.localScale = new Vector3(distance / belowRoot.transform.localScale.x * 1.25f, wall.transform.localScale.y / belowRoot.transform.localScale.y, wall.transform.localScale.z / belowRoot.transform.localScale.z); 
+            wall.transform.SetParent(root.transform, true);
         }
         Destroy(belowRoot.gameObject);
     }
