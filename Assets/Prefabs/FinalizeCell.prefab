@@ -780,6 +780,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineImage: {fileID: 4097101614201443471}
+  tolerance: 50
 --- !u!223 &4580796093277662857
 Canvas:
   m_ObjectHideFlags: 0

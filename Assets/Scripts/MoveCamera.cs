@@ -35,7 +35,6 @@ public class MoveCamera : MonoBehaviour
         {
             // Apply scroll delta, with less effect when near closest possible point to enable greater control in high zoom
             cameraZDist -= Input.mouseScrollDelta.y * cameraZDist/(16);
-            Debug.Log(" camera z dist" + cameraZDist);
             // Start timer
         }
 
