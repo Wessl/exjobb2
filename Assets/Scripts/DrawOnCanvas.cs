@@ -65,9 +65,9 @@ public class DrawOnCanvas : MonoBehaviour
                 var rect = lineGO.GetComponent<RectTransform>();
                 rect.sizeDelta = new Vector2(distance,10);
                 rect.position -= new Vector3(dirVec.x / 2, dirVec.y / 2, 0);
-                // rect.Rotate(dirVec, );
-                Debug.Log(distance);
-                // lineGO.transform.Rotate();
+                var angle = Vector3.Angle(Vector2.right, dirVec);
+                if (endPos.y < downPos.y) angle = -angle;   // Vector3.angle only ever returns positive value, brute force some negatives when needed
+                rect.Rotate(new Vector3(0,0,angle));    
             }
         }
     }
