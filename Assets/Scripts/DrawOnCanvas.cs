@@ -13,7 +13,7 @@ public class DrawOnCanvas : MonoBehaviour
     private bool clickIsDown;
     private Vector2 downPos;
     private List<Vector2> clickedPositions;
-    public float clickPosTolerance = 50f; //pixels away from previous click
+    public float clickPosTolerance = 20f; //pixels away from previous click
     private float determineClosurePointTol = 0.1f;
     public GameObject finishButton;
     private float scaleFactor;

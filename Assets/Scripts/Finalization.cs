@@ -154,6 +154,7 @@ public class Finalization : MonoBehaviour
             // For non grids: 
             // Just check the original length, so divide by the new scaleing to maintain OG length, if another fits at equal spacing, add it there, do this for however many necessary
             // Same basic logic should also work for grids...? I hope so
+            // Also if wall is too thin, remove it from that wall
             var wall = walls[i];
             var wallLength = wall.GetComponent<MeshFilter>().mesh.bounds.extents.x * 2;
             var wallsChildren = wall.GetComponentsInChildren<Shape>();  // not sure if getting shape is the right move here
@@ -161,6 +162,17 @@ public class Finalization : MonoBehaviour
             {
                 if (wallChild.gameObject == wall.gameObject) continue;
                 wallChild.transform.localScale = new Vector3(1/previousScales[i].x, 1/previousScales[i].y, 1/previousScales[i].z);
+                // Check length...
+                if (wallChild.transform.lossyScale.x > wall.transform.lossyScale.x)
+                {
+                    Debug.Log("i am longer than me parent");
+                    wallChild.gameObject.SetActive(false);
+                }
+                // Now check the length of the child, and the length of the remaining bits of wall. 
+                // If the remaining bits of wall is greater than twice the length of the original wall, 
+                // start populating it with more children (e.g. windows) at the same distance apart
+                // this also requires repositioning, i.e no longer positioning based on relative position against parent, 
+                // but instead the absolute distance as originally used by the reference wall. 
             }
         }
     }
