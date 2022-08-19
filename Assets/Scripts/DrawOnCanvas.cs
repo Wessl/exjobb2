@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -32,6 +33,7 @@ public class DrawOnCanvas : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            Debug.Log("down");
             this.GetComponentInParent<ScrollRect>().enabled = false;
             //Set up the new Pointer Event
             PointerEventData pointerData = new PointerEventData(EventSystem.current);
@@ -46,16 +48,11 @@ public class DrawOnCanvas : MonoBehaviour
             this.raycaster.Raycast(pointerData, results);
 
             downPos = pointerData.position;
-            foreach (var result in results)
-            {
-                // Debug.Log(result.worldPosition);
-            }
-
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            
+            Debug.Log("up");
             this.GetComponentInParent<ScrollRect>().enabled = true;
 
             //Set up the new Pointer Event
@@ -65,7 +62,7 @@ public class DrawOnCanvas : MonoBehaviour
             //Raycast using the Graphics Raycaster and mouse click position
             pointerData.position = Input.mousePosition;
             if ((pointerData.position - downPos).magnitude < determineClosurePointTol) return;  // it was just a click, not a drag
-            
+
             // Check distances from previous click locations
             pointerData.position = LeastDistancePoint(pointerData);
             
@@ -114,6 +111,9 @@ public class DrawOnCanvas : MonoBehaviour
 
     private void DetermineClosure()
     {
+        Debug.Log("clickedpositions; " + clickedPositions.Count);
+        Debug.Log(clickedPositions[0]);
+        Debug.Log(clickedPositions[1]);
         int markedPositions = 0;
         for (int i = 0; i < clickedPositions.Count; i++)
         {
@@ -122,6 +122,7 @@ public class DrawOnCanvas : MonoBehaviour
                 if (i == y) continue;
                 if ((clickedPositions[i] - clickedPositions[y]).magnitude < determineClosurePointTol)
                 {
+                    Debug.Log(markedPositions);
                     markedPositions ++;
                 }
             }
@@ -143,6 +144,20 @@ public class DrawOnCanvas : MonoBehaviour
         // this.gameObject.SetActive(false);
         var sizeDelta = this.gameObject.GetComponent<RectTransform>().sizeDelta;
         GameObject.FindObjectOfType<Finalization>().CustomFinalize(clickedPositions, scaleFactor, sizeDelta);
+    }
+
+    public void ResetCanvas()
+    {
+        // Remove everything
+        clickedPositions = new List<Vector2>();
+        var oldImages = this.GetComponentsInChildren<Image>().ToList();
+        oldImages.RemoveAt(0);
+        foreach (var oldImage in oldImages)
+        {
+            Destroy(oldImage);
+        }
+        finishButton.SetActive(false);
+        clickIsDown = false;
     }
 }
 
