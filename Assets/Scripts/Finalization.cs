@@ -37,7 +37,6 @@ public class Finalization : MonoBehaviour
         {
             // instead of using vector3.forward and hte like, use the center points to rotate around that instead
             var v = camAroundCircleRadius * (Vector3.forward * Mathf.Cos(Time.time) + Vector3.right * Mathf.Sin(Time.time));
-            Debug.Log(v);
             mainCam.transform.position = v + centerOfBuilding;
             mainCam.transform.LookAt(centerOfBuilding);
             
@@ -112,6 +111,7 @@ public class Finalization : MonoBehaviour
         // Actually do the finalization
         // Set up walls[] 
         walls = new GameObject[endPositions.Count / 2];
+        Vector3[] previousScales = new Vector3[endPositions.Count /2];
         root = GameObject.FindGameObjectWithTag("Root");
         var belowRoot = root.transform.GetChild(0);
         extent = belowRoot.GetComponent<Shape>().SizeExent;
@@ -131,7 +131,8 @@ public class Finalization : MonoBehaviour
             if (A.z < B.z) angle = -angle;
             var wall =Instantiate(belowRoot.gameObject, halfway + A, Quaternion.Euler(0,angle + 180,0));
             // how to make the scale work
-            wall.transform.localScale = new Vector3(distance / belowRoot.transform.localScale.x * 1.25f, wall.transform.localScale.y / belowRoot.transform.localScale.y, wall.transform.localScale.z / belowRoot.transform.localScale.z); 
+            wall.transform.localScale = new Vector3(distance / belowRoot.transform.localScale.x * 1.25f, wall.transform.localScale.y, wall.transform.localScale.z);
+            previousScales[i / 2] = wall.transform.localScale;    // save the X scaling to later correct child scales
             wall.transform.SetParent(root.transform, true);
             walls[i / 2] = wall;
         }
@@ -139,5 +140,29 @@ public class Finalization : MonoBehaviour
         roofButtons[1].SetActive(false);    // Currently not supported
         roofButtons[2].SetActive(false);    // Currently not supported
         Destroy(belowRoot.gameObject);
+        
+        // Here comes a big thing: Fix grids so that windows correctly tile where possible, instead of just stretching
+        GridFixer(previousScales);
     }
+
+    private void GridFixer(Vector3[] previousScales)
+    {
+        for (int i = 0; i < walls.Length; i++)
+        {
+            // My idea right now: 
+            // For each wall, get every child
+            // For non grids: 
+            // Just check the original length, so divide by the new scaleing to maintain OG length, if another fits at equal spacing, add it there, do this for however many necessary
+            // Same basic logic should also work for grids...? I hope so
+            var wall = walls[i];
+            var wallLength = wall.GetComponent<MeshFilter>().mesh.bounds.extents.x * 2;
+            var wallsChildren = wall.GetComponentsInChildren<Shape>();  // not sure if getting shape is the right move here
+            foreach (var wallChild in wallsChildren)
+            {
+                if (wallChild.gameObject == wall.gameObject) continue;
+                wallChild.transform.localScale = new Vector3(1/previousScales[i].x, 1/previousScales[i].y, 1/previousScales[i].z);
+            }
+        }
+    }
+    
 }
