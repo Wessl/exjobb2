@@ -178,11 +178,12 @@ public class Finalization : MonoBehaviour
                     wallChild.gameObject.SetActive(false);
                 }
 
-                var childPosOnWall = wallChild.transform.localPosition.x - Mathf.Abs(left) - og_halfwidth; //localposition will, as long as its on the wall, be between -1 and 1
+                var childPosOnWall = -1 + Mathf.Abs(left) + og_halfwidth; //localposition will, as long as its on the wall, be between -1 and 1
                 Debug.Log(childPosOnWall);
 
                 while (childPosOnWall + og_halfwidth < 1)
                 {
+                    Debug.Log(childPosOnWall);
                     var newWallChild = Instantiate(wallChild, wallChild.transform.position, wall.transform.rotation);
                     
                     newWallChild.transform.SetParent(wall.transform);
@@ -190,8 +191,8 @@ public class Finalization : MonoBehaviour
                     
                     var halfwidth = newWallChild.transform.lossyScale.x / wall.transform.lossyScale.x;
                     
-                    childPosOnWall += halfwidth + Mathf.Abs(left) + Mathf.Abs(right);
                     newWallChild.transform.localPosition += new Vector3(childPosOnWall, 0, 0);
+                    childPosOnWall += halfwidth + Mathf.Abs(left) + Mathf.Abs(right);
                 }
                 Destroy(wallChild.gameObject);
                 // Now check the length of the child, and the length of the remaining bits of wall. 
