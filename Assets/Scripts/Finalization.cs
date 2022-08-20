@@ -156,18 +156,44 @@ public class Finalization : MonoBehaviour
             // Same basic logic should also work for grids...? I hope so
             // Also if wall is too thin, remove it from that wall
             var wall = walls[i];
-            var wallLength = wall.GetComponent<MeshFilter>().mesh.bounds.extents.x * 2;
+            var wallMeshLength = wall.GetComponent<MeshFilter>().mesh.bounds.extents.x * 2;
             var wallsChildren = wall.GetComponentsInChildren<Shape>();  // not sure if getting shape is the right move here
             foreach (var wallChild in wallsChildren)
             {
                 if (wallChild.gameObject == wall.gameObject) continue;
                 wallChild.transform.localScale = new Vector3(1/previousScales[i].x, 1/previousScales[i].y, 1/previousScales[i].z);
                 // Check length...
-                if (wallChild.transform.lossyScale.x > wall.transform.lossyScale.x)
+                var wallLength = wall.transform.lossyScale.x;
+                var childRealLength = wallChild.transform.lossyScale.x;
+                
+                var og_halfwidth = wallChild.transform.lossyScale.x / wall.transform.lossyScale.x;
+                
+                var left = wallChild.transform.localPosition.x - og_halfwidth;
+                var right = wallChild.transform.localPosition.x + og_halfwidth;
+                
+                
+                if (childRealLength > wallLength)
                 {
                     Debug.Log("i am longer than me parent");
                     wallChild.gameObject.SetActive(false);
                 }
+
+                var childPosOnWall = wallChild.transform.localPosition.x - Mathf.Abs(left) - og_halfwidth; //localposition will, as long as its on the wall, be between -1 and 1
+                Debug.Log(childPosOnWall);
+
+                while (childPosOnWall + og_halfwidth < 1)
+                {
+                    var newWallChild = Instantiate(wallChild, wallChild.transform.position, wall.transform.rotation);
+                    
+                    newWallChild.transform.SetParent(wall.transform);
+                    newWallChild.transform.localScale = new Vector3(wall.transform.localScale.x * newWallChild.transform.localScale.x, wall.transform.localScale.y * newWallChild.transform.localScale.y, newWallChild.transform.localScale.z);
+                    
+                    var halfwidth = newWallChild.transform.lossyScale.x / wall.transform.lossyScale.x;
+                    
+                    childPosOnWall += halfwidth + Mathf.Abs(left) + Mathf.Abs(right);
+                    newWallChild.transform.localPosition += new Vector3(childPosOnWall, 0, 0);
+                }
+                Destroy(wallChild.gameObject);
                 // Now check the length of the child, and the length of the remaining bits of wall. 
                 // If the remaining bits of wall is greater than twice the length of the original wall, 
                 // start populating it with more children (e.g. windows) at the same distance apart
