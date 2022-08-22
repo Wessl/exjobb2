@@ -290,8 +290,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -250, y: -300}
-  m_SizeDelta: {x: -500, y: 400}
+  m_AnchoredPosition: {x: 750, y: 202.5}
+  m_SizeDelta: {x: -500, y: 395}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5094362922076057208
 CanvasRenderer:
@@ -1226,7 +1226,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 840099973340add459a02c0387754701, type: 2}
   - {fileID: 2100000, guid: f9e307a0746e28544b76d80ae1232570, type: 2}
   customBasePanel: {fileID: 1036304203907466958}
-  cube: {fileID: 1424448360679102007, guid: 32c80d95572afc54f92312fafb078445, type: 3}
 --- !u!1 &3745314625004302833
 GameObject:
   m_ObjectHideFlags: 0

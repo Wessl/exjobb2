@@ -21,7 +21,6 @@ public class Finalization : MonoBehaviour
     private Vector3 centerOfBuilding;
     public List<Material> roofMaterials;
     public GameObject customBasePanel;
-    public GameObject cube;
 
     private void Start()
     {
@@ -124,8 +123,6 @@ public class Finalization : MonoBehaviour
             // pixel to world space... 
             var A = new Vector3(endPositions[i].x / sizeDelta.x, 0, endPositions[i].y / sizeDelta.x) * scaleFactor;
             var B = new Vector3(endPositions[(i + 1)].x / sizeDelta.x, 0, endPositions[(i+1)].y / sizeDelta.x) * scaleFactor;
-            Instantiate(cube, A, Quaternion.identity);
-            Instantiate(cube, B, Quaternion.identity);
             var AB = (B - A);
             var distance = AB.magnitude;
             var halfway = AB.normalized * distance * 0.5f;
