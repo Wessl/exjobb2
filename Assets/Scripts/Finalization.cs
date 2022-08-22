@@ -121,7 +121,7 @@ public class Finalization : MonoBehaviour
         for (int i = 0; i < posCount-1; i += 2)
         {
             // pixel to world space... 
-            var A = new Vector3(endPositions[i].x / sizeDelta.x, 0, endPositions[i].y / sizeDelta.x) * scaleFactor;
+            var A = new Vector3(endPositions[i].x / sizeDelta.x, 0, endPositions[i].y / sizeDelta.x) * scaleFactor;             // this doesnt work the way you thouht it id. the scalefactor will move it in space
             var B = new Vector3(endPositions[(i + 1)].x / sizeDelta.x, 0, endPositions[(i+1)].y / sizeDelta.x) * scaleFactor;
             var AB = (B - A);
             var distance = AB.magnitude;
@@ -131,7 +131,7 @@ public class Finalization : MonoBehaviour
             var wall =Instantiate(belowRoot.gameObject, halfway + A, Quaternion.Euler(0,angle + 180,0));
             // how to make the scale work
             previousScalesBefore[i / 2] = wall.transform.localScale;
-            wall.transform.localScale = new Vector3(distance / belowRoot.transform.localScale.x * 1.25f, wall.transform.localScale.y, wall.transform.localScale.z);
+            wall.transform.localScale = new Vector3(distance / belowRoot.transform.localScale.x * (extent.x/4), wall.transform.localScale.y, wall.transform.localScale.z); // why does this give the correct x scaling? idk man
             previousScalesAfter[i / 2] = wall.transform.localScale;    // save the X scaling to later correct child scales
             wall.transform.SetParent(root.transform, true);
             walls[i / 2] = wall;
