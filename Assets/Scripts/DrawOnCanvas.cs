@@ -33,7 +33,6 @@ public class DrawOnCanvas : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Debug.Log("down");
             this.GetComponentInParent<ScrollRect>().enabled = false;
             //Set up the new Pointer Event
             PointerEventData pointerData = new PointerEventData(EventSystem.current);
@@ -52,7 +51,6 @@ public class DrawOnCanvas : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            Debug.Log("up");
             this.GetComponentInParent<ScrollRect>().enabled = true;
 
             //Set up the new Pointer Event
@@ -111,9 +109,6 @@ public class DrawOnCanvas : MonoBehaviour
 
     private void DetermineClosure()
     {
-        Debug.Log("clickedpositions; " + clickedPositions.Count);
-        Debug.Log(clickedPositions[0]);
-        Debug.Log(clickedPositions[1]);
         int markedPositions = 0;
         for (int i = 0; i < clickedPositions.Count; i++)
         {

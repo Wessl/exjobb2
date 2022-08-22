@@ -111,7 +111,8 @@ public class Finalization : MonoBehaviour
         // Actually do the finalization
         // Set up walls[] 
         walls = new GameObject[endPositions.Count / 2];
-        Vector3[] previousScales = new Vector3[endPositions.Count /2];
+        Vector3[] previousScalesBefore = new Vector3[endPositions.Count / 2];
+        Vector3[] previousScalesAfter = new Vector3[endPositions.Count /2];
         root = GameObject.FindGameObjectWithTag("Root");
         var belowRoot = root.transform.GetChild(0);
         extent = belowRoot.GetComponent<Shape>().SizeExent;
@@ -131,8 +132,9 @@ public class Finalization : MonoBehaviour
             if (A.z < B.z) angle = -angle;
             var wall =Instantiate(belowRoot.gameObject, halfway + A, Quaternion.Euler(0,angle + 180,0));
             // how to make the scale work
+            previousScalesBefore[i / 2] = wall.transform.localScale;
             wall.transform.localScale = new Vector3(distance / belowRoot.transform.localScale.x * 1.25f, wall.transform.localScale.y, wall.transform.localScale.z);
-            previousScales[i / 2] = wall.transform.localScale;    // save the X scaling to later correct child scales
+            previousScalesAfter[i / 2] = wall.transform.localScale;    // save the X scaling to later correct child scales
             wall.transform.SetParent(root.transform, true);
             walls[i / 2] = wall;
         }
@@ -142,10 +144,10 @@ public class Finalization : MonoBehaviour
         Destroy(belowRoot.gameObject);
         
         // Here comes a big thing: Fix grids so that windows correctly tile where possible, instead of just stretching
-        GridFixer(previousScales);
+        GridFixer(previousScalesBefore, previousScalesAfter);
     }
 
-    private void GridFixer(Vector3[] previousScales)
+    private void GridFixer(Vector3[] previousScalesBefore, Vector3[] previousScalesAfter)
     {
         for (int i = 0; i < walls.Length; i++)
         {
@@ -161,7 +163,10 @@ public class Finalization : MonoBehaviour
             foreach (var wallChild in wallsChildren)
             {
                 if (wallChild.gameObject == wall.gameObject) continue;
-                wallChild.transform.localScale = new Vector3(1/previousScales[i].x, 1/previousScales[i].y, 1/previousScales[i].z);
+                var localScale = wallChild.transform.localScale;
+                var scaleDifference = (previousScalesBefore[i].x * (1 / previousScalesAfter[i].x));
+                localScale = new Vector3( scaleDifference * wallChild.transform.localScale.x , wallChild.transform.localScale.y, 1/previousScalesAfter[i].z);
+                wallChild.transform.localScale = localScale;
                 // Check length...
                 var wallLength = wall.transform.lossyScale.x;
                 var childRealLength = wallChild.transform.lossyScale.x;
@@ -170,20 +175,27 @@ public class Finalization : MonoBehaviour
                 
                 var left = wallChild.transform.localPosition.x - og_halfwidth;
                 var right = wallChild.transform.localPosition.x + og_halfwidth;
-                
+                Debug.Log("now handling: " + wallChild.name + " where left is " + left);
+
                 
                 if (childRealLength > wallLength)
                 {
-                    Debug.Log("i am longer than me parent");
                     wallChild.gameObject.SetActive(false);
                 }
 
-                var childPosOnWall = -1 + Mathf.Abs(left) + og_halfwidth; //localposition will, as long as its on the wall, be between -1 and 1
-                Debug.Log(childPosOnWall);
+                float childPosOnWall = 0;
+                if (left > 0)
+                {
+                    childPosOnWall = -1 - left + og_halfwidth;
+                }
+                else
+                {
+                    childPosOnWall = -1 + Mathf.Abs(left) + og_halfwidth; //localposition will, as long as its on the wall, be between -1 and 1
+                }
 
+                Debug.Log("do we enter the loop? childposonwall + oghalfwidth is  " + (og_halfwidth + childPosOnWall));
                 while (childPosOnWall + og_halfwidth < 1)
                 {
-                    Debug.Log(childPosOnWall);
                     var newWallChild = Instantiate(wallChild, wallChild.transform.position, wall.transform.rotation);
                     
                     newWallChild.transform.SetParent(wall.transform);
@@ -192,7 +204,9 @@ public class Finalization : MonoBehaviour
                     var halfwidth = newWallChild.transform.lossyScale.x / wall.transform.lossyScale.x;
                     
                     newWallChild.transform.localPosition += new Vector3(childPosOnWall, 0, 0);
-                    childPosOnWall += halfwidth + Mathf.Abs(left) + Mathf.Abs(right);
+                    
+                    childPosOnWall += halfwidth + (1-Mathf.Abs(left)) * scaleDifference + (1-Mathf.Abs(right)) * scaleDifference;
+                    
                 }
                 Destroy(wallChild.gameObject);
                 // Now check the length of the child, and the length of the remaining bits of wall. 

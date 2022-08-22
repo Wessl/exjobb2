@@ -11,3 +11,4 @@ other objects have it in the middle
 maybe i should include non-rectangular facades (NO)
 add a clear button to drawing the facade sides
 winding order of drawing should not change what side faces outwards
+fix cases where multiple windows on one wall already, also Y scaling is borked. actually x scaling too. why are they same
