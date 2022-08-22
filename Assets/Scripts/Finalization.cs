@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.SceneTemplate;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -173,10 +174,11 @@ public class Finalization : MonoBehaviour
                 
                 var og_halfwidth = wallChild.transform.lossyScale.x / wall.transform.lossyScale.x;
                 
-                var left = wallChild.transform.localPosition.x - og_halfwidth;
-                var right = wallChild.transform.localPosition.x + og_halfwidth;
-                Debug.Log("now handling: " + wallChild.name + " where left is " + left);
-
+                var left = (wallChild.transform.localPosition.x - og_halfwidth + 1) / 2 ;
+                var right = (wallChild.transform.localPosition.x + og_halfwidth + 1) / 2;
+                Debug.Log(wallChild.name);
+                Debug.Log("left: " + left);
+                Debug.Log("right: " + right);
                 
                 if (childRealLength > wallLength)
                 {
@@ -184,28 +186,22 @@ public class Finalization : MonoBehaviour
                 }
 
                 float childPosOnWall = 0;
-                if (left > 0)
-                {
-                    childPosOnWall = -1 - left + og_halfwidth;
-                }
-                else
-                {
-                    childPosOnWall = -1 + Mathf.Abs(left) + og_halfwidth; //localposition will, as long as its on the wall, be between -1 and 1
-                }
+                
+                childPosOnWall = - 1; //localposition will, as long as its on the wall, be between -1 and 1
 
-                Debug.Log("do we enter the loop? childposonwall + oghalfwidth is  " + (og_halfwidth + childPosOnWall));
-                while (childPosOnWall + og_halfwidth < 1)
+                while (childPosOnWall + ((left + ( 1 - right ) + og_halfwidth)*2*scaleDifference) < 1)
                 {
                     var newWallChild = Instantiate(wallChild, wallChild.transform.position, wall.transform.rotation);
-                    
-                    newWallChild.transform.SetParent(wall.transform);
-                    newWallChild.transform.localScale = new Vector3(wall.transform.localScale.x * newWallChild.transform.localScale.x, wall.transform.localScale.y * newWallChild.transform.localScale.y, newWallChild.transform.localScale.z);
-                    
+                    var nwcTransform = newWallChild.transform;
+                    nwcTransform.SetParent(wall.transform);
+                    nwcTransform.localScale = new Vector3(wall.transform.localScale.x * newWallChild.transform.localScale.x, wall.transform.localScale.y * newWallChild.transform.localScale.y, newWallChild.transform.localScale.z);
+                    nwcTransform.localPosition =
+                        new Vector3(((left) * 2 + og_halfwidth) * scaleDifference, nwcTransform.localPosition.y, nwcTransform.localPosition.z);
                     var halfwidth = newWallChild.transform.lossyScale.x / wall.transform.lossyScale.x;
                     
                     newWallChild.transform.localPosition += new Vector3(childPosOnWall, 0, 0);
-                    
-                    childPosOnWall += halfwidth + (1-Mathf.Abs(left)) * scaleDifference + (1-Mathf.Abs(right)) * scaleDifference;
+                    // basically adjust for whenever left is over one also for right
+                    childPosOnWall += (left + ( 1 - right ) + halfwidth)*2*scaleDifference;
                     
                 }
                 Destroy(wallChild.gameObject);
