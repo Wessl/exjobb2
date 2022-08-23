@@ -9,7 +9,7 @@ public class Selex : MonoBehaviour
     [SerializeField] private GameObject masterPrefab;
     [SerializeField] private GameObject actionCell;
     
-    [SerializeField] private TMP_Dropdown dropdown;
+    [SerializeField] private TMP_Dropdown topoSDropdown;
     [SerializeField] private TMP_Dropdown groupSDropdown;
 
     [SerializeField] private Button addTopoSButton;
@@ -59,14 +59,15 @@ public class Selex : MonoBehaviour
     
     public void AddTopoSButton()
     {
-        var newDropdown = Instantiate(dropdown, addTopoSButton.transform.position, Quaternion.identity);
+        var newDropdown = Instantiate(topoSDropdown, addTopoSButton.transform.position, Quaternion.identity);
         newDropdown.transform.SetParent(this.transform, true);
         newDropdown.GetComponent<RectTransform>().localScale = Vector3.one;
         newDropdown.gameObject.SetActive(true);
+        newDropdown.transform.SetSiblingIndex(addTopoSButton.transform.GetSiblingIndex());
         AddPanelHeight(addTopoSButton.GetComponent<RectTransform>().sizeDelta.y);
         // Move down addTopoSButton parent to allow for more buttons...
-        Destroy(addTopoSButton);
-        
+        addTopoSButton.gameObject.SetActive(false);
+        Debug.Log("did we destroy this?");
         allTopologySelections.Add(newDropdown.gameObject);
     }
 

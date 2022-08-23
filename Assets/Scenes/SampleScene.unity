@@ -3094,6 +3094,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2728738558845436570, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
+      propertyPath: m_characterSpacing
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424612859564385672, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
+      propertyPath: m_characterSpacing
+      value: -5
+      objectReference: {fileID: 0}
     - target: {fileID: 3580882096655687874, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
       propertyPath: m_fontSize
       value: 24
@@ -3262,6 +3270,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7166877619936268753, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
+      propertyPath: possibleRules.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166877619936268753, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
+      propertyPath: possibleRules.Array.data[0]
+      value: 
+      objectReference: {fileID: 3580882096800703893, guid: 21a5684a13d5c4143863c3140c96c6ac, type: 3}
     - target: {fileID: 7443056906989023298, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
