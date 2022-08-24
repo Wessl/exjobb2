@@ -38,6 +38,7 @@ public class Selex : MonoBehaviour
     private List<Selex> connectedChildren;
     [SerializeField] private GameObject connectionImage;
     [SerializeField] private GameObject attrSelectorsParent;
+    private int groupNattrBtnsAdded = 0;
     
     // Start is called before the first frame update
     void Start()
@@ -64,7 +65,7 @@ public class Selex : MonoBehaviour
         newDropdown.GetComponent<RectTransform>().localScale = Vector3.one;
         newDropdown.gameObject.SetActive(true);
         newDropdown.transform.SetSiblingIndex(addTopoSButton.transform.GetSiblingIndex());
-        AddPanelHeight(addTopoSButton.GetComponent<RectTransform>().sizeDelta.y);
+        // AddPanelHeight(addTopoSButton.GetComponent<RectTransform>().sizeDelta.y);
         // Move down addTopoSButton parent to allow for more buttons...
         addTopoSButton.gameObject.SetActive(false);
         Debug.Log("did we destroy this?");
@@ -79,8 +80,12 @@ public class Selex : MonoBehaviour
         newDropdown.transform.SetParent(this.transform, true);
         newDropdown.GetComponent<RectTransform>().localScale = Vector3.one;
         newDropdown.gameObject.SetActive(true);
+        var groupSBtnHeight = addGroupSButton.GetComponent<RectTransform>().sizeDelta.y;
+        groupNattrBtnsAdded++;
+        newDropdown.transform.position += new Vector3(0, - groupSBtnHeight * groupNattrBtnsAdded, 0);
         // This is to make space for the next possible selection
-        MoveDownAttrAndGroupSelectors();
+        // MoveDownAttrAndGroupSelectors();
+        AddPanelHeight(groupSBtnHeight);
         
         allGroupsSelections.Add(newDropdown.gameObject);
     }
@@ -90,7 +95,7 @@ public class Selex : MonoBehaviour
         usedPanelHeight += height;
         if (usedPanelHeight > (maxPanelHeight))
         {
-            selexPanel.sizeDelta += new Vector2(0, height*4);
+            selexPanel.sizeDelta += new Vector2(0, height*2);
             maxPanelHeight = selexPanel.sizeDelta.y;
             addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, height*2);
         }
@@ -98,17 +103,15 @@ public class Selex : MonoBehaviour
 
     public void AddAttrSButton()
     {
-        // You should get choice of two buttons, one to pick label attribute and one to pick list attribute thing
-        EnableAttrSelectionOptions();
-        MoveDownAttrAndGroupSelectors();
-    }
-    
-    private void EnableAttrSelectionOptions()
-    {
         var newAttrSelectorParent = Instantiate(attrSelectorsParent, attrSelectorsParent.transform.position, Quaternion.identity);
         newAttrSelectorParent.transform.SetParent(this.transform, true);
         newAttrSelectorParent.GetComponent<RectTransform>().localScale = Vector3.one;
         newAttrSelectorParent.gameObject.SetActive(true);
+        var attrSBtnHeight = addGroupSButton.GetComponent<RectTransform>().sizeDelta.y;
+        groupNattrBtnsAdded++;
+        newAttrSelectorParent.transform.position += new Vector3(0, -attrSBtnHeight * groupNattrBtnsAdded, 0);
+        
+        AddPanelHeight(attrSBtnHeight);
         
         allAttributeSelections.Add(newAttrSelectorParent.gameObject);
 
