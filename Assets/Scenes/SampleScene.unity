@@ -2449,7 +2449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0.84705883, b: 0.8392157, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3233,6 +3233,18 @@ PrefabInstance:
     - target: {fileID: 3580882096800703893, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
       propertyPath: m_Name
       value: RuleCell
+      objectReference: {fileID: 0}
+    - target: {fileID: 3597142455219140831, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3597142455219140831, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3597142455219140831, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5038087444490916848, guid: 9a25054f35baf9547a91aba4373bbf5d, type: 3}
       propertyPath: m_AnchorMax.y
