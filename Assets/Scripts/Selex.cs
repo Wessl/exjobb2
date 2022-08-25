@@ -95,7 +95,7 @@ public class Selex : MonoBehaviour
         usedPanelHeight += height;
         if (usedPanelHeight > (maxPanelHeight))
         {
-            selexPanel.sizeDelta += new Vector2(0, height*2);
+            selexPanel.sizeDelta += new Vector2(0, height);
             maxPanelHeight = selexPanel.sizeDelta.y;
             addAttrSButton.transform.parent.gameObject.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, height*2);
         }
@@ -130,7 +130,7 @@ public class Selex : MonoBehaviour
         newPanel.transform.SetSiblingIndex(this.transform.GetSiblingIndex()+1);                                // Put into correct hierarchy position
         // Hook up
         connectedChildren.Add(newPanel.GetComponent<Selex>());
-        this.gameObject.GetComponent<Selex>().EnableConnectionToChild(newPanel);
+        newPanel.gameObject.GetComponent<Selex>().EnableConnectionToChild(newPanel);
         
     }
 

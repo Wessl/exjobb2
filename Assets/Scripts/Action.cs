@@ -232,33 +232,33 @@ public class Action : MonoBehaviour
         string selectionName = activeDropdownSelection.options[activeDropdownSelection.value].text;
         
         var startpointShape = startpointObject.GetComponent<Shape>();
+        List<GameObject> selectedShapes = new List<GameObject>();
         switch (selectionName)
         {
             case "child()":
-                var children = startpointShape.children;
-                _objectSelectionHandler.currentSelection = children;
+                selectedShapes = startpointShape.children;
                 break;
             case "parent()":
-                var parent = startpointShape.parent;
-                _objectSelectionHandler.currentSelection = new List<GameObject>(){ parent };
+                selectedShapes.Add(startpointShape.parent);
                 break;
             case "descendant()":
-                List<GameObject> descendants = RecursivelyGetDescendants(startpointShape);
+                selectedShapes = RecursivelyGetDescendants(startpointShape);
                 break;
             case "root()":
-                var root = startpointShape.gameObject;
-                _objectSelectionHandler.currentSelection = new List<GameObject>(){ root };
+                selectedShapes.Add(startpointShape.gameObject);
                 break;
             case "neighbour()":
-                var neighbours = startpointShape.neighbours;
-                _objectSelectionHandler.currentSelection = neighbours;
+                selectedShapes = startpointShape.neighbours;
                 break;
             case "contained()":
                 // This will essentially have to check the borders of every gameObject under root
                 // And make sure they are within the input's size/borders
                 break;
-            
+            default:
+                break; 
         }
+
+        _objectSelectionHandler.currentSelection = selectedShapes;
     }
 
     private List<GameObject> RecursivelyGetDescendants(Shape shape)

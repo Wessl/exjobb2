@@ -10,3 +10,4 @@ other objects have it in the middle
 
 winding order of drawing should not change what side faces outwards
 making root(1) and root into custom bases getsdifferent results
+flowerpot is rotated wrong

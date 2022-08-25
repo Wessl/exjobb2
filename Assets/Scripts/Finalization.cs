@@ -158,8 +158,10 @@ public class Finalization : MonoBehaviour
             var wall = walls[i];
             var wallMeshLength = wall.GetComponent<MeshFilter>().mesh.bounds.extents.x * 2;
             var wallsChildren = wall.GetComponentsInChildren<Shape>();  // not sure if getting shape is the right move here
-            foreach (var wallChild in wallsChildren)
+            var wallTransformAmount = wall.transform.childCount;
+            for(int y = 0; y < wallTransformAmount; y++)
             {
+                var wallChild = wall.transform.GetChild(y);
                 if (wallChild.gameObject == wall.gameObject) continue;
                 var localScale = wallChild.transform.localScale;
                 var scaleDifference = (previousScalesBefore[i].x * (1 / previousScalesAfter[i].x));
@@ -188,7 +190,8 @@ public class Finalization : MonoBehaviour
 
                 while (childPosOnWall + ((left + ( 1 - right ) + og_halfwidth)*2*scaleDifference) < 1)
                 {
-                    var newWallChild = Instantiate(wallChild, wallChild.transform.position, wall.transform.rotation);
+                    Shape wallChildShape = wallChild.GetComponent<Shape>();
+                    var newWallChild = Instantiate(wallChildShape, wallChild.transform.position, wall.transform.rotation);
                     var nwcTransform = newWallChild.transform;
                     nwcTransform.SetParent(wall.transform);
                     nwcTransform.localScale = new Vector3(wall.transform.localScale.x * newWallChild.transform.localScale.x, wall.transform.localScale.y * newWallChild.transform.localScale.y, newWallChild.transform.localScale.z);

@@ -87,8 +87,8 @@ public class AddShape : MonoBehaviour
         // Parse numerical values from strings
         float width = float.Parse((inputWidth.text != "" ? inputWidth.text : "0"));
         float height = float.Parse((inputHeight.text != "" ? inputHeight.text : "0"));
-        float cx = float.Parse(centerX.text) + parentObj.transform.position.x + width/2;
-        float cy = float.Parse(centerY.text) + parentObj.transform.position.y + height/2;
+        float cx = float.Parse(centerX.text) + parentObj.transform.position.x;
+        float cy = float.Parse(centerY.text) + parentObj.transform.position.y;
         GameObject newShape;
         Vector2 parentSizeExtent = Vector2.one;
         if (shapeType == Shape.ShapeType.Construction)
@@ -100,6 +100,8 @@ public class AddShape : MonoBehaviour
         }
         else
         {
+            cx += width /2 + parentSizeExtent.x/2;
+            cy += height/2 + parentSizeExtent.y/2;
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
             newShape.transform.parent = parentObj.transform;
             newShape.AddComponent<Shape>().Start();
