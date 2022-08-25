@@ -10,4 +10,5 @@ other objects have it in the middle
 
 winding order of drawing should not change what side faces outwards
 making root(1) and root into custom bases getsdifferent results
-flowerpot is rotated wrong
+"now hooking up selex panel with id -122950 as a child to the gameobject with id -122950" fuck
+UI logger or tooltip to stop and tell of problems/illegal actions without breaking the software

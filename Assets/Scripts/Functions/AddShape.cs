@@ -136,15 +136,16 @@ public class AddShape : MonoBehaviour
             var parent = newShape.transform.parent.GetComponent<Shape>();
             var sizeExtent = parent.SizeExent;
             var newSizeExtent = sizeExtent * ( new Vector2(1 - insetX * 0.01f, 1 - insetY * 0.01f) ) ;
+            newShape.transform.position += new Vector3(parentSizeExtent.x/2, parentSizeExtent.y/2 , 0);
             newShape.transform.localScale = new Vector3((newSizeExtent.x / originalMeshSize.x ) / parentSizeExtent.x,
                 ( newSizeExtent.y / originalMeshSize.y ) / parentSizeExtent.y, 1);
-            newShape.transform.position +=
-                new Vector3(sizeExtent.x / 2, sizeExtent.y / 2, 0);
 
         }
         else // Just apply the actual width and height that the user desires
         {
-            newShape.transform.localScale = new Vector3((width / originalMeshSize.x) / parentSizeExtent.x, (height / originalMeshSize.y) / parentSizeExtent.y, 1);
+            float x = (width / originalMeshSize.x) / parentSizeExtent.x;
+            float y = (height / originalMeshSize.y) / parentSizeExtent.y;
+            newShape.transform.localScale = new Vector3(x,y, (x+y)/2); // Z not ideal, but the average of x and y is decent
 
         }
         
