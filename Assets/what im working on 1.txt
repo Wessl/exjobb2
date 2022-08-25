@@ -12,3 +12,5 @@ winding order of drawing should not change what side faces outwards
 making root(1) and root into custom bases getsdifferent results
 "now hooking up selex panel with id -122950 as a child to the gameobject with id -122950" fuck
 UI logger or tooltip to stop and tell of problems/illegal actions without breaking the software
+nex step: take pictures of fancy grids
+potentially some issues where the grids created are zero scale sometimes___ (0,1,2,3 -> 3,4,5,6) means thta you have 3,3 making a zer osize grid

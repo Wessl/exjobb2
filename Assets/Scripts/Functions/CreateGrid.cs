@@ -81,6 +81,11 @@ public class CreateGrid : MonoBehaviour
             for (int j = 0; j < combinedRowsList.Count; j++)
             {
                 float currRow = combinedRowsList[j].Item1;
+                if (j > 0)
+                {
+                    if (currRow - combinedRowsList[j-1].Item1 <= 1e-6) continue;
+                }
+                
                 float x = startPos.x;
                 float y = startPos.y + currRow;
                 if (y <= (startPos.y + extent.y))
@@ -93,6 +98,11 @@ public class CreateGrid : MonoBehaviour
             for (int j = 0; j < combinedColsList.Count; j++)
             {
                 float currCol = combinedColsList[j].Item1;
+                if (j > 0)
+                {
+                    if (currCol - combinedColsList[j-1].Item1 <= 1e-6) continue;
+                }
+
                 float x = startPos.x + currCol;
                 float y = startPos.y;
                 if (x <= (startPos.x + extent.x))
@@ -211,8 +221,20 @@ public class CreateGrid : MonoBehaviour
                     string otherInputField = inputFields[(i + 1) % (inputFields.Length)].text;
                     foreach (var column in cols)
                     {
-                        var colValLabel = new Tuple<float, string>(float.Parse(column), otherInputField);
-                        combinedColsList.Add(colValLabel);
+                        var colValLabel = new Tuple<float, string>(float.Parse(column), otherInputField);   // value, label
+                        if (combinedColsList.Count > 0)
+                        {
+                            // Do a float comparison of previous number to make sure we don't add two iidentical grid parts
+                            if (Mathf.Abs(combinedColsList[combinedColsList.Count - 1].Item1 - colValLabel.Item1) >= 1e-6) 
+                            {
+                                combinedColsList[combinedColsList.Count-1] = new Tuple<float, string>(combinedColsList[combinedColsList.Count-1].Item1, colValLabel.Item2);
+                                combinedColsList.Add(colValLabel);
+                            }
+                        }
+                        else
+                        {
+                            combinedColsList.Add(colValLabel);
+                        }
                     }
                 }
             }
@@ -231,7 +253,19 @@ public class CreateGrid : MonoBehaviour
                     foreach (var row in rows)
                     {
                         var rowValLabel = new Tuple<float, string>(float.Parse(row), otherInputField);
-                        combinedRowsList.Add(rowValLabel);
+                        if (combinedRowsList.Count > 0)
+                        {
+                            // Do a float comparison of previous number to make sure we don't add two iidentical grid parts
+                            if (Mathf.Abs(combinedRowsList[combinedRowsList.Count - 1].Item1 - rowValLabel.Item1) >= 1e-6)
+                            {
+                                combinedRowsList[combinedRowsList.Count-1] = new Tuple<float, string>(combinedRowsList[combinedRowsList.Count-1].Item1, rowValLabel.Item2);
+                                combinedRowsList.Add(rowValLabel);
+                            }
+                        }
+                        else
+                        {
+                            combinedRowsList.Add(rowValLabel);
+                        }
                     }
                 }
             }
