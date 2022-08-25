@@ -115,7 +115,7 @@ public class AddShape : MonoBehaviour
         // Make sure it gets a label
         newShape.GetComponent<Shape>().Labels.Add(label.text);
         
-        ApplySizing(newShape, width, height, FindTotalMeshSize(newShape), parentSizeExtent);
+        ApplySizing(newShape, width, height, FindTotalMeshSizeWorldCoords(newShape), parentSizeExtent);
         
         newShape.GetComponent<Shape>().currentType = Shape.ShapeType.Construction;
         
@@ -239,19 +239,19 @@ public class AddShape : MonoBehaviour
         shapeTypeDropdown.AddOptions(shapeNames);
     }
 
-    private Vector2 FindTotalMeshSize(GameObject parentObj)
+    private Vector2 FindTotalMeshSizeWorldCoords(GameObject parentObj)
     {
-        var meshfilters = parentObj.GetComponentsInChildren<MeshFilter>();
+        var meshRenderers = parentObj.GetComponentsInChildren<MeshRenderer>();
         Vector2 largestThusFar = new Vector2();
-        foreach (var meshfilter in meshfilters)
+        foreach (var meshRenderer in meshRenderers)
         {
-            if (Mathf.Abs(largestThusFar.x) < Mathf.Abs(meshfilter.mesh.bounds.size.x))
+            if (Mathf.Abs(largestThusFar.x) < Mathf.Abs(meshRenderer.bounds.size.x))
             {
-                largestThusFar.x = meshfilter.mesh.bounds.size.x;
+                largestThusFar.x = meshRenderer.bounds.size.x;
             }
-            if (Mathf.Abs(largestThusFar.y) < Mathf.Abs(meshfilter.mesh.bounds.size.y))
+            if (Mathf.Abs(largestThusFar.y) < Mathf.Abs(meshRenderer.bounds.size.y))
             {
-                largestThusFar.y = meshfilter.mesh.bounds.size.y;
+                largestThusFar.y = meshRenderer.bounds.size.y;
             }
         }
         return largestThusFar;
