@@ -14,6 +14,11 @@ public class SelectionHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SelectEverything();
+    }
+
+    public void SelectEverything()
+    {
         currentSelection = new List<GameObject>();
         var rootChildren = root.GetComponentsInChildren<Shape>();
         //rootChildren = rootChildren.Skip(1).ToArray();  // don't include root // update: actually you wanna include root otherwise if you only start with root there is nothing to start building on

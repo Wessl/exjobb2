@@ -180,6 +180,8 @@ public class Action : MonoBehaviour
      */
     public void ObtainSelectionData()
     {
+        // start with selecting everything
+        _objectSelectionHandler.SelectEverything();
         var selexObjParent = selectionParent.GetComponent<Selex>();
         // Now find all the things being selected by this...?
         var listOfGameObjects = new List<List<GameObject>>()
