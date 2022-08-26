@@ -94,7 +94,7 @@ public class AddShape : MonoBehaviour
         if (shapeType == Shape.ShapeType.Construction)
         {
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
-            newShape.transform.parent = parentObj.transform;
+            newShape.transform.SetParent(parentObj.transform, true);
             newShape.AddComponent<Shape>().Start();
             parentSizeExtent = newShape.transform.parent.transform.localScale;
         }
@@ -103,7 +103,7 @@ public class AddShape : MonoBehaviour
             cx += width /2 + parentSizeExtent.x/2;
             cy += height/2 + parentSizeExtent.y/2;
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
-            newShape.transform.parent = parentObj.transform;
+            newShape.transform.SetParent(parentObj.transform, true);
             newShape.AddComponent<Shape>().Start();
 
             //newShape = parentObj;
@@ -115,7 +115,7 @@ public class AddShape : MonoBehaviour
         // Make sure it gets a label
         newShape.GetComponent<Shape>().Labels.Add(label.text);
         
-        ApplySizing(newShape, width, height, FindTotalMeshSizeWorldCoords(newShape), parentSizeExtent);
+        ApplySizing(newShape, width, height, FindTotalMeshSizeWorldCoords(newShape), parentSizeExtent, shapeType);
         
         newShape.GetComponent<Shape>().currentType = Shape.ShapeType.Construction;
         
@@ -123,7 +123,7 @@ public class AddShape : MonoBehaviour
         newShape.GetComponent<Shape>().SetupSizeExtent(new Vector2(width, height));
     }
 
-    private void ApplySizing(GameObject newShape, float width, float height, Vector2 originalMeshSize, Vector2 parentSizeExtent)
+    private void ApplySizing(GameObject newShape, float width, float height, Vector2 originalMeshSize, Vector2 parentSizeExtent, Shape.ShapeType parentOGShapeType)
     {
         
         // Potential bug waiting to happen... completely flat object on one axis will cause error
@@ -136,7 +136,10 @@ public class AddShape : MonoBehaviour
             var parent = newShape.transform.parent.GetComponent<Shape>();
             var sizeExtent = parent.SizeExent;
             var newSizeExtent = sizeExtent * ( new Vector2(1 - insetX * 0.01f, 1 - insetY * 0.01f) ) ;
-            newShape.transform.position += new Vector3(parentSizeExtent.x/2, parentSizeExtent.y/2 , 0);
+            if (parentOGShapeType == Shape.ShapeType.Virtual)
+            {
+                newShape.transform.position += new Vector3(sizeExtent.x/2-parentSizeExtent.x/2, sizeExtent.y/2-parentSizeExtent.y/2 , 0);
+            }
             newShape.transform.localScale = new Vector3((newSizeExtent.x / originalMeshSize.x ) / parentSizeExtent.x,
                 ( newSizeExtent.y / originalMeshSize.y ) / parentSizeExtent.y, 1);
 
