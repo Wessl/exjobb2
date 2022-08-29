@@ -76,7 +76,6 @@ public class SelectionHandler : MonoBehaviour
     public void Attr_Label(string labelOperator, string labelValue)
     {
         List<GameObject> newSelection = new List<GameObject>();
-        Debug.Log("labeloperator: " +labelOperator);
         // I guess only handle == and != ?
         if (labelOperator != "==" && labelOperator != "!=")
         {

@@ -13,12 +13,16 @@ public class DrawOnCanvas : MonoBehaviour
     public Image lineImage;
     private bool clickIsDown;
     private Vector2 downPos;
+    private Vector2 endPos;
     private List<Vector2> clickedPositions;
     public float clickPosTolerance = 20f; //pixels away from previous click
     private float determineClosurePointTol = 0.1f;
     public GameObject finishButton;
     private float scaleFactor;
+    private GameObject tempLineSegment;
     [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private GameObject hardAngleTooltip;
+    private bool lockHardAngle;
 
     private void Awake()
     {
@@ -26,6 +30,8 @@ public class DrawOnCanvas : MonoBehaviour
         clickIsDown = false;
         clickedPositions = new List<Vector2>();
         finishButton.SetActive(false);
+        hardAngleTooltip.SetActive(false);
+        lockHardAngle = false;
     }
 
     // Update is called once per frame
@@ -33,6 +39,9 @@ public class DrawOnCanvas : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            // Just display the tooltip if shift is not held BUG: right now ClosestAngle doesn't work so I'm putting this on hold for now
+            // hardAngleTooltip.SetActive(true);
+            
             this.GetComponentInParent<ScrollRect>().enabled = false;
             //Set up the new Pointer Event
             PointerEventData pointerData = new PointerEventData(EventSystem.current);
@@ -47,6 +56,22 @@ public class DrawOnCanvas : MonoBehaviour
             this.raycaster.Raycast(pointerData, results);
 
             downPos = pointerData.position;
+        }
+
+        if (Input.GetKey(KeyCode.Mouse0))
+        {
+            // While mouse is down, update the line segment continuously
+            
+            //Set up the new Pointer Event
+            PointerEventData pointerData = new PointerEventData(EventSystem.current);
+            List<RaycastResult> results = new List<RaycastResult>();
+ 
+            //Raycast using the Graphics Raycaster and mouse click position
+            pointerData.position = Input.mousePosition;
+
+            this.raycaster.Raycast(pointerData, results);
+            if (tempLineSegment) Destroy(tempLineSegment);   // destroy previous one
+            DisplayLineSegment(pointerData);
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -65,31 +90,62 @@ public class DrawOnCanvas : MonoBehaviour
             pointerData.position = LeastDistancePoint(pointerData);
             
             this.raycaster.Raycast(pointerData, results);
-            var endPos = pointerData.position;
-            var dirVec = (endPos - downPos);
-            var distance = dirVec.magnitude;
-            foreach (RaycastResult result in results)
-            {
-                var lineImg = Instantiate(lineImage, pointerData.position, Quaternion.identity);
-                var lineGO = lineImg.gameObject;
-                lineGO.SetActive(true);
-                lineGO.transform.SetParent(gameObject.transform, true);
-                var rect = lineGO.GetComponent<RectTransform>();
-                rect.sizeDelta = new Vector2(distance,10);
-                rect.position -= new Vector3(dirVec.x / 2, dirVec.y / 2, 0);
-                var angle = Vector3.Angle(Vector2.right, dirVec);
-                if (endPos.y < downPos.y) angle = -angle;   // Vector3.angle only ever returns positive value, brute force some negatives when needed
-                rect.Rotate(new Vector3(0,0,angle));
-            }
+            
+            if (tempLineSegment) Destroy(tempLineSegment);   // destroy previous one
+            DisplayLineSegment(pointerData);
+            
+            
             clickedPositions.Add(downPos);
             clickedPositions.Add(endPos);
             
             // Check if this completes a closed shape
             DetermineClosure();
+            
+            // Hide shift tooltip
+            hardAngleTooltip.SetActive(false);
+            
+            // un-assign previous line segment so it can't be deleted
+            tempLineSegment = null;
         }
-        
-        
     }
+
+    private GameObject DisplayLineSegment(PointerEventData pointerData)
+    {
+        endPos = pointerData.position;
+        var dirVec = (endPos - downPos);
+        var distance = dirVec.magnitude;
+        var lineImg = Instantiate(lineImage, pointerData.position, Quaternion.identity);
+        tempLineSegment = lineImg.gameObject;
+        tempLineSegment.SetActive(true);
+        tempLineSegment.transform.SetParent(gameObject.transform, true);
+        var rect = tempLineSegment.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(distance,10);
+        rect.position -= new Vector3(dirVec.x / 2, dirVec.y / 2, 0);
+        var angle = Vector3.Angle(Vector2.right, dirVec);
+        if (endPos.y < downPos.y) angle = -angle;   // Vector3.angle only ever returns positive value, brute force some negatives when needed
+        // angle = ClosestAngle(angle);
+        rect.Rotate(new Vector3(0,0,angle));
+        
+
+        return tempLineSegment;
+    }
+
+    // Closest angle doesn't really work and I don't have the time to fix it rn 
+    float ClosestAngle(float angle)
+    {
+        // Not sure if this is the most efficient but w/e
+        float[] angleIncrements = new float[] {-180f, -135f, -90f, -45f, 0f, 45f, 90f, 135f, 180f};
+        for (int i = 0; i < angleIncrements.Length; i++)
+        {
+            if (Mathf.Abs(Mathf.Abs(angle) - Mathf.Abs(angleIncrements[i])) < 45 * 0.5f)
+            {
+                return angleIncrements[i];
+            }
+        }
+
+        return angle;
+    }
+    
     Vector2 LeastDistancePoint(PointerEventData pointerData)
     {
         var lowestDistance = float.MaxValue;
