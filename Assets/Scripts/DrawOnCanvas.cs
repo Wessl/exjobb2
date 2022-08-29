@@ -18,11 +18,12 @@ public class DrawOnCanvas : MonoBehaviour
     public float clickPosTolerance = 20f; //pixels away from previous click
     private float determineClosurePointTol = 0.1f;
     public GameObject finishButton;
-    private float scaleFactor;
     private GameObject tempLineSegment;
-    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private TMP_InputField scaleFactorInputField;
     [SerializeField] private GameObject hardAngleTooltip;
+    [SerializeField] private TMP_Text lengthTooltip;
     private bool lockHardAngle;
+    
 
     private void Awake()
     {
@@ -72,6 +73,8 @@ public class DrawOnCanvas : MonoBehaviour
             this.raycaster.Raycast(pointerData, results);
             if (tempLineSegment) Destroy(tempLineSegment);   // destroy previous one
             DisplayLineSegment(pointerData);
+            
+           
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
@@ -125,9 +128,20 @@ public class DrawOnCanvas : MonoBehaviour
         if (endPos.y < downPos.y) angle = -angle;   // Vector3.angle only ever returns positive value, brute force some negatives when needed
         // angle = ClosestAngle(angle);
         rect.Rotate(new Vector3(0,0,angle));
-        
-
+        DisplayTextToolTip(distance);
         return tempLineSegment;
+    }
+
+    void DisplayTextToolTip(float distance)
+    {
+        var sizeDelta = this.gameObject.GetComponent<RectTransform>().sizeDelta;
+        var scaleFactor = 1f;
+        if (scaleFactorInputField.text != "")
+        {
+            scaleFactor = float.Parse(scaleFactorInputField.text);
+        }
+        lengthTooltip.text = (distance * scaleFactor/ sizeDelta.x).ToString("0.00");
+
     }
 
     // Closest angle doesn't really work and I don't have the time to fix it rn 
@@ -173,7 +187,6 @@ public class DrawOnCanvas : MonoBehaviour
                 if (i == y) continue;
                 if ((clickedPositions[i] - clickedPositions[y]).magnitude < determineClosurePointTol)
                 {
-                    Debug.Log(markedPositions);
                     markedPositions ++;
                 }
             }
@@ -191,7 +204,11 @@ public class DrawOnCanvas : MonoBehaviour
 
     public void ClickFinishButton()
     {
-        scaleFactor = float.Parse(inputField.text);
+        var scaleFactor = 1f;
+        if (scaleFactorInputField.text != "")
+        {
+            scaleFactor = float.Parse(scaleFactorInputField.text);
+        }
         // this.gameObject.SetActive(false);
         var sizeDelta = this.gameObject.GetComponent<RectTransform>().sizeDelta;
         GameObject.FindObjectOfType<Finalization>().CustomFinalize(clickedPositions, scaleFactor, sizeDelta);
