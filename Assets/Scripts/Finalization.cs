@@ -14,6 +14,7 @@ public class Finalization : MonoBehaviour
     public GameObject flatButton;
     public GameObject pyramidButton;
     public GameObject tentButton;
+    public GameObject fancyButton;
     private GameObject[] roofButtons;
     private Camera mainCam;
     public bool camCanMove;
@@ -24,7 +25,7 @@ public class Finalization : MonoBehaviour
 
     private void Start()
     {
-        roofButtons = new[] {flatButton, pyramidButton, tentButton};
+        roofButtons = new[] {flatButton, pyramidButton, tentButton, fancyButton};
         FlipRoofButtonsActive();
         mainCam = Camera.main;
         camCanMove = false;
@@ -90,6 +91,10 @@ public class Finalization : MonoBehaviour
     {
         RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Tent, roofMaterials);
     }
+    public void ConstructRoofFancy()
+    {
+        RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Tent, roofMaterials);
+    }
 
     public void ViewBuilding()
     {
@@ -143,6 +148,54 @@ public class Finalization : MonoBehaviour
         
         // Here comes a big thing: Fix grids so that windows correctly tile where possible, instead of just stretching
         GridFixer(previousScalesBefore, previousScalesAfter);
+        
+        // Big thing number 2: Find the winding order of the building and adjust accordingly.
+        WindingOrderAdjuster(walls);
+    }
+
+    private void WindingOrderAdjuster(GameObject[] walls)
+    {
+        int forwardHits = 0;
+        int backwardHits = 0;
+        foreach (var wall in walls)
+        {
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(wall.transform.position, wall.transform.forward);
+            foreach (var hit in hits)
+            {
+                if (walls.Contains(hit.transform.gameObject))
+                {
+                    // another wall was hit
+                    forwardHits++;
+                }
+            }
+            hits = Physics.RaycastAll(wall.transform.position, -1 * wall.transform.forward);
+            foreach (var hit in hits)
+            {
+                if (walls.Contains(hit.transform.gameObject))
+                {
+                    // another wall was hit
+                    backwardHits++;
+                    break;
+                }
+            }
+        }
+
+        Debug.Log("back: " + backwardHits);
+        Debug.Log("forward: " + forwardHits);
+        if (backwardHits > forwardHits)
+        {
+            // Reverse every walls facing direction
+            foreach (var wall in walls)
+            {
+                wall.transform.Rotate(Vector3.up, 180);
+            }
+        }
+
+        if (forwardHits == 0 && backwardHits == 0)
+        {
+            Debug.Log("Your facade most likely does not have a collider attached, which it should for winding order to work correctly!");
+        }
     }
 
     private void GridFixer(Vector3[] previousScalesBefore, Vector3[] previousScalesAfter)
@@ -175,10 +228,7 @@ public class Finalization : MonoBehaviour
                 
                 var left = (wallChild.transform.localPosition.x - og_halfwidth + 1) / 2 ;
                 var right = (wallChild.transform.localPosition.x + og_halfwidth + 1) / 2;
-                Debug.Log(wallChild.name);
-                Debug.Log("left: " + left);
-                Debug.Log("right: " + right);
-                
+
                 if (childRealLength > wallLength)
                 {
                     wallChild.gameObject.SetActive(false);

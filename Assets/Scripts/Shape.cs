@@ -9,6 +9,7 @@ public class Shape : MonoBehaviour
     public List<GameObject> children;
     public List<GameObject> neighbours; // The real question is how the fuck do we populate this one
     public bool tileMaterial;
+    public Dictionary<string, string> attributes;
     public enum ShapeType
     {
         Virtual,
@@ -53,6 +54,7 @@ public class Shape : MonoBehaviour
         neighbours ??= new List<GameObject>();
         gridRows = new List<float>();
         gridCols = new List<float>();
+        attributes = new Dictionary<string, string>();
     }
 
     // Can't really be called in Start() because this object might not yet know who is its own parent

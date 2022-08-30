@@ -37,6 +37,8 @@ public class CopyShape : MonoBehaviour
                 newGOTransform.localScale.y * scaleVec.y, newGOTransform.localScale.z * scaleVec.z);
             newlyCreatedGO.GetComponent<Shape>().Labels = new List<string>();
             newGOTransform.GetComponent<Shape>().Labels.Add(newlabel);
+            // Add as child to parent's list
+            newGOTransform.parent.GetComponent<Shape>().children.Add(newlyCreatedGO);
         }
     }
 

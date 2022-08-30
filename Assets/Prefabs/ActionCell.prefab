@@ -24270,13 +24270,7 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: CreateGrid()
       m_Image: {fileID: 0}
-    - m_Text: Rows()
-      m_Image: {fileID: 0}
-    - m_Text: Cols()
-      m_Image: {fileID: 0}
     - m_Text: SetAttrib()
-      m_Image: {fileID: 0}
-    - m_Text: Transform()
       m_Image: {fileID: 0}
     - m_Text: Rotate()
       m_Image: {fileID: 0}

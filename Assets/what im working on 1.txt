@@ -19,4 +19,4 @@ nex step: take pictures of transforms
 
 you cant really make mistakes, ... cuz i have no support for undoing things, so if you make a mistake, you have to start all over....
 maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm. this is interesting though, cuz altho i at first thought ui would be better than text based, with the UI, u can't "copy paste" the state you are in, so if you mess up, you cant copy the string, restart the program and paste the string. you have to start over. so usability not necessarily better
-copyshape line 48
+make copyshape add to parent lsit of children

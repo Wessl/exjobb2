@@ -70,6 +70,12 @@ public static class RoofConstructor
         CreateQuadRoofMesh(extent.x, extent.x * 0.75f, walls[1].transform.position.x * 0.25f, walls[3].transform.position.z, extent.y * 1.25f, new Vector3(45,-270,0), roofMaterials);
     }
     
+    static void CreateFancyRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints, List<Material> roofMaterials)
+    {
+        // before this we gotta figure out winding order
+        throw new NotImplementedException();
+    }
+    
     static void CreateTriRoofMesh(float width, float height, float centerX, float centerZ, float z, float rot, List<Material> roofMaterials)
     {
         Mesh mesh = new Mesh();
