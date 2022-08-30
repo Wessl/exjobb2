@@ -16,10 +16,13 @@ public class CopyShape : MonoBehaviour
     public void Execute(SelectionHandler objectSelectionHandler)
     {
         // var currentSelection = objectSelectionHandler.currentSelection;
-        string label = labelInputField.textComponent.text;
-        Vector3 translateVec = GetVec3FromString(posInputField.textComponent.text);
-        Vector3 rotateVec = GetVec3FromString(rotInputField.textComponent.text); 
-        Vector3 scaleVec = GetVec3FromString(scaleInputField.textComponent.text); 
+        // why so many replacements? zero width space. :/
+        string label = labelInputField.textComponent.text.Replace("\u200B", "");
+        string newlabel = newLabelInputField.textComponent.text.Replace("\u200B", "");
+        var newlabelchararr = newlabel.ToCharArray();
+        Vector3 translateVec = GetVec3FromString(posInputField.textComponent.text.Replace("\u200B", ""), new Vector3(0,0,0));
+        Vector3 rotateVec = GetVec3FromString(rotInputField.textComponent.text.Replace("\u200B", ""), new Vector3(0,0,0)); 
+        Vector3 scaleVec = GetVec3FromString(scaleInputField.textComponent.text.Replace("\u200B", ""), new Vector3(1,1,1)); 
         Debug.Log(label);
         List<GameObject> selectedObjs = GetSelectedObjects(label);
         foreach (var selection in selectedObjs)
@@ -32,18 +35,21 @@ public class CopyShape : MonoBehaviour
             newGOTransform.Rotate(rotateVec);
             newGOTransform.localScale = new Vector3(newGOTransform.localScale.x * scaleVec.x,
                 newGOTransform.localScale.y * scaleVec.y, newGOTransform.localScale.z * scaleVec.z);
+            newlyCreatedGO.GetComponent<Shape>().Labels = new List<string>();
+            newGOTransform.GetComponent<Shape>().Labels.Add(newlabel);
         }
     }
 
-    private Vector3 GetVec3FromString(string textComponentText)
+    private Vector3 GetVec3FromString(string textComponentText, Vector3 defaultVec)
     {
-        if (!textComponentText.Contains(",")) throw new InvalidDataException("The Vector parameter is not properly separated by commas!");
+        if (textComponentText.Length == 0) return defaultVec;
+            if (!textComponentText.Contains(",")) throw new InvalidDataException("The Vector parameter is not properly separated by commas!");
         var splitText = textComponentText.Split(',');
         if (splitText.Length != 3) throw new InvalidDataException("Wrong dimension in vector, Should be 3.");
         Vector3 createdVec = new Vector3();
         for (int i = 0; i < 3; i++)
         {
-            var number = float.Parse(char.ToString(splitText[i][0]) , CultureInfo.InvariantCulture.NumberFormat);    // bloody hell mate. if you dont take the char and convert back to string it doesnt work. theres like a ghost or something hiding in it
+            var number = float.Parse(splitText[i], CultureInfo.InvariantCulture.NumberFormat);
             createdVec[i] = number;
         }
         return createdVec;
@@ -63,16 +69,9 @@ public class CopyShape : MonoBehaviour
             foreach (var label in labels)
             {
                 Debug.Log(label);
-                var labelchararr = label.ToCharArray();
-                var helplabeltextchararr = helpLabelText.ToCharArray();
-                if (label.Equals(helpLabelText.Replace("\u200B", "")))  // zero width space showed up :))))))))))))))))
+                if (label.Equals(helpLabelText))
                 {   
                     foundObjects.Add(rootChild.gameObject);
-                }
-                else
-                {
-                    Debug.Log("a damn, looks like " + label + " and " + helpLabelText + " are not the same!");
-                    // for whatever reason facade and facade are not the same -_-
                 }
             }
         }
