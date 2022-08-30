@@ -186,6 +186,7 @@ public class DamageAndAge : MonoBehaviour
                 break;
             case "Simplex":
                 Debug.Log("simplex (NOT YET IMPLEMENTED)");
+                throw new NotImplementedException();
                 break;
             case "Value":
                 tex = NoiseGenerator.ApplyNoiseToTexture(tex, scale);
@@ -285,7 +286,6 @@ public class DamageAndAge : MonoBehaviour
                     }
                 }
             }
-            
         }
 
         return foundObjects;

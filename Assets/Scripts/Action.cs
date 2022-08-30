@@ -16,6 +16,8 @@ public class Action : MonoBehaviour
     [SerializeField] private GameObject translatePanel;
     [SerializeField] private GameObject damageAndAgePanel;
     [SerializeField] private GameObject scaleByImagePanel;
+    [SerializeField] private GameObject copyShapePanel;
+    
 
     private GameObject lastSelection;   // used to hide the last selection easily
     private SelectionHandler _objectSelectionHandler;
@@ -28,11 +30,14 @@ public class Action : MonoBehaviour
 
     public void FunctionCaller(int val)
     {
-        // This is tremendously ugly, but who cares.
+        // This is tremendously ugly, but who cares. 
         switch (val)
         {
             case 0:
                 SelectAddShape();
+                break;
+            case 1:
+                SelectCopyShape();
                 break;
             case 3:
                 SelectCreateGrid();
@@ -64,6 +69,12 @@ public class Action : MonoBehaviour
     private void SelectTransform()
     {
         throw new NotImplementedException();
+    }
+    private void SelectCopyShape()
+    {
+        copyShapePanel.SetActive(true);
+        HideLastSelection();
+        lastSelection = copyShapePanel;
     }
     private void SelectDamageAndAge()
     {
@@ -116,6 +127,13 @@ public class Action : MonoBehaviour
         scaleByImagePanel.SetActive(true);
         HideLastSelection();
         lastSelection = scaleByImagePanel;
+    }
+
+    public void ExecuteCopyShape()
+    {
+        _objectSelectionHandler = GameObject.FindWithTag("Root").GetComponent<SelectionHandler>();
+        ObtainSelectionData();
+        copyShapePanel.GetComponent<CopyShape>().Execute(_objectSelectionHandler);
     }
 
     public void ExecuteAddShape()
