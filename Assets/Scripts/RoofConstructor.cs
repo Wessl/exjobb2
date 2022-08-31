@@ -89,7 +89,9 @@ public static class RoofConstructor
     /// <param name="roofMaterials">A list of materials to use for the roof<param>
     static void CreateFancyRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints, List<Material> roofMaterials)
     {
-        float yValIncreasePercent; // as a percent of the wall Y value
+        float yValIncreasePercent = 30f; // as a percent of the wall Y value
+        float extendInwards = 2f;
+        List<Vector3> newPoints = new List<Vector3>();
         // Assuming walls are in order, we can always take the "left corner", compare against angle of next wall (facing inwards)
         for (int i = 0; i < walls.Length; i++)
         {
@@ -102,9 +104,12 @@ public static class RoofConstructor
             Vector3 world_v = localToWorld.MultiplyPoint3x4(mesh.vertices[2]);    // get the real time world pos
             var angleBetweenWall = Vector3.SignedAngle(wall.transform.right, walls[(i+1) % walls.Length].transform.right, wall.transform.up);
             angleBetweenWall = Mathf.Abs(180 - angleBetweenWall) / 2f;  // if you have corner, in between corner, outward facing corner, between it also :)
-            var outwardFromCorner = Quaternion.AngleAxis(-angleBetweenWall, Vector3.up) * (wall.transform.right);
-            Debug.DrawLine(world_v, world_v+outwardFromCorner, Color.green, 100);
-            
+            var outwardFromCorner = Quaternion.AngleAxis(-angleBetweenWall, Vector3.up) * (wall.transform.right) * extendInwards;
+            Vector3 resultPoint = world_v + outwardFromCorner +
+                                  wall.transform.up * mesh.bounds.extents.y * 2 * (100f - yValIncreasePercent)/100f;
+            Debug.DrawLine(world_v, resultPoint, Color.green, 100);
+            newPoints.Add(resultPoint);
+            // actually add everything needed to construct the side quads...?
         }
         // take the angle in between these two (literally divide by 2), then that's the vector we build diagonally upwards along
         // we should be able to construct quads between these new points and old corners to make the slanted roof
