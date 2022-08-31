@@ -1,8 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
+using Matrix4x4 = UnityEngine.Matrix4x4;
 using Object = UnityEngine.Object;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public static class RoofConstructor
 {
@@ -10,7 +15,8 @@ public static class RoofConstructor
     {
         Flat,
         Pyramid,
-        Tent
+        Tent,
+        Fancy
     }
 
     public static void ConstructRoof(GameObject root, GameObject[] walls, Vector2 extent, RoofType roofType, List<Material> roofMaterials)
@@ -41,6 +47,9 @@ public static class RoofConstructor
             case RoofType.Tent:
                 CreateTentRoof(extent, walls, edgePoints, roofMaterials);
                 break;
+            case RoofType.Fancy:
+                CreateFancyRoof(extent, walls, edgePoints, roofMaterials);
+                break;
             default:
                 CreatePyramidRoof(extent, walls, edgePoints, roofMaterials);
                 break;
@@ -70,12 +79,38 @@ public static class RoofConstructor
         CreateQuadRoofMesh(extent.x, extent.x * 0.75f, walls[1].transform.position.x * 0.25f, walls[3].transform.position.z, extent.y * 1.25f, new Vector3(45,-270,0), roofMaterials);
     }
     
+    /// <summary>
+    /// This method creates a more complicated "fancy" roof, designed to work with any custom designed base.
+    /// Uses math to find angles between walls, then constructs polygons out of the created "inset points", which - should then be triangulated to allow mesh construction between them. 
+    /// </summary>
+    /// <param name="extent">The wall's shape extent in 2d</param>
+    /// <param name="walls">The array of wall gameObjects to create a roof between</param>
+    /// <param name="edgePoints">The array of points that make up the edges (likely not necessary...)</param>
+    /// <param name="roofMaterials">A list of materials to use for the roof<param>
     static void CreateFancyRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints, List<Material> roofMaterials)
     {
-        // before this we gotta figure out winding order
-        throw new NotImplementedException();
+        float yValIncreasePercent; // as a percent of the wall Y value
+        // Assuming walls are in order, we can always take the "left corner", compare against angle of next wall (facing inwards)
+        for (int i = 0; i < walls.Length; i++)
+        {
+            // Get the "top left corner"
+            var wall = walls[i];
+            var wallMesh = wall.GetComponent<MeshRenderer>(); // surely there'll be a mesh renderer... right?
+            Mesh mesh = wall.GetComponent<MeshFilter>().mesh;
+            Matrix4x4 localToWorld = wall.transform.localToWorldMatrix;
+            // Assuming every plane has 4 vertices, going from bottom right, bottom left, top left - we want third
+            Vector3 world_v = localToWorld.MultiplyPoint3x4(mesh.vertices[2]);    // get the real time world pos
+            var angleBetweenWall = Vector3.SignedAngle(wall.transform.right, walls[(i+1) % walls.Length].transform.right, wall.transform.up);
+            angleBetweenWall = Mathf.Abs(180 - angleBetweenWall) / 2f;  // if you have corner, in between corner, outward facing corner, between it also :)
+            var outwardFromCorner = Quaternion.AngleAxis(-angleBetweenWall, Vector3.up) * (wall.transform.right);
+            Debug.DrawLine(world_v, world_v+outwardFromCorner, Color.green, 100);
+            
+        }
+        // take the angle in between these two (literally divide by 2), then that's the vector we build diagonally upwards along
+        // we should be able to construct quads between these new points and old corners to make the slanted roof
+        // then for the flat roof, we should be able to construct polygons using the new points, which we then later triangulate, and build triangles out of... I hope there is some triangulation library.. i dont wanna math
     }
-    
+
     static void CreateTriRoofMesh(float width, float height, float centerX, float centerZ, float z, float rot, List<Material> roofMaterials)
     {
         Mesh mesh = new Mesh();

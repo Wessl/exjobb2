@@ -5,18 +5,14 @@ now is the time to try to clean stuff up, implement small easy things, see if th
 
 importante: maybe apply physically based shading techniques as those described by megan walker in her thesis "REALISTIC AGING OF MATERIALS IN COMPUTER GRAPHICS"
 
-adding shapes against non-grid background puts them in the wrong place - hello new me here. and the reasoning is quite simple - basically, it has to do with the origin point of the object its being created on top of. grids have their origin in bottom left, 
-other objects have it in the middle
-
-winding order of drawing should not change what side faces outwards
 making root(1) and root into custom bases getsdifferent results
 "now hooking up selex panel with id -122950 as a child to the gameobject with id -122950" fuck
 UI logger or tooltip to stop and tell of problems/illegal actions without breaking the software
 reset button so you dont have to restart entire program (just reload scene?)
 defaults for unfilled inputfields should just be zero...?
 ability to remove UI parts (press little x to delete, ez)
-nex step: take pictures of transforms
+finishing building also moves it in world space... not ideal
+default length for custom base should be like 10 or 20 not 1
+why can we sometimes draw the custom base panel, outside of the panel? should not work. 
 
-you cant really make mistakes, ... cuz i have no support for undoing things, so if you make a mistake, you have to start all over....
-maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm. this is interesting though, cuz altho i at first thought ui would be better than text based, with the UI, u can't "copy paste" the state you are in, so if you mess up, you cant copy the string, restart the program and paste the string. you have to start over. so usability not necessarily better
-make copyshape add to parent lsit of children
+maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm

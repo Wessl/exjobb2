@@ -93,7 +93,7 @@ public class Finalization : MonoBehaviour
     }
     public void ConstructRoofFancy()
     {
-        RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Tent, roofMaterials);
+        RoofConstructor.ConstructRoof(root, walls, extent, RoofConstructor.RoofType.Fancy, roofMaterials);
     }
 
     public void ViewBuilding()
@@ -181,8 +181,6 @@ public class Finalization : MonoBehaviour
             }
         }
 
-        Debug.Log("back: " + backwardHits);
-        Debug.Log("forward: " + forwardHits);
         if (backwardHits > forwardHits)
         {
             // Reverse every walls facing direction
