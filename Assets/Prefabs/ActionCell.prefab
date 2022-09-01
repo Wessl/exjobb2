@@ -26720,6 +26720,8 @@ MonoBehaviour:
   - {fileID: 7752956462510493495, guid: 8f93885c50771334c9621d494a8f1549, type: 3}
   - {fileID: 905482637609979376, guid: e4b4e8a1eaab7684b8a582f48a446528, type: 3}
   - {fileID: 1560664351605496526, guid: 03722123f92b4d146b979e4ce7e83096, type: 3}
+  - {fileID: 3033124960215436640, guid: 9b9fc3ab86d09e74199371b99a81ea65, type: 3}
+  - {fileID: 171128006951994795, guid: 624b6fb62375e1e4d860dad939cdc113, type: 3}
   insetXPercent: {fileID: 7729214306450517948}
   insetYPercent: {fileID: 4864796690908502039}
   temporaryMat: {fileID: 2100000, guid: 49583f190b3b8594dbea6875ccff9ab0, type: 2}
