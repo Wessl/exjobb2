@@ -92,14 +92,16 @@ public static class RoofConstructor
         float yValIncreasePercent = 30f; // as a percent of the wall Y value
         float extendInwards = 2f;
         List<Vector3> newPoints = new List<Vector3>();
+        List<Vector3> sideQuadPoints = new List<Vector3>();
         // Assuming walls are in order, we can always take the "left corner", compare against angle of next wall (facing inwards)
         for (int i = 0; i < walls.Length; i++)
         {
             // Get the "top left corner"
             var wall = walls[i];
-            var wallMesh = wall.GetComponent<MeshRenderer>(); // surely there'll be a mesh renderer... right?
+            var wallMesh = wall.GetComponent<MeshRenderer>(); 
             Mesh mesh = wall.GetComponent<MeshFilter>().mesh;
             Matrix4x4 localToWorld = wall.transform.localToWorldMatrix;
+            
             // Assuming every plane has 4 vertices, going from bottom right, bottom left, top left - we want third
             Vector3 world_v = localToWorld.MultiplyPoint3x4(mesh.vertices[2]);    // get the real time world pos
             var angleBetweenWall = Vector3.SignedAngle(wall.transform.right, walls[(i+1) % walls.Length].transform.right, wall.transform.up);
@@ -108,11 +110,28 @@ public static class RoofConstructor
             Vector3 resultPoint = world_v + outwardFromCorner +
                                   wall.transform.up * mesh.bounds.extents.y * 2 * (100f - yValIncreasePercent)/100f;
             Debug.DrawLine(world_v, resultPoint, Color.green, 100);
+            
+            // Add points to lists
             newPoints.Add(resultPoint);
-            // actually add everything needed to construct the side quads...?
+            sideQuadPoints.Add(world_v);
+            sideQuadPoints.Add(resultPoint);
         }
-        // take the angle in between these two (literally divide by 2), then that's the vector we build diagonally upwards along
-        // we should be able to construct quads between these new points and old corners to make the slanted roof
+        
+        // At this point, all vertices in 3d space are achieved. Start constructing roof. 
+        for (int i = 0; i < walls.Length; i++)
+        {
+            var ln = sideQuadPoints.Count;
+            CreateQuadFromPoints(sideQuadPoints[i*4 % ln], sideQuadPoints[(i*4+1) % ln], sideQuadPoints[( i*4+2) % ln], sideQuadPoints[ (i*4+3) % ln], roofMaterials);
+        }
+        // Triangulate the polygon making up the upper part of the roof
+        Triangulator triangulator = new Triangulator(newPoints.ToArray());
+        var resultIndices = triangulator.Triangulate();
+        for (int i = 0; i < resultIndices.Length-2; i += 3)
+        {
+            CreateTriFromPoints(newPoints[resultIndices[i]], newPoints[resultIndices[i+1]], newPoints[resultIndices[i+2]], roofMaterials);
+            
+        }
+
         // then for the flat roof, we should be able to construct polygons using the new points, which we then later triangulate, and build triangles out of... I hope there is some triangulation library.. i dont wanna math
     }
 
@@ -159,7 +178,6 @@ public static class RoofConstructor
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
         newShape.tag = "Roof";
-
     }
     
     static void CreateQuadRoofMesh(float width, float height, float centerX, float centerZ, float centerY, Vector3 rot, List<Material> roofMaterials)
@@ -210,6 +228,82 @@ public static class RoofConstructor
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
         newShape.tag = "Roof";
+    }
+    static void CreateQuadFromPoints(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, List<Material> roofMaterials)
+    {
+        Mesh mesh = new Mesh();
+        mesh.vertices = new Vector3[]{ p1, p2, p3, p4};
+        int[] tris = new int[6]
+        {
+            // lower left triangle
+            0, 2, 1,
+            // upper right triangle
+            2, 3, 1
+        };
+        mesh.triangles = tris;
+        // Normals
+        Vector3[] normals = new Vector3[4]
+        {
+            -Vector3.forward,
+            -Vector3.forward,
+            -Vector3.forward,
+            -Vector3.forward
+        };
+        mesh.normals = normals;
+        Vector2[] uv = new Vector2[4]
+        {
+            new Vector2(0, 0),
+            new Vector2(1, 0),
+            new Vector2(0, 1),
+            new Vector2(1, 1)
+        };
+        mesh.uv = uv;
         
+        // The shape created by AddShape should end up underneath the parent if parent is Construction type
+        GameObject newShape = new GameObject();
+        // newShape.transform.position = new Vector3(centerX, centerY, centerZ);
+        // newShape.transform.Rotate(rot, Space.World);
+
+        newShape.AddComponent<MeshFilter>();
+        newShape.AddComponent<MeshRenderer>();
+        newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
+        newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
+        newShape.tag = "Roof";
+    }
+    static void CreateTriFromPoints(Vector3 p1, Vector3 p2, Vector3 p3, List<Material> roofMaterials)
+    {
+        Mesh mesh = new Mesh();
+        // Just create a triangle
+        Vector3[] vertices = new Vector3[] {p1, p2, p3};
+        mesh.vertices = vertices;
+        int[] tri = new int[3]
+        {
+            // same order or clockwise..?
+            0, 1, 2 // 0, 2, 1
+        };
+        mesh.triangles = tri;
+        // Normals
+        Vector3[] normals = new Vector3[3]
+        {
+            -Vector3.forward,
+            -Vector3.forward,
+            -Vector3.forward
+        };
+        mesh.normals = normals;
+        Vector2[] uv = new Vector2[3]
+        {
+            new Vector2(0, 0),
+            new Vector2(1, 0),
+            new Vector2(0.5f, 1)
+        };
+        mesh.uv = uv;
+        
+        GameObject newShape = new GameObject();
+        newShape.AddComponent<Shape>();
+        newShape.AddComponent<MeshFilter>();
+        newShape.AddComponent<MeshRenderer>();
+        newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
+        newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
+        newShape.tag = "Roof";
     }
 }
