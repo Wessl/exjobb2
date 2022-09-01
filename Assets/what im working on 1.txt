@@ -14,5 +14,8 @@ ability to remove UI parts (press little x to delete, ez)
 finishing building also moves it in world space... not ideal
 default length for custom base should be like 10 or 20 not 1
 why can we sometimes draw the custom base panel, outside of the panel? should not work. 
+make roof textures coherent across triangles..
+take pictures with different window, facade material (like bricks and some fancy window) 
+some sort of limit on the length of the inset of fancy roof so they dont cross one another
 
 maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm

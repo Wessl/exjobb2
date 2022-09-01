@@ -89,8 +89,8 @@ public static class RoofConstructor
     /// <param name="roofMaterials">A list of materials to use for the roof<param>
     static void CreateFancyRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints, List<Material> roofMaterials)
     {
-        float yValIncreasePercent = 30f; // as a percent of the wall Y value
-        float extendInwards = 2f;
+        float yValIncreasePercent = 100f; // as a percent of the wall Y value
+        float extendInwards = 2.5f;
         List<Vector3> newPoints = new List<Vector3>();
         List<Vector3> sideQuadPoints = new List<Vector3>();
         // Assuming walls are in order, we can always take the "left corner", compare against angle of next wall (facing inwards)
@@ -108,7 +108,7 @@ public static class RoofConstructor
             angleBetweenWall = Mathf.Abs(180 - angleBetweenWall) / 2f;  // if you have corner, in between corner, outward facing corner, between it also :)
             var outwardFromCorner = Quaternion.AngleAxis(-angleBetweenWall, Vector3.up) * (wall.transform.right) * extendInwards;
             Vector3 resultPoint = world_v + outwardFromCorner +
-                                  wall.transform.up * mesh.bounds.extents.y * 2 * (100f - yValIncreasePercent)/100f;
+                                  wall.transform.up * mesh.bounds.extents.y * 2 * (yValIncreasePercent)/100f;
             Debug.DrawLine(world_v, resultPoint, Color.green, 100);
             
             // Add points to lists
@@ -121,7 +121,8 @@ public static class RoofConstructor
         for (int i = 0; i < walls.Length; i++)
         {
             var ln = sideQuadPoints.Count;
-            CreateQuadFromPoints(sideQuadPoints[i*4 % ln], sideQuadPoints[(i*4+1) % ln], sideQuadPoints[( i*4+2) % ln], sideQuadPoints[ (i*4+3) % ln], roofMaterials);
+            Debug.Log("tryna makin a roof'n stuff");
+            CreateQuadFromPoints(sideQuadPoints[i*2 % ln], sideQuadPoints[(i*2+1) % ln], sideQuadPoints[( i*2+2) % ln], sideQuadPoints[ (i*2+3) % ln], roofMaterials);
         }
         // Triangulate the polygon making up the upper part of the roof
         Triangulator triangulator = new Triangulator(newPoints.ToArray());
