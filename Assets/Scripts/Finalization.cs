@@ -36,9 +36,9 @@ public class Finalization : MonoBehaviour
     {
         if (camCanMove)
         {
-            // instead of using vector3.forward and hte like, use the center points to rotate around that instead
+            // fancy rotation around the center of the building
             var v = camAroundCircleRadius * (Vector3.forward * Mathf.Cos(Time.time) + Vector3.right * Mathf.Sin(Time.time));
-            mainCam.transform.position = v + centerOfBuilding;
+            mainCam.transform.position = v + centerOfBuilding + Vector3.up * walls[0].transform.lossyScale.y;
             mainCam.transform.LookAt(centerOfBuilding);
             
         }
@@ -101,6 +101,7 @@ public class Finalization : MonoBehaviour
         GameObject.FindObjectOfType<GeneralUI>().ToggleUIVisible();
         // Find center point of walls
         centerOfBuilding = new Vector3(walls.Average(o => o.transform.position.x), walls.Average(o => o.transform.position.y), walls.Average(o => o.transform.position.z));
+        camAroundCircleRadius = walls.Max(o => o.transform.lossyScale.x)*2f;
         camCanMove = true;
     }
 
@@ -199,12 +200,6 @@ public class Finalization : MonoBehaviour
         {
             Debug.Log("Your facade most likely does not have a collider attached, which it should for winding order to work correctly!");
         }
-
-        
-    }
-    private void ReverseOrderOfChildren()
-    {
-        
     }
 
     private void GridFixer(Vector3[] previousScalesBefore, Vector3[] previousScalesAfter)

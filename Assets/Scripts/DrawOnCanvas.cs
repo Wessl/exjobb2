@@ -212,6 +212,7 @@ public class DrawOnCanvas : MonoBehaviour
         // this.gameObject.SetActive(false);
         var sizeDelta = this.gameObject.GetComponent<RectTransform>().sizeDelta;
         GameObject.FindObjectOfType<Finalization>().CustomFinalize(clickedPositions, scaleFactor, sizeDelta);
+        this.transform.parent.gameObject.SetActive(false);
     }
 
     public void ResetCanvas()
