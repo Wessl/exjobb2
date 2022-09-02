@@ -98,7 +98,7 @@ public static class RoofConstructor
         {
             // Get the "top left corner"
             var wall = walls[i];
-            var wallMesh = wall.GetComponent<MeshRenderer>(); 
+            var wallMesh = wall.GetComponent<MeshRenderer>();
             Mesh mesh = wall.GetComponent<MeshFilter>().mesh;
             Matrix4x4 localToWorld = wall.transform.localToWorldMatrix;
             

@@ -93,7 +93,7 @@ public class AddShape : MonoBehaviour
         Vector2 parentSizeExtent = Vector2.one;
         if (shapeType == Shape.ShapeType.Construction)
         {
-            newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
+            newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), activeMesh.transform.rotation);
             newShape.transform.SetParent(parentObj.transform, true);
             newShape.AddComponent<Shape>().Start();
             parentSizeExtent = newShape.transform.parent.transform.localScale;
@@ -102,7 +102,7 @@ public class AddShape : MonoBehaviour
         {
             cx += width / 2;
             cy += height / 2;
-            newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
+            newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), activeMesh.transform.rotation);
             newShape.transform.SetParent(parentObj.transform, true);
             newShape.AddComponent<Shape>().Start();
             parentSizeExtent = FindParentSizeExtent(newShape);
