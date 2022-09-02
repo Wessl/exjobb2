@@ -17,7 +17,6 @@ why can we sometimes draw the custom base panel, outside of the panel? should no
 make roof textures coherent across triangles..
 take pictures with different window, facade material (like bricks and some fancy window) 
 some sort of limit on the length of the inset of fancy roof so they dont cross one another
-brickwall might not be right length or we. or maybe its the y scaling in roof auto construxt
 fancy roof doesnt work if wall itself does not have a mesh filter on its component...
 
 maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm

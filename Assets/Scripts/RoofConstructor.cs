@@ -106,7 +106,7 @@ public static class RoofConstructor
             Vector3 world_v = localToWorld.MultiplyPoint3x4(mesh.vertices[2]);    // get the real time world pos
             var angleBetweenWall = Vector3.SignedAngle(wall.transform.right, walls[(i+1) % walls.Length].transform.right, wall.transform.up);
             angleBetweenWall = Mathf.Abs(180 - angleBetweenWall) / 2f;  // if you have corner, in between corner, outward facing corner, between it also :)
-            var outwardFromCorner = Quaternion.AngleAxis(-angleBetweenWall, Vector3.up) * (wall.transform.right) * extendInwards;
+            var outwardFromCorner = Quaternion.AngleAxis(angleBetweenWall, Vector3.up) * (-wall.transform.right) * extendInwards;
             Vector3 resultPoint = world_v + outwardFromCorner +
                                   wall.transform.up * mesh.bounds.extents.y * 2 * (yValIncreasePercent)/100f;
             Debug.DrawLine(world_v, resultPoint, Color.green, 100);
@@ -121,8 +121,9 @@ public static class RoofConstructor
         for (int i = 0; i < walls.Length; i++)
         {
             var ln = sideQuadPoints.Count;
-            Debug.Log("tryna makin a roof'n stuff");
-            CreateQuadFromPoints(sideQuadPoints[i*2 % ln], sideQuadPoints[(i*2+1) % ln], sideQuadPoints[( i*2+2) % ln], sideQuadPoints[ (i*2+3) % ln], roofMaterials);
+            Debug.Log("tryna makin a roof'n stuff");    
+            // Ordering might seem strange
+            CreateQuadFromPoints(sideQuadPoints[(i*2) % ln], sideQuadPoints[(i*2+2) % ln], sideQuadPoints[( i*2+1) % ln], sideQuadPoints[ (i*2+3) % ln], roofMaterials);
         }
         // Triangulate the polygon making up the upper part of the roof
         Triangulator triangulator = new Triangulator(newPoints.ToArray());
@@ -254,8 +255,8 @@ public static class RoofConstructor
         Vector2[] uv = new Vector2[4]
         {
             new Vector2(0, 0),
-            new Vector2(1, 0),
             new Vector2(0, 1),
+            new Vector2(1, 0),
             new Vector2(1, 1)
         };
         mesh.uv = uv;

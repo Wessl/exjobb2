@@ -26708,7 +26708,7 @@ MonoBehaviour:
   shapeTypeDropdown: {fileID: 1946444760430082631}
   randomizationInputField: {fileID: 207564874222993109}
   premadeShapeTypes:
-  - {fileID: 919132149155446097, guid: a80ac1b6b709e2d4ab7d34aad36242a2, type: 3}
+  - {fileID: 6958249567839776239, guid: 578ecb7a870ecdc4586af0177c7c4c44, type: 3}
   - {fileID: 3047656970148707977, guid: d5fd10d4cc5df0140ab8053d65d8c3f2, type: 3}
   - {fileID: 4095725328400764934, guid: f9ecc747df734984ab459b2da654b327, type: 3}
   - {fileID: 6233405129902173460, guid: 1990ffa4f888f024a8613d82b736eb5b, type: 3}
