@@ -18,5 +18,6 @@ make roof textures coherent across triangles..
 take pictures with different window, facade material (like bricks and some fancy window) 
 some sort of limit on the length of the inset of fancy roof so they dont cross one another
 fancy roof doesnt work if wall itself does not have a mesh filter on its component...
+fancy roof works differently depending on if its an automatic or a custom roof. le sigh...
 
 maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm
