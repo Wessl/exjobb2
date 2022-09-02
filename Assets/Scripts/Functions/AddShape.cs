@@ -141,9 +141,8 @@ public class AddShape : MonoBehaviour
         }
         else // Just apply the actual width and height that the user desires
         {
-            // shit is fucked yo, find a solution to it
-            float x = (width / originalMeshSize.x) / parentSizeExtent.x;
-            float y = (height / originalMeshSize.y) / parentSizeExtent.y;
+            float x = (width) / (originalMeshSize.x * newShape.transform.parent.lossyScale.x);
+            float y = (height) / (originalMeshSize.y * newShape.transform.parent.lossyScale.y);
             newShape.transform.localScale = new Vector3(x,y, (x+y)/2); // Z not ideal, but the average of x and y is decent
 
         }
