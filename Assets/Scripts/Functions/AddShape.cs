@@ -100,13 +100,11 @@ public class AddShape : MonoBehaviour
         }
         else
         {
-            cx += width /2 + parentSizeExtent.x/2;
-            cy += height/2 + parentSizeExtent.y/2;
+            cx += width / 2;
+            cy += height / 2;
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), Quaternion.identity);
             newShape.transform.SetParent(parentObj.transform, true);
             newShape.AddComponent<Shape>().Start();
-
-            //newShape = parentObj;
             parentSizeExtent = FindParentSizeExtent(newShape);
             parentObj.GetComponent<Shape>().currentType = Shape.ShapeType.Construction; // Change from being virtual to construction?
         }
@@ -132,13 +130,10 @@ public class AddShape : MonoBehaviour
             var insetX = float.Parse(insetXPercent.text);
             var insetY = float.Parse(insetYPercent.text);
             
-            // Get the parent sizeExtent
-            var parent = newShape.transform.parent.GetComponent<Shape>();
-            var sizeExtent = parent.SizeExent;
-            var newSizeExtent = sizeExtent * ( new Vector2(1 - insetX * 0.01f, 1 - insetY * 0.01f) ) ;
+            var newSizeExtent = parentSizeExtent * ( new Vector2(1 - insetX * 0.01f, 1 - insetY * 0.01f) ) ;
             if (parentOGShapeType == Shape.ShapeType.Virtual)
             {
-                newShape.transform.position += new Vector3(sizeExtent.x/2-parentSizeExtent.x/2, sizeExtent.y/2-parentSizeExtent.y/2 , 0);
+                newShape.transform.position += new Vector3(parentSizeExtent.x/2, parentSizeExtent.y/2 , 0);
             }
             newShape.transform.localScale = new Vector3((newSizeExtent.x / originalMeshSize.x ) / parentSizeExtent.x,
                 ( newSizeExtent.y / originalMeshSize.y ) / parentSizeExtent.y, 1);
@@ -266,13 +261,13 @@ public class AddShape : MonoBehaviour
         if (parent != null)
         {
             Shape shape = parent.GetComponent<Shape>();
-            Debug.Log("current type: " + shape.currentType + " and name: " + shape.transform.name);
-            if (shape.currentType == Shape.ShapeType.Construction)
-            {
-                return shape.SizeExent;
-            }
+            //if (shape.currentType == Shape.ShapeType.Construction)
+            //{
+            return shape.SizeExent;
+            //}
         }
-        
+
+        Debug.Log("This object has no parent1");
         return Vector2.one;
     }
 
