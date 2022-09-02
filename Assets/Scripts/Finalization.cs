@@ -64,7 +64,7 @@ public class Finalization : MonoBehaviour
         wall3.transform.Translate(new Vector3(- extent.x / 2, 0, extent.x / 2));
         wall3.transform.Rotate(0,  90, 0);
         wall3.transform.SetParent(root.transform);
-        walls = new GameObject[] {belowRoot.gameObject, wall1, wall2, wall3};
+        walls = new GameObject[] {belowRoot.gameObject, wall3, wall2, wall1};   //trust the order
         FlipRoofButtonsActive();
     }
 
@@ -133,7 +133,7 @@ public class Finalization : MonoBehaviour
             var halfway = AB.normalized * distance * 0.5f;
             var angle = Vector3.Angle(Vector3.right, AB.normalized);
             if (A.z < B.z) angle = -angle;
-            var wall =Instantiate(belowRoot.gameObject, halfway + A, Quaternion.Euler(0,angle + 180,0));
+            var wall = Instantiate(belowRoot.gameObject, halfway + A, Quaternion.Euler(0,angle + 180,0));
             // how to make the scale work
             previousScalesBefore[i / 2] = wall.transform.localScale;
             wall.transform.localScale = new Vector3(distance / belowRoot.transform.localScale.x * (extent.x/4), wall.transform.localScale.y, wall.transform.localScale.z); // why does this give the correct x scaling? idk man
@@ -150,10 +150,10 @@ public class Finalization : MonoBehaviour
         GridFixer(previousScalesBefore, previousScalesAfter);
         
         // Big thing number 2: Find the winding order of the building and adjust accordingly.
-        WindingOrderAdjuster(walls);
+        WindingOrderAdjuster();
     }
 
-    private void WindingOrderAdjuster(GameObject[] walls)
+    private void WindingOrderAdjuster()
     {
         int forwardHits = 0;
         int backwardHits = 0;
@@ -184,16 +184,26 @@ public class Finalization : MonoBehaviour
         if (backwardHits > forwardHits)
         {
             // Reverse every walls facing direction
-            foreach (var wall in walls)
+            var parentTransform = walls[0].transform.parent;
+            for (int i = 0; i < walls.Length; i++)
             {
+                var wall = walls[i];
                 wall.transform.Rotate(Vector3.up, 180);
+                // we must reverse the order of how the gameObjects are in the hierarchy, since the ordering matters later when creating a roof
             }
+            walls = walls.Reverse().ToArray();
         }
 
         if (forwardHits == 0 && backwardHits == 0)
         {
             Debug.Log("Your facade most likely does not have a collider attached, which it should for winding order to work correctly!");
         }
+
+        
+    }
+    private void ReverseOrderOfChildren()
+    {
+        
     }
 
     private void GridFixer(Vector3[] previousScalesBefore, Vector3[] previousScalesAfter)
