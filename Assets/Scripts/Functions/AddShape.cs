@@ -96,7 +96,7 @@ public class AddShape : MonoBehaviour
             newShape = Instantiate(activeMesh, new Vector3(cx, cy, 0), activeMesh.transform.rotation);
             newShape.transform.SetParent(parentObj.transform, true);
             newShape.AddComponent<Shape>().Start();
-            parentSizeExtent = newShape.transform.parent.transform.localScale;
+            parentSizeExtent = newShape.transform.parent.GetComponent<Shape>().SizeExent;
         }
         else
         {
@@ -141,6 +141,7 @@ public class AddShape : MonoBehaviour
         }
         else // Just apply the actual width and height that the user desires
         {
+            // shit is fucked yo, find a solution to it
             float x = (width / originalMeshSize.x) / parentSizeExtent.x;
             float y = (height / originalMeshSize.y) / parentSizeExtent.y;
             newShape.transform.localScale = new Vector3(x,y, (x+y)/2); // Z not ideal, but the average of x and y is decent

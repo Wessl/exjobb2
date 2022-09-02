@@ -18,6 +18,7 @@ make roof textures coherent across triangles.. (on top of the fancy roof for exa
 some sort of limit on the length of the inset of fancy roof so they dont cross one another
 fancy roof doesnt work if wall itself does not have a mesh filter on its component...
 fancy roof works differently depending on if its an automatic or a custom roof. le sigh... (is it the orientation of the walls? like obj.transform.right seems to be different. strange. 
-reset everything (reload scene)
+i could rechnically add an undo button by just erasing everything, redo each execute, except for the last one...?
+adding shapes onto child of a child, makes them bigger instead of smaller. why
 
 maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GeneralUI : MonoBehaviour
 {
@@ -31,5 +32,10 @@ public class GeneralUI : MonoBehaviour
         originalRoot.SetActive(true);
         originalRoot = Instantiate(originalRoot, Vector3.zero, Quaternion.identity);
         originalRoot.SetActive(false);
+    }
+
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
