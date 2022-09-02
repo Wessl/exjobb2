@@ -126,8 +126,9 @@ public class Finalization : MonoBehaviour
         for (int i = 0; i < posCount-1; i += 2)
         {
             // pixel to world space... 
-            var A = new Vector3(endPositions[i].x / sizeDelta.x, 0, endPositions[i].y / sizeDelta.x) * scaleFactor;             // this doesnt work the way you thouht it id. the scalefactor will move it in space
-            var B = new Vector3(endPositions[(i + 1)].x / sizeDelta.x, 0, endPositions[(i+1)].y / sizeDelta.x) * scaleFactor;
+
+            var A = new Vector3(endPositions[i].x / sizeDelta.x - 2.5f, 0, endPositions[i].y / sizeDelta.x - 1.5f) * scaleFactor;            // magic numbers. where from???
+            var B = new Vector3(endPositions[(i + 1)].x / sizeDelta.x - 2.5f, 0, endPositions[(i+1)].y / sizeDelta.x - 1.5f) * scaleFactor;
             var AB = (B - A);
             var distance = AB.magnitude;
             var halfway = AB.normalized * distance * 0.5f;
