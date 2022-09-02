@@ -123,7 +123,7 @@ public class AddShape : MonoBehaviour
 
     private void ApplySizing(GameObject newShape, float width, float height, Vector2 originalMeshSize, Vector2 parentSizeExtent, Shape.ShapeType parentOGShapeType)
     {
-        
+        var parTrsfrm = newShape.transform.parent;
         // Potential bug waiting to happen... completely flat object on one axis will cause error
         if (scaleAgainstParentToggle.isOn)  // Use parent scale and inset % to give size of objects 
         {
@@ -135,14 +135,14 @@ public class AddShape : MonoBehaviour
             {
                 newShape.transform.position += new Vector3(parentSizeExtent.x/2, parentSizeExtent.y/2 , 0);
             }
-            newShape.transform.localScale = new Vector3((newSizeExtent.x / originalMeshSize.x ) / parentSizeExtent.x,
-                ( newSizeExtent.y / originalMeshSize.y ) / parentSizeExtent.y, 1);
+            newShape.transform.localScale = new Vector3((newSizeExtent.x ) / (originalMeshSize.x * parTrsfrm.lossyScale.x),
+                ( newSizeExtent.y ) / (originalMeshSize.y * parTrsfrm.lossyScale.y), 1);
 
         }
         else // Just apply the actual width and height that the user desires
         {
-            float x = (width) / (originalMeshSize.x * newShape.transform.parent.lossyScale.x);
-            float y = (height) / (originalMeshSize.y * newShape.transform.parent.lossyScale.y);
+            float x = (width) / (originalMeshSize.x * parTrsfrm.lossyScale.x);
+            float y = (height) / (originalMeshSize.y * parTrsfrm.lossyScale.y);
             newShape.transform.localScale = new Vector3(x,y, (x+y)/2); // Z not ideal, but the average of x and y is decent
 
         }

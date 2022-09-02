@@ -20,5 +20,6 @@ fancy roof doesnt work if wall itself does not have a mesh filter on its compone
 fancy roof works differently depending on if its an automatic or a custom roof. le sigh... (is it the orientation of the walls? like obj.transform.right seems to be different. strange. 
 i could rechnically add an undo button by just erasing everything, redo each execute, except for the last one...?
 adding shapes onto child of a child, makes them bigger instead of smaller. why
+some sort of indicator telling you an action has been completed (e.g. adding a grid, how can you know it really was added for example
 
 maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm
