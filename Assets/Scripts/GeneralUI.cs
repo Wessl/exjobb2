@@ -32,6 +32,7 @@ public class GeneralUI : MonoBehaviour
         originalRoot.SetActive(true);
         originalRoot = Instantiate(originalRoot, Vector3.zero, Quaternion.identity);
         originalRoot.SetActive(false);
+        GameObject.FindObjectOfType<Notification>().SetNotice("Everything deleted!");
     }
 
     public void ResetScene()

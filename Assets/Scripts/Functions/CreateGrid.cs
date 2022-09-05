@@ -157,6 +157,7 @@ public class CreateGrid : MonoBehaviour
 
         AssignShapeRelations(newlyCreatedObjects);
         currentlySelected.AddRange(newlyCreatedObjects);
+        GameObject.FindObjectOfType<Notification>().SetNotice("Grid created");
     }
 
     public static void AssignShapeRelations(List<GameObject> newlyCreatedObjects)

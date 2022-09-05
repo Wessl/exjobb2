@@ -66,6 +66,7 @@ public class Finalization : MonoBehaviour
         wall3.transform.SetParent(root.transform);
         walls = new GameObject[] {belowRoot.gameObject, wall3, wall2, wall1};   //trust the order
         FlipRoofButtonsActive();
+        GameObject.FindObjectOfType<Notification>().SetNotice("Automatic Finalization complete!");
     }
 
     private void FlipRoofButtonsActive()
@@ -153,6 +154,7 @@ public class Finalization : MonoBehaviour
         
         // Big thing number 2: Find the winding order of the building and adjust accordingly.
         WindingOrderAdjuster();
+        GameObject.FindObjectOfType<Notification>().SetNotice("Custom finalization complete");
     }
 
     private void WindingOrderAdjuster()
@@ -259,11 +261,6 @@ public class Finalization : MonoBehaviour
                     
                 }
                 Destroy(wallChild.gameObject);
-                // Now check the length of the child, and the length of the remaining bits of wall. 
-                // If the remaining bits of wall is greater than twice the length of the original wall, 
-                // start populating it with more children (e.g. windows) at the same distance apart
-                // this also requires repositioning, i.e no longer positioning based on relative position against parent, 
-                // but instead the absolute distance as originally used by the reference wall. 
             }
         }
     }

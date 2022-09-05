@@ -54,7 +54,8 @@ public static class RoofConstructor
                 CreatePyramidRoof(extent, walls, edgePoints, roofMaterials);
                 break;
         }
-        
+        GameObject.FindObjectOfType<Notification>().SetNotice("Roof constructed");
+
 
     }
 

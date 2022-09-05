@@ -54,6 +54,7 @@ public class AddShape : MonoBehaviour
         // Assign parent, children, neighbours to each newly created object (all contained in newlySelected)
         AssignShapeRelationships(newlySelected);
         objectSelectionHandler.currentSelection = newlySelected;
+        GameObject.FindObjectOfType<Notification>().SetNotice("Shape added");
     }
 
     private bool DetermineRandomizationResult()
