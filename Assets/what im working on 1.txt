@@ -10,15 +10,17 @@ making root(1) and root into custom bases getsdifferent results
 UI logger or tooltip to stop and tell of problems/illegal actions without breaking the software
 defaults for unfilled inputfields should just be zero...?
 ability to remove UI parts (press little x to delete, ez)
-finishing building also moves it in world space... not ideal
+finishing building also moves it in world space... now with a magic number instead
 default length for custom base should be like 10 or 20 not 1
 why can we sometimes draw the custom base panel, outside of the panel? should not work. 
 make roof textures coherent across triangles.. (on top of the fancy roof for example)
 some sort of limit on the length of the inset of fancy roof so they dont cross one another
 fancy roof doesnt work if wall itself does not have a mesh filter on its component...
-fancy roof works differently depending on if its an automatic or a custom roof. le sigh... (is it the orientation of the walls? like obj.transform.right seems to be different. strange. 
 i could rechnically add an undo button by just erasing everything, redo each execute, except for the last one...?
-adding shapes onto child of a child, makes them bigger instead of smaller. why
-some sort of indicator telling you an action has been completed (e.g. adding a grid, how can you know it really was added for example
+rotation of gameobject is not maintained in finalization step
+damage and age is a little fucky wucky. basically, it just takes the OG concrete wall. dont do that. 
+damage and age also seemingly can only handle one affector at a time if doing the angle modification. fuck
 
 maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm
+we have to figure out how to scale the noise properly. fuck
+noise sometimes onto non-meshrenderer breaks stuff (e.g. no selection)

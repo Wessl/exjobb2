@@ -24278,10 +24278,6 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Translate()
       m_Image: {fileID: 0}
-    - m_Text: Include()
-      m_Image: {fileID: 0}
-    - m_Text: ShareCorner()
-      m_Image: {fileID: 0}
     - m_Text: DamageAndAge()
       m_Image: {fileID: 0}
     - m_Text: ScaleByImage()

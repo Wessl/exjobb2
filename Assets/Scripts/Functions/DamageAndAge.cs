@@ -165,6 +165,8 @@ public class DamageAndAge : MonoBehaviour
 
     private void ApplyTextureMaskingMaterial(GameObject selected)
     {
+        // Give the material the correct original texture
+        textureMaskMat.SetTexture("_OriginalTexture", selected.GetComponent<MeshRenderer>().material.mainTexture);
         // Find out what kind of texture we working with? Like, rust or impact or smth? 
         var dropdownOpt = damageAgeTypeMats[damageAgeType.value-1];
         Debug.Log("tryin to set this texture: " + dropdownOpt.mainTexture.name);
@@ -208,7 +210,7 @@ public class DamageAndAge : MonoBehaviour
     {
         Texture2D dest = new Texture2D(tex.width, tex.height, TextureFormat.Alpha8, false);
         dest.alphaIsTransparency = true;
-        int spreadDivisor = 4;  // Determines how far out the SDF will "grow". e.g. img size of 128 pixels and spreadDivisor of 4 => approx 30 pixels spread.
+        int spreadDivisor = 8;  // Determines how far out the SDF will "grow". e.g. img size of 128 pixels and spreadDivisor of 4 => approx 30 pixels spread.
         SDFTextureGenerator.Generate(tex, dest, 0, (int)(width/spreadDivisor), (int)(height/spreadDivisor), RGBFillMode.Source);
         dest.Apply();
         DrawTextureIntoImage(dest, "image2");

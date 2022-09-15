@@ -39,31 +39,44 @@ public class Action : MonoBehaviour
             case 1:
                 SelectCopyShape();
                 break;
+            case 2:
+                SelectGroup();
+                break;
             case 3:
                 SelectCreateGrid();
                 break;
-            case 7:
-                SelectTransform();
+            case 4:
+                SelectSetAttrib();
                 break;
-            case 8:
+            case 5:
                 SelectRotate();
                 break;
-            case 9:
+            case 6:
                 SelectScale();
                 break;
-            case 10:
+            case 7:
                 SelectTranslate();
                 break;
-            case 13:
+            case 8:
                 SelectDamageAndAge();
                 break;
-            case 14:
+            case 9:
                 SelectScaleByImage();
                 break;
             default:
                 lastSelection = null;
                 break;
         }
+    }
+
+    private void SelectSetAttrib()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void SelectGroup()
+    {
+        throw new NotImplementedException();
     }
 
     private void SelectTransform()

@@ -29,9 +29,9 @@ public static class NoiseGenerator
             float x = 0.0F;
             while (x < noiseTex.width)
             {
-                float xCoord = xOrg + x / noiseTex.width * scale;
-                float yCoord = yOrg + y / noiseTex.height * scale;
-                float sample = Mathf.PerlinNoise(xCoord, yCoord) * sourcePixels[(int)y * noiseTex.width + (int)x].a;
+                float xCoord = (xOrg + x / noiseTex.width);
+                float yCoord = ( yOrg + y / noiseTex.height);
+                float sample = Mathf.PerlinNoise(xCoord * scale, yCoord * scale) * sourcePixels[(int)y * noiseTex.width + (int)x].a;
                 pix[(int)y * noiseTex.width + (int)x] = new Color(sample, sample, sample);
                 x++;
             }
@@ -67,7 +67,7 @@ public static class NoiseGenerator
             for (int x = 0; x < pixWidth; x++)
             {
 	            Vector3 point = Vector3.Lerp(point0, point1, (x + 0.5f) * stepSize);
-                float sample = Sum(point, frequency, octaves) * sourcePixels[(int)y * noiseTex.width + (int)x].a;
+                float sample = Sum(point * scale, frequency, octaves) * sourcePixels[(int)y * noiseTex.width + (int)x].a;
                 pix[(int)y * noiseTex.width + (int)x] = new Color(sample, sample, sample, sample);
             }
         }
