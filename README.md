@@ -7,3 +7,8 @@ I will investigate procedurally generating building facades in Unity. Theoretica
 
 ### Unity
 I am using Unity version 2020.3.29f1 (LTS). 
+
+### play the game here!
+https://wesslo.itch.io/lidar-from-afar
+
+![alt text](https://img.itch.zone/aW1hZ2UvMTY5OTQ1My8xMDA1MDM5Ny5wbmc=/original/vV65HW.png)
