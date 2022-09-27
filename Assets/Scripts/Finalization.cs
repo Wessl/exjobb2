@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using UnityEditor.Formats.Fbx.Exporter;
 using UnityEditor.SceneTemplate;
 using UnityEngine;
 using UnityEngine.UI;
@@ -106,7 +108,24 @@ public class Finalization : MonoBehaviour
         camCanMove = true;
     }
 
-    
+    public void ExportButton()
+    {
+        // Get all the objects that need to be exported
+        root = GameObject.FindGameObjectWithTag("Root");
+        var objects = new List<GameObject>();
+        foreach (Transform child in root.transform)
+        {
+            GameObject childGO = child.gameObject;
+            // must set the mesh to read/write allowed
+            var childMF = childGO.GetComponent<MeshFilter>();
+            if (childMF) childMF.mesh.UploadMeshData(false);
+            objects.Add(childGO);
+        }
+        // Export using Unity's FBX exporter
+        string filePath = Path.Combine(Application.dataPath, "Export.fbx");
+        ModelExporter.ExportObjects(filePath, objects.ToArray());
+        UnityEditor.AssetDatabase.Refresh();
+    }
 
     public void CustomFinalizeButton()
     {
