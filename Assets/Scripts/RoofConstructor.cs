@@ -19,8 +19,11 @@ public static class RoofConstructor
         Fancy
     }
 
+    private static GameObject rootObj;
+
     public static void ConstructRoof(GameObject root, GameObject[] walls, Vector2 extent, RoofType roofType, List<Material> roofMaterials)
     {
+        rootObj = root;
         // First, remove old roof objects as they are no longer needed
         var roofs = GameObject.FindGameObjectsWithTag("Roof");
         foreach (var roof in roofs)
@@ -122,7 +125,6 @@ public static class RoofConstructor
         for (int i = 0; i < walls.Length; i++)
         {
             var ln = sideQuadPoints.Count;
-            Debug.Log("tryna makin a roof'n stuff");    
             // Ordering might seem strange
             CreateQuadFromPoints(sideQuadPoints[(i*2) % ln], sideQuadPoints[(i*2+1) % ln], sideQuadPoints[( i*2+2) % ln], sideQuadPoints[ (i*2+3) % ln], roofMaterials);
         }
@@ -180,6 +182,7 @@ public static class RoofConstructor
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
+        SetRootAsParent(newShape);
         newShape.tag = "Roof";
     }
     
@@ -230,6 +233,7 @@ public static class RoofConstructor
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
+        SetRootAsParent(newShape);
         newShape.tag = "Roof";
     }
     static void CreateQuadFromPoints(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, List<Material> roofMaterials)
@@ -271,6 +275,7 @@ public static class RoofConstructor
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
+        SetRootAsParent(newShape);
         newShape.tag = "Roof";
     }
     static void CreateTriFromPoints(Vector3 p1, Vector3 p2, Vector3 p3, List<Material> roofMaterials)
@@ -307,6 +312,12 @@ public static class RoofConstructor
         newShape.AddComponent<MeshRenderer>();
         newShape.GetComponent<MeshFilter>().sharedMesh = mesh;
         newShape.GetComponent<MeshRenderer>().material = roofMaterials[0];
+        SetRootAsParent(newShape);
         newShape.tag = "Roof";
+    }
+
+    private static void SetRootAsParent(GameObject shape)
+    {
+        shape.transform.parent = rootObj.transform;
     }
 }

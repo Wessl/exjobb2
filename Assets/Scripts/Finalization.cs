@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using TMPro;
 using UnityEditor.Formats.Fbx.Exporter;
 using UnityEditor.SceneTemplate;
 using UnityEngine;
@@ -24,6 +25,7 @@ public class Finalization : MonoBehaviour
     private Vector3 centerOfBuilding;
     public List<Material> roofMaterials;
     public GameObject customBasePanel;
+    public TMP_InputField ExportFileNameTMPRO;
 
     private void Start()
     {
@@ -122,7 +124,11 @@ public class Finalization : MonoBehaviour
             objects.Add(childGO);
         }
         // Export using Unity's FBX exporter
-        string filePath = Path.Combine(Application.dataPath, "Export.fbx");
+        string fileName = ExportFileNameTMPRO.text;
+        Debug.Log(fileName);
+        if (fileName.Equals("")) fileName = "ExportFacade";
+        fileName += ".fbx";
+        string filePath = Path.Combine(Application.dataPath + "/Exports", fileName);
         ModelExporter.ExportObjects(filePath, objects.ToArray());
         UnityEditor.AssetDatabase.Refresh();
     }
