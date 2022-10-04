@@ -24,3 +24,5 @@ damage and age also seemingly can only handle one affector at a time if doing th
 maybe add functionality to make future objects not spawn on me... like on te grid for example..? idk tho cuz that fucks up labels. hm
 we have to figure out how to scale the noise properly. fuck
 noise sometimes onto non-meshrenderer breaks stuff (e.g. no selection)
+
+line 270 action

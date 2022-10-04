@@ -225,7 +225,10 @@ public class Action : MonoBehaviour
             // Re-assign to parent of selex obj if such object exists
             selexObj = selexObj.ParentCell.GetComponent<Selex>();
         }
-        // Now find all the things being selected by this...?
+        // Now add the things that are just on the object
+        listOfGameObjects.Add(selexObj.AllAttributeSelections);
+        listOfGameObjects.Add(selexObj.AllGroupsSelections);
+        listOfGameObjects.Add(selexObj.AllTopologySelections);
 
         for (int i = 0; i < listOfGameObjects.Count; i++)
         {
@@ -264,6 +267,7 @@ public class Action : MonoBehaviour
     {
         
         // This starts with a single shape as input... Wot. Just assume it starts wth the root for now...?
+        // this is the problem. start point object should not be root. 
         var startpointObject = GameObject.FindWithTag("Root");
             
         var activeDropdownSelection = topologyObject.GetComponent<TMP_Dropdown>();
