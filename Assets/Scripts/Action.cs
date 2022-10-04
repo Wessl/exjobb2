@@ -69,12 +69,12 @@ public class Action : MonoBehaviour
         }
     }
 
-    private void SelectSetAttrib()
+    private void SelectGroup()
     {
         throw new NotImplementedException();
     }
 
-    private void SelectGroup()
+    private void SelectSetAttrib()
     {
         throw new NotImplementedException();
     }
@@ -213,14 +213,20 @@ public class Action : MonoBehaviour
     {
         // start with selecting everything
         _objectSelectionHandler.SelectEverything();
-        var selexObjParent = selectionParent.GetComponent<Selex>();
-        // Now find all the things being selected by this...?
-        var listOfGameObjects = new List<List<GameObject>>()
+        var selexObj = selectionParent.GetComponent<Selex>();
+        var listOfGameObjects = new List<List<GameObject>>();
+        while (selexObj.ParentCell != null)
         {
-            selexObjParent.AllAttributeSelections,
-            selexObjParent.AllGroupsSelections,
-            selexObjParent.AllTopologySelections
-        };
+            var parentCell = selexObj.ParentCell;
+            var parentSelexCell = parentCell.GetComponent<Selex>();
+            listOfGameObjects.Add(parentSelexCell.AllAttributeSelections);
+            listOfGameObjects.Add(parentSelexCell.AllGroupsSelections);
+            listOfGameObjects.Add(parentSelexCell.AllTopologySelections);
+            // Re-assign to parent of selex obj if such object exists
+            selexObj = selexObj.ParentCell.GetComponent<Selex>();
+        }
+        // Now find all the things being selected by this...?
+
         for (int i = 0; i < listOfGameObjects.Count; i++)
         {
             for (int y = 0; y < listOfGameObjects[i].Count; y++)

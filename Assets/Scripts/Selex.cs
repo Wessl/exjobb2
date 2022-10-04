@@ -17,7 +17,7 @@ public class Selex : MonoBehaviour
     [SerializeField] private Button addGroupSButton;
     [SerializeField] private Button addAttrSButton;
 
-    [SerializeField] private GameObject parentCell;
+    [SerializeField] private GameObject parentSelexCell;
 
     private List<GameObject> allTopologySelections = new List<GameObject>();
     public List<GameObject> AllTopologySelections => allTopologySelections;
@@ -28,8 +28,8 @@ public class Selex : MonoBehaviour
 
     public GameObject ParentCell
     {
-        get => parentCell;
-        set => parentCell = value;
+        get => parentSelexCell;
+        set => parentSelexCell = value;
     }
 
     private float usedPanelHeight;                              // Use this to scale the height dynamically
@@ -68,7 +68,6 @@ public class Selex : MonoBehaviour
         // AddPanelHeight(addTopoSButton.GetComponent<RectTransform>().sizeDelta.y);
         // Move down addTopoSButton parent to allow for more buttons...
         addTopoSButton.gameObject.SetActive(false);
-        Debug.Log("did we destroy this?");
         allTopologySelections.Add(newDropdown.gameObject);
     }
 
@@ -130,7 +129,7 @@ public class Selex : MonoBehaviour
         newPanel.transform.SetSiblingIndex(this.transform.GetSiblingIndex()+1);                                // Put into correct hierarchy position
         // Hook up
         connectedChildren.Add(newPanel.GetComponent<Selex>());
-        newPanel.gameObject.GetComponent<Selex>().EnableConnectionToChild(newPanel);
+        newPanel.gameObject.GetComponent<Selex>().ConnectChildToThis(gameObject);
         
     }
 
@@ -146,11 +145,12 @@ public class Selex : MonoBehaviour
     }
 
 
-    public void EnableConnectionToChild(GameObject childSelexPanel)
+    // This will only be called by a parent onto a child when child is created
+    public void ConnectChildToThis(GameObject parentSelexPanel)
     {
         connectionImage.SetActive(true);
-        childSelexPanel.GetComponent<Selex>().ParentCell = this.gameObject;
-        Debug.Log("now hooking up selex panel with id " + childSelexPanel.GetInstanceID() + " as a child to the gameobject with id " + gameObject.GetInstanceID());
+        parentSelexPanel.GetComponent<Selex>().ParentCell = this.gameObject;
+        Debug.Log("now hooking up selex panel with id " + parentSelexPanel.GetInstanceID() + " as a child to the gameobject with id " + gameObject.GetInstanceID());
     }
     
     
