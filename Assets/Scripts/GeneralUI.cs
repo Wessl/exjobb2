@@ -35,7 +35,7 @@ public class GeneralUI : MonoBehaviour
         originalRoot.SetActive(false);
         GameObject.FindObjectOfType<Notification>().SetNotice("Everything deleted!");
         GameObject.FindObjectOfType<SelectionHandler>().SelectRoot();
-        GameObject.FindObjectsOfType<CreateGrid>().ToList().ForEach(o => o.Start());
+        GameObject.FindObjectsOfType<CreateGrid>().ToList().ForEach(o => o.ResetLists());
     }
 
     public void ResetScene()

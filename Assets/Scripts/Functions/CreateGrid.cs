@@ -23,14 +23,20 @@ public class CreateGrid : MonoBehaviour
 
     private List<Tuple<int, string>> labels = new List<Tuple<int, string>>();
 
-    public void Start()
+    private void Start()
     {
+        ResetLists();
         rowsGOList = new List<GameObject>();
         colsGOList = new List<GameObject>();
-        combinedRowsList = new List<Tuple<float, string>>();
-        combinedColsList = new List<Tuple<float, string>>();
         rowsGOList.Add(rowContainer);
         colsGOList.Add(colContainer);
+        
+    }
+
+    public void ResetLists()
+    {
+        combinedRowsList = new List<Tuple<float, string>>();
+        combinedColsList = new List<Tuple<float, string>>();
     }
 
     public void AnotherGridRow()
@@ -91,7 +97,7 @@ public class CreateGrid : MonoBehaviour
                 if (y <= (startPos.y + extent.y))
                 {
                     newObjShapeComponent.GridRows.Add(currRow);
-                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x + extent.x , y ,0), Color.cyan, 150);
+                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x + extent.x , y ,0), Color.cyan, 5);
                 }
                 
             }
@@ -108,7 +114,7 @@ public class CreateGrid : MonoBehaviour
                 if (x <= (startPos.x + extent.x))
                 {
                     newObjShapeComponent.GridCols.Add(currCol);
-                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x,y + extent.y,0), Color.yellow, 150);
+                    Debug.DrawLine(new Vector3(x,y,0), new Vector3(x,y + extent.y,0), Color.yellow, 5);
                 }
             }
             // Now that we have all the knowledge of where grids are, let's actually create the grid components

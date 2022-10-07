@@ -19,11 +19,11 @@ public class Selex : MonoBehaviour
 
     [SerializeField] private GameObject parentSelexCell;
 
-    private List<GameObject> allTopologySelections = new List<GameObject>();
+    [SerializeField]private List<GameObject> allTopologySelections = new List<GameObject>();
     public List<GameObject> AllTopologySelections => allTopologySelections;
-    private List<GameObject> allAttributeSelections = new List<GameObject>();
+    [SerializeField]private List<GameObject> allAttributeSelections = new List<GameObject>();
     public List<GameObject> AllAttributeSelections => allAttributeSelections;
-    private List<GameObject> allGroupsSelections = new List<GameObject>();
+    [SerializeField]private List<GameObject> allGroupsSelections = new List<GameObject>();
     public List<GameObject> AllGroupsSelections => allGroupsSelections;
 
     public GameObject ParentCell

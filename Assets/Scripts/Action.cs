@@ -212,7 +212,7 @@ public class Action : MonoBehaviour
     public void ObtainSelectionData()
     {
         // start with selecting everything
-        // _objectSelectionHandler.SelectEverything();
+        _objectSelectionHandler.SelectRoot();
         var selexObj = selectionParent.GetComponent<Selex>();
         var listOfGameObjects = new List<List<GameObject>>();
         while (selexObj.ParentCell != null)
@@ -221,14 +221,22 @@ public class Action : MonoBehaviour
             var parentSelexCell = parentCell.GetComponent<Selex>();
             listOfGameObjects.Add(parentSelexCell.AllTopologySelections);
             listOfGameObjects.Add(parentSelexCell.AllAttributeSelections);
+            Debug.Log(parentSelexCell.AllAttributeSelections);
             listOfGameObjects.Add(parentSelexCell.AllGroupsSelections);
             
             // Re-assign to parent of selex obj if such object exists
-            selexObj = selexObj.ParentCell.GetComponent<Selex>();
+            if (parentSelexCell.ParentCell)
+            {
+                selexObj = parentSelexCell;
+            }
         }
+        // go back to original selex cell
+        selexObj = selectionParent.GetComponent<Selex>();
         // Now add the things that are just on the object
         listOfGameObjects.Add(selexObj.AllTopologySelections);
         listOfGameObjects.Add(selexObj.AllAttributeSelections);
+        Debug.Log(selexObj.AllAttributeSelections);
+        Debug.Log(selexObj.GetInstanceID());
         listOfGameObjects.Add(selexObj.AllGroupsSelections);
         
 

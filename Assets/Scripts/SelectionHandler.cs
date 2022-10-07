@@ -91,15 +91,15 @@ public class SelectionHandler : MonoBehaviour
         if (labelOperator.Equals("=="))
         {
             // Label is referred to as a list of strings. yeah
-            // this no longer works because ther is no selection in the start. 
+            newSelection.AddRange(currentSelection);
             foreach (var selection in currentSelection)
             {
-                var labels = selection.GetComponent<Shape>().Labels;
-                foreach (var label in labels)
+                var selShape = selection.GetComponent<Shape>();
+                if (!selShape.Labels.Contains(labelValue))
                 {
-                    if (label.Equals(labelValue))
+                    if (newSelection.Contains(selection))
                     {
-                        newSelection.Add(selection);
+                        newSelection.Remove(selection);
                     }
                 }
             }
@@ -113,6 +113,7 @@ public class SelectionHandler : MonoBehaviour
                 {
                     if (newSelection.Contains(selection))
                     {
+                        Debug.Log("removing selection " + selection);
                         newSelection.Remove(selection);
                     }
                 }
