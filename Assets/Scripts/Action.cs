@@ -219,16 +219,18 @@ public class Action : MonoBehaviour
         {
             var parentCell = selexObj.ParentCell;
             var parentSelexCell = parentCell.GetComponent<Selex>();
+            listOfGameObjects.Add(parentSelexCell.AllTopologySelections);
             listOfGameObjects.Add(parentSelexCell.AllAttributeSelections);
             listOfGameObjects.Add(parentSelexCell.AllGroupsSelections);
-            listOfGameObjects.Add(parentSelexCell.AllTopologySelections);
+            
             // Re-assign to parent of selex obj if such object exists
             selexObj = selexObj.ParentCell.GetComponent<Selex>();
         }
         // Now add the things that are just on the object
+        listOfGameObjects.Add(selexObj.AllTopologySelections);
         listOfGameObjects.Add(selexObj.AllAttributeSelections);
         listOfGameObjects.Add(selexObj.AllGroupsSelections);
-        listOfGameObjects.Add(selexObj.AllTopologySelections);
+        
 
         for (int i = 0; i < listOfGameObjects.Count; i++)
         {
