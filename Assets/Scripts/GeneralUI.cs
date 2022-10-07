@@ -30,7 +30,7 @@ public class GeneralUI : MonoBehaviour
         var newRoot = GameObject.FindWithTag("Root");
         Destroy(newRoot);
         originalRoot.SetActive(true);
-        originalRoot = Instantiate(originalRoot, Vector3.zero, Quaternion.identity);
+        Instantiate(originalRoot, Vector3.zero, Quaternion.identity);
         originalRoot.SetActive(false);
         GameObject.FindObjectOfType<Notification>().SetNotice("Everything deleted!");
     }
