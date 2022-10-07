@@ -33,6 +33,7 @@ public class GeneralUI : MonoBehaviour
         Instantiate(originalRoot, Vector3.zero, Quaternion.identity);
         originalRoot.SetActive(false);
         GameObject.FindObjectOfType<Notification>().SetNotice("Everything deleted!");
+        GameObject.FindObjectOfType<SelectionHandler>().SelectRoot();
     }
 
     public void ResetScene()

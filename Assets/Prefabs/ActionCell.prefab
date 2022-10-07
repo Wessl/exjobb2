@@ -17145,7 +17145,6 @@ GameObject:
   - component: {fileID: 6706385703975287059}
   - component: {fileID: 162812739010565310}
   - component: {fileID: 149202835295248000}
-  - component: {fileID: 9160476705435743214}
   m_Layer: 5
   m_Name: Execute Button
   m_TagString: Untagged
@@ -17267,18 +17266,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &9160476705435743214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5430374501058715837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a0f7e45ed9cc884d8a16fcdc702771e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5442324710142413951
 GameObject:
   m_ObjectHideFlags: 0
@@ -26551,6 +26538,12 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Circular Window
       m_Image: {fileID: 0}
+    - m_Text: Rect Window
+      m_Image: {fileID: 0}
+    - m_Text: Rect Rounded Top Window
+      m_Image: {fileID: 0}
+    - m_Text: Orange Facade
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -26625,7 +26618,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4018657601954170004
 RectTransform:
   m_ObjectHideFlags: 0
@@ -26731,6 +26724,9 @@ MonoBehaviour:
   - {fileID: 3907353947241348188, guid: 4f2d2f4a7eb17ab418a764fc0091c78e, type: 3}
   - {fileID: 3033124960215436640, guid: 9b9fc3ab86d09e74199371b99a81ea65, type: 3}
   - {fileID: 171128006951994795, guid: 624b6fb62375e1e4d860dad939cdc113, type: 3}
+  - {fileID: 3113313152340693055, guid: 61fa5d8742f716642ac16edbe0e2b23b, type: 3}
+  - {fileID: 4997051332860240933, guid: e9c784b853e7a4a47ac1f04303f100b8, type: 3}
+  - {fileID: 6958249567839776239, guid: 52d801aa8a483ed4a9511ab2e0c61ce7, type: 3}
   insetXPercent: {fileID: 7729214306450517948}
   insetYPercent: {fileID: 4864796690908502039}
   temporaryMat: {fileID: 2100000, guid: 49583f190b3b8594dbea6875ccff9ab0, type: 2}

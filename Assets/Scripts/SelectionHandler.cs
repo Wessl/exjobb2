@@ -18,9 +18,9 @@ public class SelectionHandler : MonoBehaviour
         SelectRoot();
     }
 
-    private void SelectRoot()
+    public void SelectRoot()
     {
-        currentSelection = new List<GameObject>() {GameObject.FindWithTag("Root")};
+        currentSelection = new List<GameObject>() {this.gameObject};
     }
 
     public void SelectEverything()
@@ -105,11 +105,15 @@ public class SelectionHandler : MonoBehaviour
         }
         else if (labelOperator.Equals("!="))
         {
+            newSelection.AddRange(currentSelection);
             foreach (var selection in currentSelection)
             {
-                if (! selection.name.Equals(labelValue))
+                if (selection.GetComponent<Shape>().Labels.Contains(labelValue))
                 {
-                    newSelection.Add(selection);
+                    if (newSelection.Contains(selection))
+                    {
+                        newSelection.Remove(selection);
+                    }
                 }
             }
         }
