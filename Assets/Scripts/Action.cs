@@ -306,6 +306,7 @@ public class Action : MonoBehaviour
                     // And make sure they are within the input's size/borders
                     break;
                 default:
+                    _objectSelectionHandler.SelectEverything();
                     break; 
             }
 

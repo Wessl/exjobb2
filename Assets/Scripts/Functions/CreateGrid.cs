@@ -23,7 +23,7 @@ public class CreateGrid : MonoBehaviour
 
     private List<Tuple<int, string>> labels = new List<Tuple<int, string>>();
 
-    private void Start()
+    public void Start()
     {
         rowsGOList = new List<GameObject>();
         colsGOList = new List<GameObject>();

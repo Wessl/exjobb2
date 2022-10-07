@@ -91,6 +91,7 @@ public class SelectionHandler : MonoBehaviour
         if (labelOperator.Equals("=="))
         {
             // Label is referred to as a list of strings. yeah
+            // this no longer works because ther is no selection in the start. 
             foreach (var selection in currentSelection)
             {
                 var labels = selection.GetComponent<Shape>().Labels;

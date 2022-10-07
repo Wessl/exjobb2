@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -34,6 +35,7 @@ public class GeneralUI : MonoBehaviour
         originalRoot.SetActive(false);
         GameObject.FindObjectOfType<Notification>().SetNotice("Everything deleted!");
         GameObject.FindObjectOfType<SelectionHandler>().SelectRoot();
+        GameObject.FindObjectsOfType<CreateGrid>().ToList().ForEach(o => o.Start());
     }
 
     public void ResetScene()
