@@ -212,7 +212,7 @@ public class Action : MonoBehaviour
     public void ObtainSelectionData()
     {
         // start with selecting everything
-        _objectSelectionHandler.SelectEverything();
+        // _objectSelectionHandler.SelectEverything();
         var selexObj = selectionParent.GetComponent<Selex>();
         var listOfGameObjects = new List<List<GameObject>>();
         while (selexObj.ParentCell != null)
@@ -267,41 +267,49 @@ public class Action : MonoBehaviour
     {
         
         // This starts with a single shape as input... Wot. Just assume it starts wth the root for now...?
-        // this is the problem. start point object should not be root. 
-        var startpointObject = GameObject.FindWithTag("Root");
-            
-        var activeDropdownSelection = topologyObject.GetComponent<TMP_Dropdown>();
-        if (!activeDropdownSelection) throw new InvalidOperationException("Topology object does not have a TMP Dropdown component attached!");
-        string selectionName = activeDropdownSelection.options[activeDropdownSelection.value].text;
-        
-        var startpointShape = startpointObject.GetComponent<Shape>();
-        List<GameObject> selectedShapes = new List<GameObject>();
-        switch (selectionName)
-        {
-            case "child()":
-                selectedShapes = startpointShape.children;
-                break;
-            case "parent()":
-                selectedShapes.Add(startpointShape.parent);
-                break;
-            case "descendant()":
-                selectedShapes = RecursivelyGetDescendants(startpointShape);
-                break;
-            case "root()":
-                selectedShapes.Add(startpointShape.gameObject);
-                break;
-            case "neighbour()":
-                selectedShapes = startpointShape.neighbours;
-                break;
-            case "contained()":
-                // This will essentially have to check the borders of every gameObject under root
-                // And make sure they are within the input's size/borders
-                break;
-            default:
-                break; 
-        }
+        var startpointObjects = new List<GameObject>();
+        startpointObjects.AddRange(_objectSelectionHandler.currentSelection);
 
-        _objectSelectionHandler.currentSelection = selectedShapes;
+        foreach (var startpointObject in startpointObjects)
+        {
+            var activeDropdownSelection = topologyObject.GetComponent<TMP_Dropdown>();
+            if (!activeDropdownSelection) throw new InvalidOperationException("Topology object does not have a TMP Dropdown component attached!");
+            string selectionName = activeDropdownSelection.options[activeDropdownSelection.value].text;
+        
+            var startpointShape = startpointObject.GetComponent<Shape>();
+            List<GameObject> selectedShapes = new List<GameObject>();
+            switch (selectionName)
+            {
+                case "child()":
+                    _objectSelectionHandler.currentSelection.Remove(startpointObject);
+                    selectedShapes = startpointShape.children;
+                    break;
+                case "parent()":
+                    _objectSelectionHandler.currentSelection.Remove(startpointObject);
+                    selectedShapes.Add(startpointShape.parent);
+                    break;
+                case "descendant()":
+                    _objectSelectionHandler.currentSelection.Remove(startpointObject);
+                    selectedShapes = RecursivelyGetDescendants(startpointShape);
+                    break;
+                case "root()":
+                    selectedShapes.Add(GameObject.FindWithTag("Root"));
+                    break;
+                case "neighbour()":
+                    _objectSelectionHandler.currentSelection.Remove(startpointObject);
+                    selectedShapes = startpointShape.neighbours;
+                    break;
+                case "contained()":
+                    // This will essentially have to check the borders of every gameObject under root
+                    // And make sure they are within the input's size/borders
+                    break;
+                default:
+                    break; 
+            }
+
+            _objectSelectionHandler.currentSelection.AddRange(selectedShapes);
+        }
+        
     }
 
     private List<GameObject> RecursivelyGetDescendants(Shape shape)

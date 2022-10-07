@@ -14,7 +14,13 @@ public class SelectionHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SelectEverything();
+        //SelectEverything();
+        SelectRoot();
+    }
+
+    private void SelectRoot()
+    {
+        currentSelection = new List<GameObject>() {GameObject.FindWithTag("Root")};
     }
 
     public void SelectEverything()

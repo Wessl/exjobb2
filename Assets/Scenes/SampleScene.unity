@@ -1128,7 +1128,7 @@ GameObject:
   - component: {fileID: 484080755}
   - component: {fileID: 484080756}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: pipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1824,7 +1824,7 @@ GameObject:
   - component: {fileID: 683471724}
   - component: {fileID: 683471725}
   m_Layer: 0
-  m_Name: GameObject (2)
+  m_Name: pipe 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2440,7 +2440,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 1121163941}
   children:
-  - {fileID: 0}
+  - {fileID: 683471723}
+  - {fileID: 1546949910}
+  - {fileID: 484080754}
+  - {fileID: 419058177}
+  - {fileID: 1643216064}
+  - {fileID: 142315579}
   neighbours:
   - {fileID: 904002929}
   tileMaterial: 0
@@ -4321,7 +4326,7 @@ GameObject:
   - component: {fileID: 1546949911}
   - component: {fileID: 1546949912}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: pipe 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

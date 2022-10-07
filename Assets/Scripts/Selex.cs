@@ -149,7 +149,7 @@ public class Selex : MonoBehaviour
     public void ConnectChildToThis(GameObject parentSelexPanel)
     {
         connectionImage.SetActive(true);
-        parentSelexPanel.GetComponent<Selex>().ParentCell = this.gameObject;
+        gameObject.GetComponent<Selex>().ParentCell = parentSelexPanel;
         Debug.Log("now hooking up selex panel with id " + parentSelexPanel.GetInstanceID() + " as a child to the gameobject with id " + gameObject.GetInstanceID());
     }
     
