@@ -165,12 +165,16 @@ public class DamageAndAge : MonoBehaviour
 
     private void ApplyTextureMaskingMaterial(GameObject selected)
     {
-        // Give the material the correct original texture
-        textureMaskMat.SetTexture("_OriginalTexture", selected.GetComponent<MeshRenderer>().material.mainTexture);
+        // Get the material used by the selected object
+        var currMat = selected.GetComponent<MeshRenderer>().material;
+        // Give the material the correct original texture & color (i don't think you can just replace the material cuz the shader used for the masking material is unique)
+        textureMaskMat.SetTexture("_OriginalTexture", currMat.mainTexture);
+        textureMaskMat.color = currMat.color;
         // Find out what kind of texture we working with? Like, rust or impact or smth? 
         var dropdownOpt = damageAgeTypeMats[damageAgeType.value-1];
         Debug.Log("tryin to set this texture: " + dropdownOpt.mainTexture.name);
         textureMaskMat.SetTexture("_TextureToApply", dropdownOpt.mainTexture);
+
         Debug.Log("after " + textureMaskMat.GetTexture("_TextureToApply"));
         selected.GetComponent<MeshRenderer>().material = textureMaskMat;
     }
