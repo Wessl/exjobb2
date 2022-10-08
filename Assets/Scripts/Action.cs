@@ -225,10 +225,8 @@ public class Action : MonoBehaviour
             listOfGameObjects.Add(parentSelexCell.AllGroupsSelections);
             
             // Re-assign to parent of selex obj if such object exists
-            if (parentSelexCell.ParentCell)
-            {
-                selexObj = parentSelexCell;
-            }
+            selexObj = parentSelexCell;
+            
         }
         // go back to original selex cell
         selexObj = selectionParent.GetComponent<Selex>();
