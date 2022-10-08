@@ -114,7 +114,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureToApply:
-        m_Texture: {fileID: 2800000, guid: 973079446b4599d45b3c5683e09f706b, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2a91eaa3f76afcd419444c714d28a109, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ThicknessMap:

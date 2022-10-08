@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8524355231730386112}
   - component: {fileID: 3010881008716984349}
   - component: {fileID: 346539123711959380}
+  - component: {fileID: 2203415072152723335}
   m_Layer: 0
   m_Name: signboard
   m_TagString: Untagged
@@ -82,3 +83,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2203415072152723335
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8782911747130204825}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5.1791315, y: 4.5006065, z: 0.27670288}
+  m_Center: {x: -2.5895658, y: 0, z: 0}
