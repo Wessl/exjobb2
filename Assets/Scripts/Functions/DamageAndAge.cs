@@ -88,7 +88,6 @@ public class DamageAndAge : MonoBehaviour
     private Texture2D ApplyAngleModifier(Texture2D tex, int width, int height)
     {
         var angle = new Vector2(float.Parse(vectorModX.text != "" ? vectorModX.text : "0" , CultureInfo.InvariantCulture), float.Parse(vectorModY.text != "" ? vectorModY.text : "0", CultureInfo.InvariantCulture ));
-        Debug.Log("angle mag: " + angle.magnitude);
         if (angle.magnitude <= float.Epsilon ) return tex;
         var largestSmallest = LargestSmallestOfPicture(tex);
         Vector2 startXY = FindStartXY(angle, tex, largestSmallest);
@@ -98,7 +97,7 @@ public class DamageAndAge : MonoBehaviour
         Vector2 ranges = new Vector2(Mathf.FloorToInt(Mathf.Abs(largest.x - smallest.x)), Mathf.FloorToInt(Mathf.Abs(largest.y - smallest.y)));
         
         Texture2D newDirTex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0));
-        Vector2 currentPixel = new Vector2 (Mathf.FloorToInt(startXY.x),  Mathf.FloorToInt(startXY.y));
+        Vector2 currentPixel = new Vector2 (Mathf.FloorToInt(smallest.x),  Mathf.FloorToInt(startXY.y));
         // Fill along X
         Color[] newDirTexPixels = new Color[height * width];
         if (Math.Abs(angle.y) > 0)
@@ -107,8 +106,8 @@ public class DamageAndAge : MonoBehaviour
             {   
                 for (int x = 0; x < ranges.x; x++)
                 {   
-                    if (currentPixel.x >= width) continue;
-                    if (currentPixel.y >= height) continue;
+                    if (currentPixel.x >= width || currentPixel.x < 0) continue;
+                    if (currentPixel.y >= height || currentPixel.y < 0) continue;
                     newDirTexPixels[Mathf.FloorToInt(currentPixel.x) + height * Mathf.FloorToInt(currentPixel.y)] = Color.white;
                     currentPixel.x += 1;
                 }
@@ -125,8 +124,8 @@ public class DamageAndAge : MonoBehaviour
             {   
                 for (int y = 0; y < ranges.y; y++)
                 {   
-                    if (currentPixel.x >= width) continue;
-                    if (currentPixel.y >= height) continue;
+                    if (currentPixel.x >= width || currentPixel.x < 0) continue;
+                    if (currentPixel.y >= height || currentPixel.y < 0) continue;
                     newDirTexPixels[Mathf.FloorToInt(currentPixel.x) + height * Mathf.FloorToInt(currentPixel.y)] = Color.white;
                     currentPixel.y += 1;
                 }
@@ -246,7 +245,7 @@ public class DamageAndAge : MonoBehaviour
     {
         Texture2D dest = new Texture2D(tex.width, tex.height, TextureFormat.Alpha8, false);
         dest.alphaIsTransparency = true;
-        int spreadDivisor = 32;  // Determines how far out the SDF will "grow". e.g. img size of 128 pixels and spreadDivisor of 4 => approx 30 pixels spread.
+        int spreadDivisor = 16;  // Determines how far out the SDF will "grow". e.g. img size of 128 pixels and spreadDivisor of 4 => approx 30 pixels spread.
         SDFTextureGenerator.Generate(tex, dest, 0, (int)(width/spreadDivisor), (int)(height/spreadDivisor), RGBFillMode.Source);
         dest.Apply();
         DrawTextureIntoImage(dest, "image2");
@@ -306,7 +305,6 @@ public class DamageAndAge : MonoBehaviour
         GameObject root = GameObject.FindWithTag("Root");
         List<GameObject> foundObjects = new List<GameObject>();
         var rootChildren = root.GetComponentsInChildren<Shape>();
-        Debug.Log("how many rootchildren? " +rootChildren.Length);
         foreach (var rootChild in rootChildren)
         {
             var labels = rootChild.GetComponent<Shape>()?.Labels;
@@ -336,7 +334,6 @@ public class DamageAndAge : MonoBehaviour
         var texture = new Texture2D(width, height, textureFormat, mipChain);
         // Set colors alpha value to be 1 if black 0 if white?? yezzzzz
         Color[] pixels = Enumerable.Repeat(color, width * height).ToArray();
-        Debug.Log("What is the default alpha value? " + pixels[0]);
         texture.SetPixels(pixels);
         texture.Apply();
         return texture;

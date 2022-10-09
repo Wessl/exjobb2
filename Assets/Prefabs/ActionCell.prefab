@@ -16380,6 +16380,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 8f8fd0387ac92b04da7aed4f7c7a408b, type: 2}
   - {fileID: 2100000, guid: 31114d30cee0012469f430cae820ad75, type: 2}
   - {fileID: 2100000, guid: 1609c380d8b41aa44ae79ba6ae6b2745, type: 2}
+  - {fileID: 2100000, guid: b3171f6ce97b80a41b7a2965133d4df9, type: 2}
+  - {fileID: 2100000, guid: 9fce8c3b76bd2884ba77b62dc6b871ef, type: 2}
   noiseModifier: {fileID: 3185417359890362120}
   densityPercent: {fileID: 4933272853336173508}
   vectorModX: {fileID: 3307960297638053812}
@@ -19681,6 +19683,10 @@ MonoBehaviour:
     - m_Text: Patina
       m_Image: {fileID: 0}
     - m_Text: Moss
+      m_Image: {fileID: 0}
+    - m_Text: AbstractCircle
+      m_Image: {fileID: 0}
+    - m_Text: Straight orange
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
