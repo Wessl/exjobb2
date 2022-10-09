@@ -34,14 +34,23 @@ public class DamageAndAge : MonoBehaviour
             
             // 1. Find out if we are going to use any other objects as helpers (i.e. a window)
             List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helperLabel.text);
-            Texture2D tex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0) ); //make it work for when not selecting sample source object too
-            foreach (var sampleSourceObject in sampleSourceObjects)
+            Texture2D tex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0) );
+            if (sampleSourceObjects.Count > 0)
             {
-                Texture2D tempTex = CreateTextureMaskBase(selected, sampleSourceObject, width, height);
-                // 1.5 Apply angle modification
-                tempTex = ApplyAngleModifier(tempTex, width, height);
-                tex = CopyPixelsIntoTex2D(tex, tempTex, height, width);
+                foreach (var sampleSourceObject in sampleSourceObjects)
+                {
+                    Texture2D tempTex = CreateTextureMaskBase(selected, sampleSourceObject, width, height);
+                    // 1.5 Apply angle modification
+                    tempTex = ApplyAngleModifier(tempTex, width, height);
+                    tex = CopyPixelsIntoTex2D(tex, tempTex, height, width);
+                }
             }
+            else
+            {
+                // If a source helper object is not being used, simply fill the texture with white
+                tex = CreateSingleColorTexture2D(width, height, TextureFormat.RGB24, false, new Color(1,1,1,0));
+            }
+            
             // 2. Once we have the texture to operate on, start by expanding it (signed distance field)
             tex = ApplySDFToTexture(tex, width, height);
             // 3. Apply random noise to it
