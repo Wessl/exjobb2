@@ -34,7 +34,7 @@ public class DamageAndAge : MonoBehaviour
             
             // 1. Find out if we are going to use any other objects as helpers (i.e. a window)
             List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helperLabel.text);
-            Texture2D tex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0) );
+            Texture2D tex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0) ); //make it work for when not selecting sample source object too
             foreach (var sampleSourceObject in sampleSourceObjects)
             {
                 Texture2D tempTex = CreateTextureMaskBase(selected, sampleSourceObject, width, height);
@@ -61,8 +61,7 @@ public class DamageAndAge : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
-                int index = y * height + x;
-                pixelsToMark[index] += (copySourcePixels[index] + targetPixels[index]);
+                pixelsToMark[y * height + x] += (copySourcePixels[y * height + x] + targetPixels[y * height + x]);
             }
         }
         target.SetPixels(pixelsToMark);
@@ -91,6 +90,7 @@ public class DamageAndAge : MonoBehaviour
         Texture2D newDirTex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0));
         Vector2 currentPixel = new Vector2 (Mathf.FloorToInt(startXY.x),  Mathf.FloorToInt(startXY.y));
         // Fill along X
+        Color[] newDirTexPixels = new Color[height * width];
         if (Math.Abs(angle.y) > 0)
         {
             for (int y = 0; y < ranges.y; y++)
@@ -99,7 +99,7 @@ public class DamageAndAge : MonoBehaviour
                 {   
                     if (currentPixel.x >= width) continue;
                     if (currentPixel.y >= height) continue;
-                    newDirTex.SetPixel(Mathf.FloorToInt(currentPixel.x), Mathf.FloorToInt(currentPixel.y), Color.white);
+                    newDirTexPixels[Mathf.FloorToInt(currentPixel.x) + height * Mathf.FloorToInt(currentPixel.y)] = Color.white;
                     currentPixel.x += 1;
                 }
                 currentPixel.y += angle.y;
@@ -117,18 +117,16 @@ public class DamageAndAge : MonoBehaviour
                 {   
                     if (currentPixel.x >= width) continue;
                     if (currentPixel.y >= height) continue;
-                    newDirTex.SetPixel(Mathf.FloorToInt(currentPixel.x), Mathf.FloorToInt(currentPixel.y), Color.white);
+                    newDirTexPixels[Mathf.FloorToInt(currentPixel.x) + height * Mathf.FloorToInt(currentPixel.y)] = Color.white;
                     currentPixel.y += 1;
                 }
                 currentPixel.x += angle.x;
                 currentPixel.y = smallest.y + angle.y * x;
             }
         }
-        
-        
-        Debug.Log("drawing texture now");
+        newDirTex.SetPixels(newDirTexPixels);
         newDirTex.Apply();
-        DrawTextureIntoImage(newDirTex, "directionTextureTest");
+        // DrawTextureIntoImage(newDirTex, "directionTextureTest");
         return newDirTex;
     }
 
@@ -198,10 +196,8 @@ public class DamageAndAge : MonoBehaviour
         textureMaskMat.color = currMat.color;
         // Find out what kind of texture we working with? Like, rust or impact or smth? 
         var dropdownOpt = damageAgeTypeMats[damageAgeType.value-1];
-        Debug.Log("tryin to set this texture: " + dropdownOpt.mainTexture.name);
         textureMaskMat.SetTexture("_TextureToApply", dropdownOpt.mainTexture);
 
-        Debug.Log("after " + textureMaskMat.GetTexture("_TextureToApply"));
         selected.GetComponent<MeshRenderer>().material = textureMaskMat;
     }
 
@@ -262,17 +258,18 @@ public class DamageAndAge : MonoBehaviour
             // Get the start position of where you should be stepping in world space (it makes sense)
             Vector2 currStep = new Vector2(selectedObject.transform.position.x - selectedObject.GetComponent<Shape>().SizeExent.x/2, selectedObject.transform.position.y - selectedObject.GetComponent<Shape>().SizeExent.y/2);
             Color[] pixelsToMark = new Color[height*width];
+            RaycastHit[] hitResults = new RaycastHit[16];
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     // Shoot out a ray from each point of the thing in the negative Z, towards camera. if we collide with one of the allowed objs, mark the pixel 
-                    RaycastHit[] hits = Physics.RaycastAll(new Vector3(currStep.x, currStep.y, 1), -Vector3.forward, 100);
-                    
-                    foreach (var hit in hits)
+                    int hits = Physics.RaycastNonAlloc(new Vector3(currStep.x, currStep.y, 1), -Vector3.forward,hitResults, 100);
+                    for (int i = 0; i < hits; i++)
                     {
-                        if (sampleHelperObj == hit.transform.gameObject)
+                        if (sampleHelperObj == hitResults[i].transform.gameObject)
                         {
                             // Set the color to white to begin a mask of where windows are
                             pixelsToMark[height * y + x] = Color.white;
+                            break;
                         }
                     }
                     currStep.x += stepDist.x;
@@ -284,8 +281,6 @@ public class DamageAndAge : MonoBehaviour
             backgroundTex.SetPixels(pixelsToMark);
             // Save texture to disk (maybe not necessary in the end, but really good for debugging purposes)
             backgroundTex.Apply();
-            DrawTextureIntoImage(backgroundTex, "image");
-
             return backgroundTex;
         }
         else
