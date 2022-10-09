@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using CatlikeCoding.SDFToolkit;
@@ -86,7 +87,7 @@ public class DamageAndAge : MonoBehaviour
      */
     private Texture2D ApplyAngleModifier(Texture2D tex, int width, int height)
     {
-        var angle = new Vector2(float.Parse(vectorModX.text != "" ? vectorModX.text : "0" ), float.Parse(vectorModY.text != "" ? vectorModY.text : "0" ));
+        var angle = new Vector2(float.Parse(vectorModX.text != "" ? vectorModX.text : "0" , CultureInfo.InvariantCulture), float.Parse(vectorModY.text != "" ? vectorModY.text : "0", CultureInfo.InvariantCulture ));
         Debug.Log("angle mag: " + angle.magnitude);
         if (angle.magnitude <= float.Epsilon ) return tex;
         var largestSmallest = LargestSmallestOfPicture(tex);
@@ -214,7 +215,7 @@ public class DamageAndAge : MonoBehaviour
     {
         // First check what kind of noise we want (or if we want any at all)
         var noise = noiseModifier.options[noiseModifier.value].text;
-        var scale = float.Parse(noiseScaleIF.text != "" ? noiseScaleIF.text : defaultNoiseScale.ToString());
+        var scale = float.Parse(noiseScaleIF.text != "" ? noiseScaleIF.text : defaultNoiseScale.ToString(), CultureInfo.InvariantCulture);
         switch (noise)
         {
             case "Perlin":
@@ -245,7 +246,7 @@ public class DamageAndAge : MonoBehaviour
     {
         Texture2D dest = new Texture2D(tex.width, tex.height, TextureFormat.Alpha8, false);
         dest.alphaIsTransparency = true;
-        int spreadDivisor = 8;  // Determines how far out the SDF will "grow". e.g. img size of 128 pixels and spreadDivisor of 4 => approx 30 pixels spread.
+        int spreadDivisor = 32;  // Determines how far out the SDF will "grow". e.g. img size of 128 pixels and spreadDivisor of 4 => approx 30 pixels spread.
         SDFTextureGenerator.Generate(tex, dest, 0, (int)(width/spreadDivisor), (int)(height/spreadDivisor), RGBFillMode.Source);
         dest.Apply();
         DrawTextureIntoImage(dest, "image2");

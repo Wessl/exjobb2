@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -138,7 +139,7 @@ public class DrawOnCanvas : MonoBehaviour
         var scaleFactor = 1f;
         if (scaleFactorInputField.text != "")
         {
-            scaleFactor = float.Parse(scaleFactorInputField.text);
+            scaleFactor = float.Parse(scaleFactorInputField.text, CultureInfo.InvariantCulture);
         }
         lengthTooltip.text = (distance * scaleFactor/ sizeDelta.x).ToString("0.00");
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UI;
@@ -86,10 +87,10 @@ public class AddShape : MonoBehaviour
     private void SpawnExistingMesh(GameObject parentObj, GameObject activeMesh, List<GameObject> newlySelected, Shape.ShapeType shapeType)
     {
         // Parse numerical values from strings
-        float width = float.Parse((inputWidth.text != "" ? inputWidth.text : "0"));
-        float height = float.Parse((inputHeight.text != "" ? inputHeight.text : "0"));
-        float cx = float.Parse(centerX.text) + parentObj.transform.position.x;
-        float cy = float.Parse(centerY.text) + parentObj.transform.position.y;
+        float width = float.Parse((inputWidth.text != "" ? inputWidth.text : "0"), CultureInfo.InvariantCulture);
+        float height = float.Parse((inputHeight.text != "" ? inputHeight.text : "0"), CultureInfo.InvariantCulture);
+        float cx = float.Parse(centerX.text, CultureInfo.InvariantCulture) + parentObj.transform.position.x;
+        float cy = float.Parse(centerY.text, CultureInfo.InvariantCulture) + parentObj.transform.position.y;
         GameObject newShape;
         Vector2 parentSizeExtent = Vector2.one;
         if (shapeType == Shape.ShapeType.Construction)
@@ -128,8 +129,8 @@ public class AddShape : MonoBehaviour
         // Potential bug waiting to happen... completely flat object on one axis will cause error
         if (scaleAgainstParentToggle.isOn)  // Use parent scale and inset % to give size of objects 
         {
-            var insetX = float.Parse(insetXPercent.text);
-            var insetY = float.Parse(insetYPercent.text);
+            var insetX = float.Parse(insetXPercent.text, CultureInfo.InvariantCulture);
+            var insetY = float.Parse(insetYPercent.text, CultureInfo.InvariantCulture);
             
             var newSizeExtent = parentSizeExtent * ( new Vector2(1 - insetX * 0.01f, 1 - insetY * 0.01f) ) ;
             if (parentOGShapeType == Shape.ShapeType.Virtual)
@@ -156,10 +157,10 @@ public class AddShape : MonoBehaviour
         Debug.Log("You tried creating a mesh out of thin air - this feature is deprecated.");
         Mesh mesh = new Mesh();
         // First parse numbers from strings
-        float width = float.Parse(inputWidth.text);
-        float height = float.Parse(inputHeight.text);
-        float cx = float.Parse(centerX.text) + parentObj.transform.position.x + width/2;
-        float cy = float.Parse(centerY.text) + parentObj.transform.position.y + height/2;
+        float width = float.Parse(inputWidth.text, CultureInfo.InvariantCulture);
+        float height = float.Parse(inputHeight.text, CultureInfo.InvariantCulture);
+        float cx = float.Parse(centerX.text, CultureInfo.InvariantCulture) + parentObj.transform.position.x + width/2;
+        float cy = float.Parse(centerY.text, CultureInfo.InvariantCulture) + parentObj.transform.position.y + height/2;
         // Just create a quad
         Vector3[] vertices = new Vector3[4]
         {

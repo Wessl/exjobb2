@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -228,7 +229,7 @@ public class CreateGrid : MonoBehaviour
                     string otherInputField = inputFields[(i + 1) % (inputFields.Length)].text;
                     foreach (var column in cols)
                     {
-                        var colValLabel = new Tuple<float, string>(float.Parse(column), otherInputField);   // value, label
+                        var colValLabel = new Tuple<float, string>(float.Parse(column, CultureInfo.InvariantCulture), otherInputField);   // value, label
                         if (combinedColsList.Count > 0)
                         {
                             // Do a float comparison of previous number to make sure we don't add two iidentical grid parts
@@ -259,7 +260,7 @@ public class CreateGrid : MonoBehaviour
                     string otherInputField = inputFields[(i + 1) % (inputFields.Length)].text;
                     foreach (var row in rows)
                     {
-                        var rowValLabel = new Tuple<float, string>(float.Parse(row), otherInputField);
+                        var rowValLabel = new Tuple<float, string>(float.Parse(row, CultureInfo.InvariantCulture), otherInputField);
                         if (combinedRowsList.Count > 0)
                         {
                             // Do a float comparison of previous number to make sure we don't add two iidentical grid parts

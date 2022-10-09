@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using TMPro;
@@ -15,8 +16,8 @@ public class ScaleByImage : MonoBehaviour
 
     public void Execute(SelectionHandler selectionHandler)
     {
-        var lower = float.Parse(lowerBound.text);
-        var higher = float.Parse(upperBound.text);
+        var lower = float.Parse(lowerBound.text, CultureInfo.InvariantCulture);
+        var higher = float.Parse(upperBound.text, CultureInfo.InvariantCulture);
         string path = "Assets/" + selectFileInputField.text;
         
         Texture2D texture = new Texture2D(512, 512);
