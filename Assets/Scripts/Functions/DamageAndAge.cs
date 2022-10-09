@@ -7,6 +7,7 @@ using CatlikeCoding.SDFToolkit;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using Random = System.Random;
 
 public class DamageAndAge : MonoBehaviour
 {
@@ -30,10 +31,17 @@ public class DamageAndAge : MonoBehaviour
         int width = 1024, height = 1024;
         foreach (var selected in currentlySelected)
         {  
+            
             // 1. Find out if we are going to use any other objects as helpers (i.e. a window)
-            Texture2D tex = CreateTextureMaskBase(selected, width, height);
-            // 1.5 Apply angle modification
-            tex = ApplyAngleModifier(tex, width, height);
+            List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helperLabel.text);
+            Texture2D tex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0) );
+            foreach (var sampleSourceObject in sampleSourceObjects)
+            {
+                Texture2D tempTex = CreateTextureMaskBase(selected, sampleSourceObject, width, height);
+                // 1.5 Apply angle modification
+                tempTex = ApplyAngleModifier(tempTex, width, height);
+                tex = CopyPixelsIntoTex2D(tex, tempTex, height, width);
+            }
             // 2. Once we have the texture to operate on, start by expanding it (signed distance field)
             tex = ApplySDFToTexture(tex, width, height);
             // 3. Apply random noise to it
@@ -41,6 +49,24 @@ public class DamageAndAge : MonoBehaviour
             // 4. Texture mask that shit
             ApplyTextureMaskingMaterial(selected);
         }
+    }
+
+    Texture2D CopyPixelsIntoTex2D(Texture2D target, Texture2D copySource, int height, int width)
+    {
+        // We don't want to overwrite the old pixels in target
+        Color[] pixelsToMark = new Color[height*width];
+        Color[] copySourcePixels = copySource.GetPixels();
+        Color[] targetPixels = target.GetPixels();
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int index = y * height + x;
+                pixelsToMark[index] += (copySourcePixels[index] + targetPixels[index]);
+            }
+        }
+        target.SetPixels(pixelsToMark);
+        return target;
     }
 
     /*
@@ -63,7 +89,7 @@ public class DamageAndAge : MonoBehaviour
         Vector2 ranges = new Vector2(Mathf.FloorToInt(Mathf.Abs(largest.x - smallest.x)), Mathf.FloorToInt(Mathf.Abs(largest.y - smallest.y)));
         
         Texture2D newDirTex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0));
-        Vector2 currentPixel = new Vector2 (Mathf.FloorToInt(smallest.x),  Mathf.FloorToInt(startXY.y));
+        Vector2 currentPixel = new Vector2 (Mathf.FloorToInt(startXY.x),  Mathf.FloorToInt(startXY.y));
         // Fill along X
         if (Math.Abs(angle.y) > 0)
         {
@@ -221,7 +247,7 @@ public class DamageAndAge : MonoBehaviour
         return dest;
     }
 
-    private Texture2D CreateTextureMaskBase(GameObject selectedObject, int width, int height)
+    private Texture2D CreateTextureMaskBase(GameObject selectedObject, GameObject sampleHelperObj, int width, int height)
     {
         // 1. Set up texture
         var helpLabelText = helperLabel.text;
@@ -230,12 +256,12 @@ public class DamageAndAge : MonoBehaviour
             // Create a new background of black (representing nothing), with alpha channel also set to 0 (needed to fill SDF texture later)
             Texture2D backgroundTex = CreateSingleColorTexture2D(width, height, TextureFormat.Alpha8, false, new Color(0,0,0,0));
             // There is probably something to sample. Check if anything has the correct label
-            List<GameObject> sampleSourceObjects = GetSampleSourceObjects(helpLabelText);
+            
             var stepDist = selectedObject.GetComponent<Shape>().SizeExent / new Vector2(width, height);
             
             // Get the start position of where you should be stepping in world space (it makes sense)
             Vector2 currStep = new Vector2(selectedObject.transform.position.x - selectedObject.GetComponent<Shape>().SizeExent.x/2, selectedObject.transform.position.y - selectedObject.GetComponent<Shape>().SizeExent.y/2);
-            
+            Color[] pixelsToMark = new Color[height*width];
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     // Shoot out a ray from each point of the thing in the negative Z, towards camera. if we collide with one of the allowed objs, mark the pixel 
@@ -243,10 +269,10 @@ public class DamageAndAge : MonoBehaviour
                     
                     foreach (var hit in hits)
                     {
-                        if (sampleSourceObjects.Contains(hit.transform.gameObject))
+                        if (sampleHelperObj == hit.transform.gameObject)
                         {
                             // Set the color to white to begin a mask of where windows are
-                            backgroundTex.SetPixel(x,y,Color.white);    
+                            pixelsToMark[height * y + x] = Color.white;
                         }
                     }
                     currStep.x += stepDist.x;
@@ -255,7 +281,8 @@ public class DamageAndAge : MonoBehaviour
                 currStep.x = selectedObject.transform.position.x - selectedObject.GetComponent<Shape>().SizeExent.x/2; 
                 currStep.y += stepDist.y;
             }
-            // Save texture to disk (maybe not necessary in the end, but really good for debugging purposes
+            backgroundTex.SetPixels(pixelsToMark);
+            // Save texture to disk (maybe not necessary in the end, but really good for debugging purposes)
             backgroundTex.Apply();
             DrawTextureIntoImage(backgroundTex, "image");
 
