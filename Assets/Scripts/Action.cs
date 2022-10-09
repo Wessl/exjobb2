@@ -219,22 +219,20 @@ public class Action : MonoBehaviour
         {
             var parentCell = selexObj.ParentCell;
             var parentSelexCell = parentCell.GetComponent<Selex>();
-            listOfGameObjects.Add(parentSelexCell.AllTopologySelections);
             listOfGameObjects.Add(parentSelexCell.AllAttributeSelections);
-            Debug.Log(parentSelexCell.AllAttributeSelections);
+            listOfGameObjects.Add(parentSelexCell.AllTopologySelections);
             listOfGameObjects.Add(parentSelexCell.AllGroupsSelections);
             
             // Re-assign to parent of selex obj if such object exists
             selexObj = parentSelexCell;
-            
         }
+        // Reverse the list thus far in order to get the correct selection ordering 
+        listOfGameObjects.Reverse();
         // go back to original selex cell
         selexObj = selectionParent.GetComponent<Selex>();
         // Now add the things that are just on the object
         listOfGameObjects.Add(selexObj.AllTopologySelections);
         listOfGameObjects.Add(selexObj.AllAttributeSelections);
-        Debug.Log(selexObj.AllAttributeSelections);
-        Debug.Log(selexObj.GetInstanceID());
         listOfGameObjects.Add(selexObj.AllGroupsSelections);
         
 
