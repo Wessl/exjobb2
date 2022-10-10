@@ -26553,6 +26553,8 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Orange Facade
       m_Image: {fileID: 0}
+    - m_Text: Dark windowsill
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -26736,6 +26738,7 @@ MonoBehaviour:
   - {fileID: 3113313152340693055, guid: 61fa5d8742f716642ac16edbe0e2b23b, type: 3}
   - {fileID: 3953776723844413948, guid: d7925caf644c78b428a1b702989da809, type: 3}
   - {fileID: 6958249567839776239, guid: 52d801aa8a483ed4a9511ab2e0c61ce7, type: 3}
+  - {fileID: 6233405129902173460, guid: a76a7cb94623edf47b2d26e35862f057, type: 3}
   insetXPercent: {fileID: 7729214306450517948}
   insetYPercent: {fileID: 4864796690908502039}
   temporaryMat: {fileID: 2100000, guid: 49583f190b3b8594dbea6875ccff9ab0, type: 2}

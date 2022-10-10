@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 21f52d86e029dab4b96a0116f8278899, type: 2}
+  - {fileID: 2100000, guid: 9a975a4783d2bec40a76cd87518dde8d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 6758302547265124270}
   - component: {fileID: 1312038607895840256}
   m_Layer: 0
-  m_Name: windowsill basic
+  m_Name: windowsill_dark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,7 +107,7 @@ Transform:
   m_GameObject: {fileID: 6233405129902173460}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0.4}
+  m_LocalScale: {x: 1, y: 1, z: 0.3}
   m_Children:
   - {fileID: 7618954559681457355}
   m_Father: {fileID: 0}
