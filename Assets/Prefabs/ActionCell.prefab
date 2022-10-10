@@ -16382,6 +16382,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 1609c380d8b41aa44ae79ba6ae6b2745, type: 2}
   - {fileID: 2100000, guid: b3171f6ce97b80a41b7a2965133d4df9, type: 2}
   - {fileID: 2100000, guid: 9fce8c3b76bd2884ba77b62dc6b871ef, type: 2}
+  - {fileID: 2100000, guid: e105fd6c0f5cf904699133a84165c886, type: 2}
   noiseModifier: {fileID: 3185417359890362120}
   densityPercent: {fileID: 4933272853336173508}
   vectorModX: {fileID: 3307960297638053812}
@@ -19687,6 +19688,8 @@ MonoBehaviour:
     - m_Text: AbstractCircle
       m_Image: {fileID: 0}
     - m_Text: Straight orange
+      m_Image: {fileID: 0}
+    - m_Text: Cracks
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -26725,7 +26728,7 @@ MonoBehaviour:
   - {fileID: 4305179797465504066, guid: d019f91891b8b14498fd585110bd2e00, type: 3}
   - {fileID: 6982009632325493522, guid: 2eb103e0fabc15549855fc8da6a7b5cc, type: 3}
   - {fileID: 6504361742570850935, guid: 157022afc1a8d4446ab47ea47fc89023, type: 3}
-  - {fileID: 7752956462510493495, guid: 8f93885c50771334c9621d494a8f1549, type: 3}
+  - {fileID: 7244054048381401717, guid: d7bc4b44aa3007742863a55c0aab6c6d, type: 3}
   - {fileID: 905482637609979376, guid: e4b4e8a1eaab7684b8a582f48a446528, type: 3}
   - {fileID: 3907353947241348188, guid: 4f2d2f4a7eb17ab418a764fc0091c78e, type: 3}
   - {fileID: 3033124960215436640, guid: 9b9fc3ab86d09e74199371b99a81ea65, type: 3}
