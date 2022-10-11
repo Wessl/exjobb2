@@ -267,11 +267,11 @@ public class DamageAndAge : MonoBehaviour
             // Get the start position of where you should be stepping in world space (it makes sense)
             Vector2 currStep = new Vector2(selectedObject.transform.position.x - selectedObject.GetComponent<Shape>().SizeExent.x/2, selectedObject.transform.position.y - selectedObject.GetComponent<Shape>().SizeExent.y/2);
             Color[] pixelsToMark = new Color[height*width];
-            RaycastHit[] hitResults = new RaycastHit[16];
+            RaycastHit[] hitResults = new RaycastHit[8];
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     // Shoot out a ray from each point of the thing in the negative Z, towards camera. if we collide with one of the allowed objs, mark the pixel 
-                    int hits = Physics.RaycastNonAlloc(new Vector3(currStep.x, currStep.y, 1), -Vector3.forward,hitResults, 100);
+                    int hits = Physics.RaycastNonAlloc(new Vector3(currStep.x, currStep.y, 1), -Vector3.forward, hitResults, 10);
                     for (int i = 0; i < hits; i++)
                     {
                         if (sampleHelperObj == hitResults[i].transform.gameObject)
