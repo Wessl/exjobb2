@@ -22,6 +22,7 @@ public class DamageAndAge : MonoBehaviour
     [SerializeField] private Material textureMaskMat;
     [SerializeField] private Material textureMaskMat_AlphaOnly;
     [SerializeField] private TMP_InputField noiseScaleIF;
+    [SerializeField] private TMP_InputField damageImpactStrength;
     [SerializeField] private float defaultNoiseScale = 15;
     
     /*
@@ -202,11 +203,13 @@ public class DamageAndAge : MonoBehaviour
         // Find out what kind of texture we working with? Like, rust or impact or smth? 
         Material dropdownMat = damageAgeTypeMats[damageAgeType.value-1];
         Material maskMat = (dropdownMat.GetInt("_AlphaCutoffEnable") != 1) ? textureMaskMat : textureMaskMat_AlphaOnly;
+        var dmgImpactStrength = float.Parse(damageImpactStrength.text != "" ? damageImpactStrength.text : "1", CultureInfo.InvariantCulture);
         // Get the material used by the selected object
         var currMat = selected.GetComponent<MeshRenderer>().material;
         // Give the material the correct original texture & color (i don't think you can just replace the material cuz the shader used for the masking material is unique)
         maskMat.SetTexture("_OriginalTexture", currMat.mainTexture);
         maskMat.color = currMat.color;
+        maskMat.SetFloat("_DamageImpactStrength", dmgImpactStrength);
         
         maskMat.SetTexture("_TextureToApply", dropdownMat.mainTexture);
 
