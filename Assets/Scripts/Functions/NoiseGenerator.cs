@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public static class NoiseGenerator
 {
-    public static Texture2D ApplyPerlinNoiseToTexture(Texture2D source, float scale)
+    public static Texture2D ApplyPerlinNoiseToTexture(Texture2D source, float scale, float strength)
     {
         // Width and height of the texture in pixels.
         int pixWidth = source.width;
@@ -31,7 +31,9 @@ public static class NoiseGenerator
             {
                 float xCoord = (xOrg + x / noiseTex.width);
                 float yCoord = ( yOrg + y / noiseTex.height);
-                float sample = Mathf.PerlinNoise(xCoord * scale, yCoord * scale) * sourcePixels[(int)y * noiseTex.width + (int)x].a;
+                float originalSource = sourcePixels[(int)y * noiseTex.width + (int)x].a;
+                float noiseImpact = (1 - Mathf.PerlinNoise(xCoord * scale, yCoord * scale)) * originalSource;
+                float sample = Mathf.Lerp(originalSource, noiseImpact, strength);
                 pix[(int)y * noiseTex.width + (int)x] = new Color(sample, sample, sample);
                 x++;
             }
@@ -44,7 +46,7 @@ public static class NoiseGenerator
         return noiseTex;
     }
 
-    public static Texture2D ApplyNoiseToTexture(Texture2D sourceTex, float scale)
+    public static Texture2D ApplyNoiseToTexture(Texture2D sourceTex, float scale, float strength)
     {
         int octaves = 6;
         int pixWidth = sourceTex.width;
@@ -67,7 +69,9 @@ public static class NoiseGenerator
             for (int x = 0; x < pixWidth; x++)
             {
 	            Vector3 point = Vector3.Lerp(point0, point1, (x + 0.5f) * stepSize);
-                float sample = Sum(point * scale, frequency, octaves) * sourcePixels[(int)y * noiseTex.width + (int)x].a;
+	            float originalSource = sourcePixels[(int)y * noiseTex.width + (int)x].a;
+	            float noiseImpact = Sum(point * scale, frequency, octaves) * originalSource;
+	            float sample = Mathf.Lerp(originalSource, noiseImpact, strength);
                 pix[(int)y * noiseTex.width + (int)x] = new Color(sample, sample, sample, sample);
             }
         }
