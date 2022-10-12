@@ -20,6 +20,7 @@ public class DamageAndAge : MonoBehaviour
     [SerializeField] private TMP_InputField vectorModY;
     [SerializeField] private TMP_InputField helperLabel;
     [SerializeField] private Material textureMaskMat;
+    [SerializeField] private Material textureMaskMat_AlphaOnly;
     [SerializeField] private TMP_InputField noiseScaleIF;
     [SerializeField] private float defaultNoiseScale = 35;
     
@@ -198,16 +199,18 @@ public class DamageAndAge : MonoBehaviour
 
     private void ApplyTextureMaskingMaterial(GameObject selected)
     {
+        // Find out what kind of texture we working with? Like, rust or impact or smth? 
+        Material dropdownMat = damageAgeTypeMats[damageAgeType.value-1];
+        Material maskMat = (dropdownMat.GetInt("_AlphaCutoffEnable") != 1) ? textureMaskMat : textureMaskMat_AlphaOnly;
         // Get the material used by the selected object
         var currMat = selected.GetComponent<MeshRenderer>().material;
         // Give the material the correct original texture & color (i don't think you can just replace the material cuz the shader used for the masking material is unique)
-        textureMaskMat.SetTexture("_OriginalTexture", currMat.mainTexture);
-        textureMaskMat.color = currMat.color;
-        // Find out what kind of texture we working with? Like, rust or impact or smth? 
-        var dropdownOpt = damageAgeTypeMats[damageAgeType.value-1];
-        textureMaskMat.SetTexture("_TextureToApply", dropdownOpt.mainTexture);
+        maskMat.SetTexture("_OriginalTexture", currMat.mainTexture);
+        maskMat.color = currMat.color;
+        
+        maskMat.SetTexture("_TextureToApply", dropdownMat.mainTexture);
 
-        selected.GetComponent<MeshRenderer>().material = textureMaskMat;
+        selected.GetComponent<MeshRenderer>().material = maskMat;
     }
 
     private Texture2D RandomNoise(Texture2D tex)
@@ -231,7 +234,10 @@ public class DamageAndAge : MonoBehaviour
 
                 Debug.Log("Applying value noise");
                 break;
-            case "none":
+            case "None":
+                Debug.Log("No noise selected.");
+                DrawTextureIntoImage(tex, "image3");
+                break;
             default:
                 Debug.Log("yo mama");
                 break;

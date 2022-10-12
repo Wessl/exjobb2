@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: TextureMask
-  m_Shader: {fileID: -6465566751694194690, guid: 8a82e43af282e174993d0ea6211f8267, type: 3}
+  m_Name: TextureMask_AlphaOnly
+  m_Shader: {fileID: -6465566751694194690, guid: d33b926c05d86a64281064045ab2c1c3, type: 3}
   m_ShaderKeywords: _DISABLE_SSR_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -114,7 +114,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureToApply:
-        m_Texture: {fileID: 2800000, guid: 19794c69992bebe4b8df02ef39e60942, type: 3}
+        m_Texture: {fileID: 2800000, guid: c13a61b03ca610c49a6031ad7be30df9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ThicknessMap:
