@@ -137,7 +137,7 @@ public class DamageAndAge : MonoBehaviour
         }
         newDirTex.SetPixels(newDirTexPixels);
         newDirTex.Apply();
-        // DrawTextureIntoImage(newDirTex, "directionTextureTest");
+        DrawTextureIntoImage(newDirTex, "directionTextureTest");
         return newDirTex;
     }
 

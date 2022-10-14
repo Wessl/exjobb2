@@ -72,7 +72,58 @@ public static class RoofConstructor
     
     static void CreateFlatRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints, List<Material> roofMaterials)
     {
-        CreateQuadRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[1].transform.position.z, extent.y, new Vector3(90, 0, 0), roofMaterials);
+        // if auto complete, use basic create quad roof mesh
+        // else create fancy roof
+        if (WallsAreAutoCompleted(walls))
+        {
+            CreateQuadRoofMesh(extent.x, extent.y, walls[0].transform.position.x, walls[1].transform.position.z, extent.y, new Vector3(90, 0, 0), roofMaterials);
+        }
+        else
+        {
+            CreateFlatRoofFancyFootprint(walls, roofMaterials);
+        }
+    }
+
+    private static bool WallsAreAutoCompleted(GameObject[] walls)
+    {
+        int wallsCount = walls.Length;
+        if (wallsCount != 4) return false;
+        float prevRot = 0;
+        for (int i = 1; i < walls.Length; i++)
+        {
+            var newRot = walls[i].transform.localRotation.y;
+            if (Mathf.Abs(newRot - prevRot) > float.Epsilon)
+            {
+                return false;
+            }
+            prevRot = newRot;
+        }
+        return true;
+    }
+
+    private static void CreateFlatRoofFancyFootprint(GameObject[] walls, List<Material> roofMaterials)
+    {
+        // Create list of points that lies along the topmost corners of walls
+        List<Vector3> cornerPoints = new List<Vector3>();
+        for (int i = 0; i < walls.Length; i++)
+        {
+            // Get the "top left corner"
+            var wall = walls[i];
+            Mesh mesh = wall.GetComponent<MeshFilter>().mesh;
+            Matrix4x4 localToWorld = wall.transform.localToWorldMatrix;
+            // Assuming every plane has 4 vertices, going from bottom right, bottom left, top left - we want third
+            Vector3 world_v = localToWorld.MultiplyPoint3x4(mesh.vertices[2]);    // get the real time world pos
+            
+            cornerPoints.Add(world_v);
+        }
+        // Triangulate the polygon making up the upper part of the roof
+        Triangulator triangulator = new Triangulator(cornerPoints.ToArray());
+        var resultIndices = triangulator.Triangulate();
+        for (int i = 0; i < resultIndices.Length-2; i += 3)
+        {
+            CreateTriFromPoints(cornerPoints[resultIndices[i]], cornerPoints[resultIndices[i+1]], cornerPoints[resultIndices[i+2]], roofMaterials);
+        }
+        
     }
 
     static void CreateTentRoof(Vector2 extent, GameObject[] walls, Vector3[] edgePoints, List<Material> roofMaterials)
@@ -134,7 +185,6 @@ public static class RoofConstructor
         for (int i = 0; i < resultIndices.Length-2; i += 3)
         {
             CreateTriFromPoints(newPoints[resultIndices[i]], newPoints[resultIndices[i+1]], newPoints[resultIndices[i+2]], roofMaterials);
-            
         }
 
         // then for the flat roof, we should be able to construct polygons using the new points, which we then later triangulate, and build triangles out of... I hope there is some triangulation library.. i dont wanna math
